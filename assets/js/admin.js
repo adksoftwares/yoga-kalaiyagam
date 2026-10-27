@@ -399,6 +399,7 @@ async function renderEventsTable() {
 }
 
 window.deleteEvent = async function(id) {
+  if (!requireAdminSession()) return;
   if (!confirm('இந்த நிகழ்வை நிச்சயமாக நீக்க விரும்புகிறீர்களா?')) return;
   if (window.cloudDB) {
     await window.cloudDB.deleteEvent(id);
@@ -430,6 +431,7 @@ async function renderGalleryTable() {
 }
 
 window.deleteGalleryItem = async function(id) {
+  if (!requireAdminSession()) return;
   if (!confirm('இந்த புகைப்படத்தை நீக்கவா?')) return;
   if (window.cloudDB) {
     await window.cloudDB.deleteGalleryItem(id);
@@ -439,48 +441,87 @@ window.deleteGalleryItem = async function(id) {
   }
 };
 
-function renderRegistrationsTable() {
+async function renderRegistrationsTable() {
   const container = document.getElementById('adminRegistrationsList');
   if (!container) return;
-  const list = JSON.parse(localStorage.getItem('aiswaryam_memberships') || '[]');
-
-  if (list.length === 0) {
-    container.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#9CA3AF;">பதிவுகள் எதுவும் இல்லை</td></tr>';
+  let list = [];
+  try {
+    if (window.cloudDB && window.cloudDB.isCloudConfigured() && adminAuthenticated) {
+      list = await window.cloudDB.fetchAdminRecords('memberships');
+    } else {
+      list = JSON.parse(localStorage.getItem('aiswaryam_memberships') || '[]');
+    }
+  } catch (error) {
+    container.innerHTML = '<tr><td colspan="6" role="alert" style="text-align:center;color:#991B1B;">சேர்க்கை பதிவுகளை ஏற்ற முடியவில்லை. Cloud/RLS அமைப்பைச் சரிபார்க்கவும்.</td></tr>';
+    console.error('[Admin] Membership records unavailable:', error);
     return;
   }
 
-  container.innerHTML = list.map(item => `
+  if (!list.length) {
+    container.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9CA3AF;">பதிவுகள் எதுவும் இல்லை</td></tr>';
+    return;
+  }
+
+  container.innerHTML = list.map(item => {
+    const regId = item.reg_id || item.regId || '';
+    const phone = item.phone || '';
+    const name = item.full_name || item.fullName || '';
+    const plan = item.selected_plan || item.selectedPlan || '';
+    const batch = item.batch || '';
+    const health = item.health || '';
+    const safePhone = phone.replace(/[^0-9]/g, '');
+    return `
     <tr>
-      <td><strong>${item.regId}</strong></td>
-      <td>${item.fullName}</td>
-      <td><a href="https://wa.me/94${item.phone.replace(/^0/, '')}" target="_blank" style="color:#059669; font-weight:700;">📱 ${item.phone}</a></td>
-      <td>${item.selectedPlan}</td>
-      <td>${item.batch}</td>
-      <td><span style="font-size:0.8rem; color:#4B5563;">${item.health}</span></td>
-    </tr>
-  `).join('');
+      <td><strong>${escapeHtml(regId)}</strong></td>
+      <td>${escapeHtml(name)}</td>
+      <td><a href="https://wa.me/94${escapeHtml(safePhone.replace(/^0/, ''))}" target="_blank" rel="noopener noreferrer" style="color:#059669;font-weight:700;">📱 ${escapeHtml(phone)}</a></td>
+      <td>${escapeHtml(plan)}</td>
+      <td>${escapeHtml(batch)}</td>
+      <td><span style="font-size:0.8rem;color:#4B5563;">${escapeHtml(health)}</span></td>
+    </tr>`;
+  }).join('');
 }
 
-function renderBookingsTable() {
+async function renderBookingsTable() {
   const container = document.getElementById('adminBookingsList');
   if (!container) return;
-  const list = JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]');
-
-  if (list.length === 0) {
-    container.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#9CA3AF;">முன்பதிவுகள் எதுவும் இல்லை</td></tr>';
+  let list = [];
+  try {
+    if (window.cloudDB && window.cloudDB.isCloudConfigured() && adminAuthenticated) {
+      list = await window.cloudDB.fetchAdminRecords('bookings');
+    } else {
+      list = JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]');
+    }
+  } catch (error) {
+    container.innerHTML = '<tr><td colspan="6" role="alert" style="text-align:center;color:#991B1B;">முன்பதிவுகளை ஏற்ற முடியவில்லை. Cloud/RLS அமைப்பைச் சரிபார்க்கவும்.</td></tr>';
+    console.error('[Admin] Booking records unavailable:', error);
     return;
   }
 
-  container.innerHTML = list.map(b => `
+  if (!list.length) {
+    container.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9CA3AF;">முன்பதிவுகள் எதுவும் இல்லை</td></tr>';
+    return;
+  }
+
+  container.innerHTML = list.map(item => {
+    const id = item.booking_id || item.bookId || '';
+    const name = item.full_name || item.name || '';
+    const phone = item.phone || '';
+    const sessionType = item.session_type || item.sessionType || '';
+    const date = item.booking_date || item.date || '';
+    const slot = item.slot || '';
+    const branch = item.branch || '';
+    const safePhone = phone.replace(/[^0-9]/g, '');
+    return `
     <tr>
-      <td><strong>${b.bookId}</strong></td>
-      <td>${b.name}</td>
-      <td><a href="https://wa.me/94${b.phone.replace(/^0/, '')}" target="_blank" style="color:#059669; font-weight:700;">📱 ${b.phone}</a></td>
-      <td>${b.sessionType}</td>
-      <td>${b.date} (${b.slot})</td>
-      <td>${b.branch}</td>
-    </tr>
-  `).join('');
+      <td><strong>${escapeHtml(id)}</strong></td>
+      <td>${escapeHtml(name)}</td>
+      <td><a href="https://wa.me/94${escapeHtml(safePhone.replace(/^0/, ''))}" target="_blank" rel="noopener noreferrer" style="color:#059669;font-weight:700;">📱 ${escapeHtml(phone)}</a></td>
+      <td>${escapeHtml(sessionType)}</td>
+      <td>${escapeHtml(date)} (${escapeHtml(slot)})</td>
+      <td>${escapeHtml(branch)}</td>
+    </tr>`;
+  }).join('');
 }
 
 function exportBookingsCSV() {
