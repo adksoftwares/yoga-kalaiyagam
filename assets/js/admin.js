@@ -68,7 +68,7 @@ async function initSecureAdminAuth() {
   const logoutBtn = document.getElementById('adminLogoutBtn');
   const notice = document.getElementById('adminAuthNotice');
   const config = getSupabaseAuthConfig();
-  const tokenKey = 'aiswaryam_supabase_access_token';
+  const tokenKey = 'aiswaryam_admin_access_token';
 
   const setNotice = (message, isError = false) => {
     if (!notice) return;
