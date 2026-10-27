@@ -13,6 +13,8 @@ function initBookingSystem() {
   const slotInput = document.getElementById('selectedSlotInput');
   const passModal = document.getElementById('bookingPassModal');
   const closePassBtn = document.getElementById('closePassBtn');
+  const defaultSlot = document.querySelector('.slot-pill[data-slot]');
+  if (defaultSlot) defaultSlot.classList.add('active');
 
   // Slot Pill Selection
   slotPills.forEach(pill => {
@@ -29,10 +31,16 @@ function initBookingSystem() {
     // Set default date to tomorrow
     const dateInput = document.getElementById('bookDate');
     if (dateInput) {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      dateInput.value = tomorrow.toISOString().split('T')[0];
-      dateInput.min = new Date().toISOString().split('T')[0];
+      const localDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+      const today = new Date();
+      const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+      dateInput.value = localDate(tomorrow);
+      dateInput.min = localDate(today);
     }
 
     form.addEventListener('submit', async (e) => {
@@ -51,7 +59,7 @@ function initBookingSystem() {
         return;
       }
 
-      const bookId = 'BKG-' + Math.floor(1000 + Math.random() * 9000);
+      const bookId = 'BKG-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
       const bookingData = {
         bookId,
         name,
