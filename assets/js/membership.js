@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('input[name="health"]:checked').forEach(cb => {
         healthConditions.push(cb.value);
       });
-      const healthText = healthConditions.length > 0 ? healthConditions.join(', ') : 'குறிப்பிட்ட தொந்தரவுகள் இல்லை (ஆரோக்கியமாக உள்ளேன்)';
+      const healthText = healthConditions.length > 0 ? healthConditions.join(', ') : 'குறிப்பிடப்படவில்லை (Not shared)';
 
       if (!fullName || !phone || !gender || !batch) {
         alert('தயவுசெய்து அனைத்து கட்டாய விபரங்களையும் நிரப்பவும்.');
