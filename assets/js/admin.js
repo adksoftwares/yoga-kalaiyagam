@@ -589,7 +589,7 @@ async function exportBookingsCSV() {
 
   const csvCell = (value) => {
     let text = String(value ?? '');
-    if (/^[=+@\\-\\t\\r]/.test(text)) text = "'" + text;
+    if (/^[=+@-]/.test(text) || text.startsWith('\t') || text.startsWith('\r')) text = "'" + text;
     return '"' + text.replace(/"/g, '""') + '"';
   };
   const rows = [['BookID','Name','Phone','Session','Date','Slot','Branch']];
@@ -602,8 +602,8 @@ async function exportBookingsCSV() {
     item.slot,
     item.branch
   ]));
-  const csv = rows.map(row => row.map(csvCell).join(',')).join('\\r\\n');
-  const blob = new Blob(['\\uFEFF', csv], { type: 'text/csv;charset=utf-8;' });
+  const csv = rows.map(row => row.map(csvCell).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   const objectUrl = URL.createObjectURL(blob);
   link.href = objectUrl;
