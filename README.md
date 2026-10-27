@@ -1,86 +1,72 @@
-# ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் (Yoga Studio Batticaloa) — இணையதளம்
+# ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் — Sri Aishwaryam Yoga Kalaiyagam
 
-**ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் / யோகா ஸ்டுடியோ (Aishwaryam Yoga Kalaiyagam & Institution)**  
-மட்டக்களப்பு, இலங்கை (Batticaloa, Sri Lanka)  
-**IUYF அங்கீகாரம் பெற்றது (Affiliated with International Union Yoga Federation)**  
+Official trilingual website for the yoga studio in Batticaloa, Sri Lanka.
 
-**தலைமை ஆசான்கள்:**
-- **எஸ். ஸ்ரீதரன் (S. Sritharan, B.Sc)** — உளவியல் & உளசிகிச்சை, யோகா குரு (077 6047 081)
-- **ஏ. ஜெயஹரன் (A. Jayaharan, B.Ed)** — யோகா சிகிச்சை நிபுணர் (077 6064 846)
+**Languages:** Tamil · English · Sinhala  
+**Primary contacts:** 077 6064 846 / 077 6047 081  
+**Main centre:** No. 16, Loyds Avenue Road, Batticaloa
 
----
+## Website features
 
-## 🌟 சிறப்பம்சங்கள் (Key Features)
+- Responsive home, about, courses, events/gallery and contact pages.
+- Tamil, English and Sinhala interface strings.
+- WhatsApp-based enquiries with a clear handoff: a prepared message is not treated as delivered until the visitor sends it.
+- Booking request form with preferred date, time and branch. Requests remain pending until the studio confirms availability.
+- Membership request form and request summary. Submitting the form is not proof of membership approval or payment.
+- Student portal with Supabase Auth and per-user profile access when configured.
+- Admin dashboard for events, gallery and shared announcements, protected by Supabase Auth and database Row Level Security when configured.
+- Progressive Web App shell and limited public-asset caching.
+- Accessibility refinements including visible keyboard focus and reduced-motion support.
 
-1. **🌐 மும்மொழி வசதி (Trilingual Support: Tamil + English + Sinhala):**
-   - தமிழ் (Tamil), English, மற்றும் සිංහල (Sinhala) ஆகிய மூன்று மொழிகளிலும் ஒரே கிளிக்கில் மாறும் வசதி.
+## Run locally
 
-2. **🧘 அசல் யோகா கலையகம் பிராண்டிங் & ஆசான்கள்:**
-   - யோகா கலையகத்தின் அதிகாரப்பூர்வ பதாகை (`banner.jpg`) மற்றும் ஆசான்களின் அசல் திருவுருவப் படங்கள் (`sritharan.jpg`, `jayaharan.jpg`).
-   - சர்வதேச யோகா கூட்டமைப்பு (IUYF) மற்றும் நிறுவன முத்திரைகள்.
-
-3. **💬 நேரடி வாட்ஸ்அப் சேர்க்கை (WhatsApp Direct Enrollment):**
-   - மாணவர் சேர்க்கை மற்றும் ஆலோசனைகள் நேரடியாக மட்டக்களப்பு யோகா மையத்தின் எண்களுக்கு (**077 6064 846 / 077 6047 081**) வாட்ஸ்அப் வழியாக செல்லும் வசதி.
-
-4. **📱 Progressive Web App (PWA) & ஆஃப்லைன் ஆதரவு:**
-   - Android, iPhone, Windows, Mac கணினிகளில் ஒரு ஆப் போல Install செய்துகொள்ளலாம்.
-   - இணைய இணைப்பு இல்லாமலும் (Offline) வேலை செய்யும் Service Worker கட்டமைப்பு (`sw.js`).
-
-5. **🔔 புனித திபெத்திய மணி நாதம் (Web Audio Tibetan Singing Bowl):**
-   - வெளிப்புற ஆடியோ பைல்கள் ஏதுமின்றி 100% தூய கணித அலைவரிசை மூலம் இயங்கும் தியான மணி நாதம் (432Hz Sacred Resonance).
-
-6. **⏳ வரவிருக்கும் சேவைகள் (Coming Soon):**
-   - பயிற்சிகள் (`courses.html`), நேரலை முன்பதிவு (`booking.html`), மற்றும் உறுப்பினர் சேர்க்கை (`membership.html`) ஆகியவை எளிய "Coming Soon" அட்டையுடன், நேரடி வாட்ஸ்அப் விசாரணை வசதியுடன் இணைக்கப்பட்டுள்ளன.
-
-7. **⚙️ நிர்வாக பலகை (Admin Dashboard - `admin.html`):**
-   - கடவுச்சொல் பாதுகாக்கப்பட்ட நிர்வாகப் பக்கம் (Default: `admin` / `admin123`).
-   - உண்மையான புதிய நிகழ்வுகள் மற்றும் புகைப்படங்களை உடனுக்குடன் சேர்க்கும், நிர்வகிக்கும் வசதி.
-   - SHA-256 பாதுகாப்பு & Cloud Database (Supabase) இணைப்பு வசதி.
-
-8. **மட்டக்களப்பு கிளைகள் & தொடர்புகள்:**
-   - **முதன்மை கூடம்:** No: 16, Loyds Avenue Road, Batticaloa.
-   - **கிளை 1:** 130D, Boundary Road North, Batticaloa.
-   - **கிளை 2:** No. 5 Sinnaiyah Vithanayar Road, Thimilathivu, Batticaloa.
-   - **தொலைபேசி எண்கள்:** 077 6064 846 / 077 6047 081
-
----
-
-## 📁 திட்டத்தின் கோப்பு அமைப்பு (File Structure)
-
-```
-Yoga/
-├── index.html                  # பிரதான முகப்பு போர்ட்டல்
-├── about.html                  # எங்களைப் பற்றி, குருமார்கள் & IUYF அங்கீகாரம்
-├── courses.html                # யோகா வகுப்புகள் (Coming Soon)
-├── booking.html                # நேரலை முன்பதிவு (Coming Soon)
-├── membership.html             # உறுப்பினர் சேர்க்கை (Coming Soon)
-├── events.html                 # நிகழ்வுகள் & புகைப்பட ஆல்பம்
-├── contact.html                # மட்டக்களப்பு கிளை முகவரிகள் & தொடர்பு
-├── student-portal.html         # மாணவர் போர்ட்டல் & அடையாள அட்டை
-├── admin.html                  # நிர்வாக பலகை (Cloud DB Sync)
-├── manifest.json               # PWA App Manifest
-├── sw.js                       # Service Worker (ஆஃப்லைன் கேச்)
-├── Aiswaryam_Yoga_Website.zip  # முழுமையான ஜிப் தொகுப்பு
-└── assets/
-    ├── css/
-    │   ├── style.css           # முதன்மை வடிவமைப்பு
-    │   └── animations.css      # பிராணாயாம அனிமேஷன்
-    ├── js/
-    │   ├── main.js             # மும்மொழி & ஆடியோ என்ஜின்
-    │   ├── cloud-db.js         # கிளவுட் டேட்டாபேஸ்
-    │   ├── pranayama.js        # மூச்சுப் பயிற்சி கடிகாரம்
-    │   ├── gallery.js          # புகைப்பட ஆல்பம்
-    │   └── admin.js            # நிர்வாக பலகை ஸ்கிரிப்ட்
-    └── images/                 # அசல் புகைப்படங்கள் & இலச்சினைகள்
-```
-
----
-
-## 🚀 இயக்குவது எப்படி (How to Run)
-
-எந்தவொரு நவீன இணைய உலாவியிலும் (Chrome, Edge, Firefox, Safari) `index.html` கோப்பை நேரடியாகத் திறக்கலாம். அல்லது உள்ளூர் சர்வரில் இயக்க:
+From the repository root, use a local HTTP server (recommended for PWA/auth testing):
 
 ```bash
 python -m http.server 8080
 ```
-பின்னர் பிரவுசரில் `http://localhost:8080/` திறந்து பார்க்கலாம்.
+
+Open `http://localhost:8080/`.
+
+## Configure secure authentication and database
+
+The public website can display without a Supabase project, but central booking/member records, admin changes and student profile login require configuration.
+
+1. Read [Supabase setup](SUPABASE_SETUP.md).
+2. Apply `supabase/schema.sql` in the Supabase SQL Editor.
+3. Set the project URL and **anon/publishable** key in `assets/js/supabase-config.js`.
+4. Create an admin Auth user and assign `app_metadata.role = "admin"` using a trusted admin process.
+5. Create student Auth users and matching `student_profiles` rows.
+6. Verify Row Level Security with separate anonymous, student and admin test accounts before collecting real data.
+
+**Never commit a Supabase service-role key, database password, or other privileged secret.** The browser-visible anon key is expected to be public; Row Level Security is what protects records.
+
+## Security and data notes
+
+- Admin login is disabled when Supabase configuration is missing; there is no public default admin password.
+- Student demo credentials have been removed. Student access requires a server-verified Supabase Auth session and an authorized profile row.
+- Membership and booking forms do not save health details or personal records to browser localStorage. With Supabase configured, they create central requests; otherwise they prepare a WhatsApp request for the visitor to send.
+- A booking request is not a confirmed appointment. Staff must confirm availability.
+- Contact forms prepare a WhatsApp message and do not claim that it was delivered automatically.
+- See [SECURITY_AUDIT.md](SECURITY_AUDIT.md) for findings and the remaining production-readiness checklist.
+
+## Quality checks
+
+The GitHub Actions workflow runs:
+
+```bash
+node scripts/check-static-site.mjs
+```
+
+It checks JavaScript syntax, JSON parsing, and local file references in HTML. This is a lightweight static check, not a substitute for browser end-to-end testing or a security review.
+
+## Repository contents
+
+- `*.html`: website pages and request forms
+- `assets/css/`: design system, animations and accessibility polish
+- `assets/js/`: UI behaviour, booking/membership requests, Supabase integration and portals
+- `supabase/schema.sql`: initial schema and RLS policies
+- `SUPABASE_SETUP.md`: project configuration instructions
+- `SECURITY_AUDIT.md`: audit findings and remediation plan
+
+The committed `Aiswaryam_Yoga_Website.zip` is a legacy snapshot and may not match the current source. Use the GitHub source branch/release as the authoritative version.

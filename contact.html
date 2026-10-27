@@ -148,19 +148,19 @@
             <h3 style="font-size: 1.4rem; color: #78350F; margin-bottom: 1rem;">விசாரணைப் படிவம் (Quick Inquiry)</h3>
             <p style="font-size: 0.92rem; color: #4B5563; margin-bottom: 1.5rem;">தங்களின் கேள்விகளை அனுப்புங்கள். எங்களின் யோகா ஆலோசகர் உங்களை விரைவில் தொடர்புகொள்வார்.</p>
 
-            <form id="contactInquiryForm" onsubmit="event.preventDefault(); alert('நன்றி! உங்கள் செய்தி பெறப்பட்டது. யோகா கலையகம் ஆலோசகர் விரைவில் தங்களை தொடர்புகொள்வார்.'); this.reset();">
+            <form id="contactInquiryForm">
               <div class="form-group">
-                <label class="form-label">தங்கள் பெயர் (Name) <span class="req">*</span></label>
+                <label class="form-label" data-ta="தங்கள் பெயர் *" data-en="Your name *" data-si="ඔබේ නම *">தங்கள் பெயர் (Name) <span class="req">*</span></label>
                 <input type="text" class="form-input" placeholder="பெயர்..." required>
               </div>
 
               <div class="form-grid-2">
                 <div class="form-group">
-                  <label class="form-label">தொலைபேசி எண் <span class="req">*</span></label>
+                  <label class="form-label" data-ta="தொலைபேசி எண் *" data-en="Phone number *" data-si="දුරකථන අංකය *">தொலைபேசி எண் <span class="req">*</span></label>
                   <input type="tel" class="form-input" placeholder="077 6064 846" required>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">விருப்பமான கிளை</label>
+                  <label class="form-label" data-ta="விருப்பமான கிளை" data-en="Preferred branch" data-si="කැමති ශාඛාව">விருப்பமான கிளை</label>
                   <select class="form-select">
                     <option>No: 16 Loyds Avenue (முதன்மை மையம்)</option>
                     <option>130D Boundary Road North</option>
@@ -171,13 +171,15 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label">தங்கள் செய்தி / சந்தேகம் <span class="req">*</span></label>
+                <label class="form-label" data-ta="தங்கள் செய்தி / சந்தேகம் *" data-en="Your message / question *" data-si="ඔබේ පණිවිඩය / ප්‍රශ්නය *">தங்கள் செய்தி / சந்தேகம் <span class="req">*</span></label>
                 <textarea class="form-textarea" rows="4" placeholder="வகுப்புகள், உடல்நல ஆலோசனை அல்லது கட்டண விபரம்..." required></textarea>
               </div>
 
               <button type="submit" class="btn-primary" style="width: 100%;">
-                செய்தி அனுப்புக (Send Inquiry)
+                WhatsApp மூலம் தொடர்க (Continue to WhatsApp)
               </button>
+              <p id="contactInquiryStatus" role="status" aria-live="polite" style="margin-top:0.75rem;font-size:0.9rem;color:#4B5563;"></p>
+              <a id="contactWhatsAppFallback" hidden target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display:inline-flex;margin-top:0.5rem;">WhatsApp-ஐத் திறக்கவும்</a>
             </form>
           </div>
 
@@ -213,5 +215,6 @@
   </footer>
 
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/contact.js"></script>
 </body>
 </html>

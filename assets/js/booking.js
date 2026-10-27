@@ -13,6 +13,8 @@ function initBookingSystem() {
   const slotInput = document.getElementById('selectedSlotInput');
   const passModal = document.getElementById('bookingPassModal');
   const closePassBtn = document.getElementById('closePassBtn');
+  const defaultSlot = document.querySelector('.slot-pill[data-slot]');
+  if (defaultSlot) defaultSlot.classList.add('active');
 
   // Slot Pill Selection
   slotPills.forEach(pill => {
@@ -29,13 +31,19 @@ function initBookingSystem() {
     // Set default date to tomorrow
     const dateInput = document.getElementById('bookDate');
     if (dateInput) {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      dateInput.value = tomorrow.toISOString().split('T')[0];
-      dateInput.min = new Date().toISOString().split('T')[0];
+      const localDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+      const today = new Date();
+      const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+      dateInput.value = localDate(tomorrow);
+      dateInput.min = localDate(today);
     }
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name = document.getElementById('bookName').value.trim();
@@ -51,7 +59,7 @@ function initBookingSystem() {
         return;
       }
 
-      const bookId = 'BKG-' + Math.floor(1000 + Math.random() * 9000);
+      const bookId = 'BKG-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
       const bookingData = {
         bookId,
         name,
@@ -64,16 +72,26 @@ function initBookingSystem() {
         createdDate: new Date().toLocaleDateString()
       };
 
-      // Store in LocalStorage
-      const bookings = JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]');
-      bookings.push(bookingData);
-      localStorage.setItem('aiswaryam_bookings', JSON.stringify(bookings));
+      // Persist centrally when configured. A request is not a confirmed reservation.
+      let persisted = false;
+      try {
+        if (window.cloudDB) {
+          const result = await window.cloudDB.submitBooking(bookingData);
+          persisted = Boolean(result && result.persisted);
+        }
+      } catch (error) {
+        alert('முன்பதிவு கோரிக்கையைச் சேமிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும் அல்லது WhatsApp வழியாகத் தொடர்புகொள்ளவும்.');
+        console.error('[Booking] Submission failed:', error);
+        return;
+      }
 
-      // Populate Pass Modal
+      bookingData.status = persisted ? 'Pending confirmation' : 'Draft — send via WhatsApp';
       showBookingPass(bookingData);
 
       if (window.AiswaryamYoga && window.AiswaryamYoga.showToast) {
-        window.AiswaryamYoga.showToast('✅ முன்பதிவு உறுதி செய்யப்பட்டது!');
+        window.AiswaryamYoga.showToast(persisted
+          ? 'முன்பதிவு கோரிக்கை பெறப்பட்டது. நேரம் நிர்வாகியால் உறுதிப்படுத்தப்படும்.'
+          : 'கோரிக்கை தயார். உறுதிப்படுத்த WhatsApp பொத்தானைத் தேர்ந்தெடுக்கவும்.');
       }
     });
   }

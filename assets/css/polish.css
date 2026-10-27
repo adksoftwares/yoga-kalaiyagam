@@ -1,0 +1,108 @@
+/* Human-led finishing touches: calm spacing, clear focus, and restrained motion. */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid rgba(4, 120, 87, 0.55);
+  outline-offset: 3px;
+}
+
+:where(button, .btn-primary, .btn-secondary, .nav-link, .slot-pill, .plan-card) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(.form-input, .form-select, .form-textarea) {
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+:where(.form-input, .form-select, .form-textarea):focus {
+  border-color: var(--secondary, #047857);
+  box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.12);
+}
+
+:where(.btn-primary, .btn-secondary) {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :where(.btn-primary, .btn-secondary):hover {
+    transform: translateY(-1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Request summaries share one restrained modal treatment across booking and membership. */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(17, 24, 39, 0.58);
+  overflow-y: auto;
+}
+.modal-overlay.active {
+  display: flex;
+}
+.modal-content {
+  background: var(--bg-card, #fff);
+  color: var(--text-main, #1f2937);
+  border: 1px solid var(--border-subtle, #e8e2d5);
+  border-radius: 18px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: 0 24px 70px rgba(17, 24, 39, 0.2);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+.modal-content dt {
+  color: var(--text-muted, #4b5563);
+  font-size: 0.82rem;
+}
+.modal-content dd {
+  margin: 0.2rem 0 0;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.plan-card {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border-subtle, #e8e2d5);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text-main, #1f2937);
+}
+.plan-card.featured {
+  border-color: var(--secondary, #047857);
+  box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.1);
+}
+.slot-pill {
+  border: 1px solid var(--border-subtle, #e8e2d5);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text-main, #1f2937);
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+}
+.slot-pill.active {
+  border-color: var(--secondary, #047857);
+  background: var(--secondary-light, #d1fae5);
+  color: var(--secondary-dark, #064e3b);
+  font-weight: 700;
+}
+@media (max-width: 640px) {
+  .modal-content dl {
+    grid-template-columns: 1fr !important;
+  }
+}

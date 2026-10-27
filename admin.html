@@ -37,8 +37,8 @@
 
         <form id="adminLoginForm">
           <div class="form-group" style="text-align: left;">
-            <label class="form-label">பயனர் பெயர் (Username)</label>
-            <input type="text" id="adminUser" class="form-input" value="admin" required>
+            <label class="form-label" for="adminUser">நிர்வாக மின்னஞ்சல் (Admin email)</label>
+            <input type="email" id="adminUser" class="form-input" autocomplete="username" placeholder="admin@example.com" required>
           </div>
           <div class="form-group" style="text-align: left;">
             <label class="form-label">கடவுச்சொல் (Password)</label>
@@ -47,8 +47,8 @@
           <button type="submit" class="btn-primary" style="width: 100%; padding: 0.75rem;">உள்நுழைக (Login)</button>
         </form>
 
-        <div style="margin-top: 1.25rem; font-size: 0.8rem; color: #94A3B8;">
-          குறிப்பு: இயல்புநிலை கடவுச்சொல்: <code>admin123</code>
+        <div id="adminAuthNotice" role="status" style="margin-top: 1.25rem; padding: 0.9rem; background: #FEF3C7; color: #92400E; border-radius: 10px; font-size: 0.85rem;">
+          பாதுகாப்பான நிர்வாக உள்நுழைவுக்கு Supabase Auth அமைப்பு தேவை. Demo/default password பயன்படுத்தப்படாது.
         </div>
 
         <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed #E2E8F0;">
@@ -309,7 +309,7 @@
                     <th>தொலைபேசி</th>
                     <th>திட்டம்</th>
                     <th>நேரம் (Batch)</th>
-                    <th>உடல்நிலை</th>
+                    <th>விண்ணப்ப நிலை</th>
                   </tr>
                 </thead>
                 <tbody id="adminRegistrationsList"></tbody>
@@ -374,45 +374,25 @@
               அட்மின் போர்ட்டலில் நீங்கள் செய்யும் மாற்றங்கள் அனைத்து மாணவர்களின் மொபைல்களிலும் உடனுக்குடன் தானாகவே தெரிய கிளவுட் தரவுத்தளத்தை (Supabase / REST) இணைக்கலாம்.
             </p>
 
-            <!-- Cloud Config Form -->
-            <form id="cloudConfigForm" style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; margin-bottom: 2rem;">
-              <h4 style="color: #92400E; margin-bottom: 1rem;">கிளவுட் தரவுத்தள அமைப்புகள் (Cloud Provider):</h4>
-              <div class="form-grid-2">
-                <div class="form-group">
-                  <label class="form-label">வழங்குநர் (Database Provider)</label>
-                  <select id="cloudProvider" class="form-select">
-                    <option value="local">ஆஃப்லைன் & லோக்கல் மோடு (Offline LocalStorage)</option>
-                    <option value="supabase">Supabase PostgreSQL (இலவச கிளவுட்)</option>
-                  </select>
-                </div>
-                <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; padding-top: 1.5rem;">
-                  <label class="check-label" style="font-weight: 700; color: #047857;">
-                    <input type="checkbox" id="enableSync"> நேரலை கிளவுட் ஒத்திசைவை இயக்கு (Enable Cloud Sync)
-                  </label>
-                </div>
-              </div>
-
-              <div class="form-grid-2">
-                <div class="form-group">
-                  <label class="form-label">Supabase Project URL</label>
-                  <input type="url" id="supabaseUrl" class="form-input" placeholder="https://your-project.supabase.co">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Supabase Anon Public API Key</label>
-                  <input type="text" id="supabaseKey" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-                </div>
-              </div>
-
-              <button type="submit" class="btn-primary" style="padding: 0.65rem 1.75rem;">
-                கிளவுட் அமைப்புகளைச் சேமிக்கவும் (Save Cloud Config)
-              </button>
-            </form>
+            <div style="background:#FFFDF8;border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:1.25rem;margin-bottom:1.5rem;">
+              <h4 style="color:#92400E;margin-bottom:.6rem;">பாதுகாப்பான இணைப்பு அமைப்புகள்</h4>
+              <p style="font-size:.92rem;color:#4B5563;margin-bottom:.6rem;">
+                Supabase project URL மற்றும் anon/publishable key ஆகியவை repository-யின்
+                <code>assets/js/supabase-config.js</code> கோப்பில் அமைக்கப்பட வேண்டும்.
+                இந்த dashboard-ல் ரகசிய keys சேமிக்கப்படுவதில்லை.
+              </p>
+              <p style="font-size:.85rem;color:#92400E;margin:0;">
+                <strong>முக்கியம்:</strong> service-role key அல்லது database password-ஐ frontend code-ல் சேர்க்க வேண்டாம்.
+                தரவுகளின் பாதுகாப்பை Supabase Row Level Security (RLS) கட்டுப்படுத்த வேண்டும்.
+              </p>
+              <a href="SUPABASE_SETUP.md" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display:inline-flex;margin-top:1rem;">Setup guide-ஐப் பார்க்கவும்</a>
+            </div>
 
             <!-- Complete Database JSON Backup & Restore -->
             <div style="background: #F0FDF4; border: 1px solid #A7F3D0; border-radius: var(--radius-sm); padding: 1.5rem;">
               <h4 style="color: #065F46; margin-bottom: 0.5rem;">💾 முழுமையான தரவுத்தள காப்புப் பிரதி (JSON Backup & Restore):</h4>
               <p style="font-size: 0.88rem; color: #374151; margin-bottom: 1.25rem;">
-                அனைத்து மாணவர்கள், முன்பதிவுகள், நிகழ்வுகள் மற்றும் புகைப்படங்களை ஒரே கோப்பாக பதிவிறக்கம் செய்து பாதுகாத்துக் கொள்ளலாம்.
+                மைய தரவுத்தளத்தில் உள்ள நிகழ்வுகள், புகைப்படங்கள், சேர்க்கை கோரிக்கைகள் மற்றும் முன்பதிவுகளை JSON கோப்பாக பதிவிறக்கலாம். மீட்டமைப்பு புதிய/திருத்தப்பட்ட பதிவுகளை merge செய்யும்; ஏற்கனவே உள்ள பதிவுகளை நீக்காது.
               </p>
 
               <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
@@ -421,7 +401,7 @@
                 </button>
 
                 <label class="btn-secondary" style="cursor: pointer; margin: 0;">
-                  📤 கோப்பிலிருந்து மீட்டமை (Restore JSON)
+                  📤 காப்புப் பிரதியை merge செய்க (Restore / Merge JSON)
                   <input type="file" id="importDbFile" accept=".json" style="display: none;">
                 </label>
               </div>
@@ -433,27 +413,18 @@
             <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
               🔐 நிர்வாக கடவுச்சொல் மாற்றம் (Security Settings)
             </h3>
-            <p style="font-size: 0.9rem; color: #64748B; margin-bottom: 1.5rem;">
-              உங்கள் நிர்வாக கணக்கின் கடவுச்சொல்லை SHA-256 என்க்ரிப்ஷன் முறையில் பாதுகாப்பாக மாற்றலாம்.
-            </p>
-
-            <form id="adminChangePassForm" style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; max-width: 500px;">
-              <div class="form-group">
-                <label class="form-label">தற்போதைய கடவுச்சொல் (Current Password) <span class="req">*</span></label>
-                <input type="password" id="currPass" class="form-input" placeholder="இயல்புநிலை: admin123" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">புதிய கடவுச்சொல் (New Password) <span class="req">*</span></label>
-                <input type="password" id="newPass" class="form-input" placeholder="குறைந்தது 6 எழுத்துகள்" minlength="6" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">புதிய கடவுச்சொல்லை உறுதிப்படுத்துக (Confirm) <span class="req">*</span></label>
-                <input type="password" id="confPass" class="form-input" placeholder="மீண்டும் உள்ளிடவும்" required>
-              </div>
-              <button type="submit" class="btn-primary" style="padding: 0.65rem 1.75rem;">
-                கடவுச்சொல்லை மாற்று (Update Password)
-              </button>
-            </form>
+            <div style="background:#FFFDF8;border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:1.5rem;max-width:640px;">
+              <h4 style="color:#92400E;margin-bottom:.6rem;">கடவுச்சொல் மற்றும் கணக்கு பாதுகாப்பு</h4>
+              <p style="font-size:.92rem;color:#4B5563;margin-bottom:.75rem;">
+                இந்த இணையதளம் browser-ல் கடவுச்சொற்களைச் சேமிக்காது. நிர்வாகக் கணக்கின் password reset மற்றும் MFA போன்ற பாதுகாப்பு அமைப்புகளை Supabase Authentication dashboard-ல் நிர்வகிக்கவும்.
+              </p>
+              <ul style="padding-left:1.25rem;color:#4B5563;font-size:.9rem;display:grid;gap:.45rem;">
+                <li>தனித்துவமான வலுவான கடவுச்சொல்லைப் பயன்படுத்தவும்.</li>
+                <li>Admin பயனருக்கு மட்டும் `app_metadata.role = "admin"` வழங்கவும்.</li>
+                <li>பொதுப் பயனருக்கு admin role வழங்க வேண்டாம்.</li>
+                <li>அணுகல் இழந்தால் Supabase Auth வழியாக password reset செய்யவும்.</li>
+              </ul>
+            </div>
           </div>
 
         </main>
@@ -464,6 +435,7 @@
   </section>
 
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/supabase-config.js"></script>
   <script src="assets/js/cloud-db.js"></script>
   <script src="assets/js/admin.js"></script>
 </body>

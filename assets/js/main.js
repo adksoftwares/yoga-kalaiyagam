@@ -137,6 +137,12 @@ function applyLanguage(lang) {
       el.innerHTML = el.getAttribute('data-en');
     }
   });
+
+  // Translate placeholders without replacing user-entered form values.
+  document.querySelectorAll('[data-placeholder-ta], [data-placeholder-en], [data-placeholder-si]').forEach(el => {
+    const translatedPlaceholder = el.getAttribute(`data-placeholder-${lang}`);
+    if (translatedPlaceholder) el.setAttribute('placeholder', translatedPlaceholder);
+  });
 }
 
 // Mobile Menu
@@ -260,12 +266,25 @@ function initDailyQuote() {
   }
 }
 
-// Dynamic Top Notice from Admin LocalStorage
-function initDynamicNotice() {
+// Shared announcement, with a local cache only as a fallback.
+async function initDynamicNotice() {
   const noticeBox = document.getElementById('dynamicTopNotice');
+  if (!noticeBox) return;
+
   const savedNotice = localStorage.getItem('aiswaryam_top_notice');
-  if (noticeBox && savedNotice) {
-    noticeBox.innerHTML = savedNotice;
+  if (savedNotice) noticeBox.textContent = savedNotice;
+
+  if (window.cloudDB && window.cloudDB.isCloudConfigured()) {
+    try {
+      const cloudNotice = await window.cloudDB.fetchNotice();
+      if (cloudNotice) {
+        noticeBox.textContent = cloudNotice;
+        localStorage.setItem('aiswaryam_top_notice', cloudNotice);
+      }
+    } catch (error) {
+      // The public site can still display its last known announcement offline.
+      console.warn('[Notice] Using cached announcement:', error);
+    }
   }
 }
 

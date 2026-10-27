@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle Form Submission
   if (regForm) {
-    regForm.addEventListener('submit', (e) => {
+    regForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const fullName = document.getElementById('fullName').value.trim();
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('input[name="health"]:checked').forEach(cb => {
         healthConditions.push(cb.value);
       });
-      const healthText = healthConditions.length > 0 ? healthConditions.join(', ') : 'குறிப்பிட்ட தொந்தரவுகள் இல்லை (ஆரோக்கியமாக உள்ளேன்)';
+      const healthText = healthConditions.length > 0 ? healthConditions.join(', ') : 'குறிப்பிடப்படவில்லை (Not shared)';
 
       if (!fullName || !phone || !gender || !batch) {
         alert('தயவுசெய்து அனைத்து கட்டாய விபரங்களையும் நிரப்பவும்.');
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Generate a unique Registration ID
-      const regId = 'AY-' + Math.floor(100 + Math.random() * 900);
+      const regId = 'AY-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
       const regDate = new Date().toLocaleDateString('ta-IN', {
         year: 'numeric',
         month: 'long',
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         regDate,
         fullName,
         phone,
-        email: email || 'குறிப்பிடப்படவில்லை',
+        email: email || '',
         age: age || '-',
         gender,
         batch,
@@ -77,16 +77,27 @@ document.addEventListener('DOMContentLoaded', () => {
         address: address || '-'
       };
 
-      // Store in LocalStorage
-      const pastRegistrations = JSON.parse(localStorage.getItem('aiswaryam_memberships') || '[]');
-      pastRegistrations.push(regData);
-      localStorage.setItem('aiswaryam_memberships', JSON.stringify(pastRegistrations));
+      // Send to the central database when configured. Never store health details in localStorage.
+      let persisted = false;
+      try {
+        if (window.cloudDB) {
+          const result = await window.cloudDB.submitMembership(regData);
+          persisted = Boolean(result && result.persisted);
+        }
+      } catch (error) {
+        alert('சேர்க்கை கோரிக்கையை சேமிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும் அல்லது WhatsApp வழியாகத் தொடர்புகொள்ளவும்.');
+        console.error('[Membership] Submission failed:', error);
+        return;
+      }
 
-      // Show Receipt Modal
+      // Receipt is a request summary, not proof of membership approval.
+      regData.status = persisted ? 'Request received — pending approval' : 'Request draft — send via WhatsApp';
       populateReceiptModal(regData);
 
       if (window.AiswaryamYoga && window.AiswaryamYoga.showToast) {
-        window.AiswaryamYoga.showToast('✅ உங்கள் உறுப்பினர் சேர்க்கை பதிவானது!');
+        window.AiswaryamYoga.showToast(persisted
+          ? 'சேர்க்கை கோரிக்கை பெறப்பட்டது; நிர்வாக உறுதிப்படுத்தல் நிலுவையில் உள்ளது.'
+          : 'கோரிக்கை தயார். பதிவு அனுப்ப WhatsApp பொத்தானைத் தேர்ந்தெடுக்கவும்.');
       }
 
       if (window.AiswaryamYoga && window.AiswaryamYoga.playTibetanSingingBowl) {

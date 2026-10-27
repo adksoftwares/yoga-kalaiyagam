@@ -62,20 +62,157 @@ class YogaCloudDB {
   loadConfig() {
     try {
       const cfg = localStorage.getItem(CLOUD_CONFIG_KEY);
-      return cfg ? JSON.parse(cfg) : {
-        provider: 'local', // 'supabase' | 'firebase' | 'local'
-        supabaseUrl: '',
-        supabaseKey: '',
-        syncEnabled: false
+      const publicConfig = window.YOGA_SUPABASE_CONFIG || {};
+      const defaults = {
+        provider: publicConfig.url && publicConfig.anonKey ? 'supabase' : 'local',
+        supabaseUrl: publicConfig.url || '',
+        supabaseKey: publicConfig.anonKey || '',
+        syncEnabled: Boolean(publicConfig.url && publicConfig.anonKey)
+      };
+      if (!cfg) return defaults;
+      const saved = JSON.parse(cfg);
+      return {
+        ...defaults,
+        ...saved,
+        supabaseUrl: publicConfig.url || saved.supabaseUrl || '',
+        supabaseKey: publicConfig.anonKey || saved.supabaseKey || '',
+        provider: publicConfig.url && publicConfig.anonKey ? 'supabase' : (saved.provider || 'local'),
+        syncEnabled: publicConfig.url && publicConfig.anonKey ? true : Boolean(saved.syncEnabled)
       };
     } catch (e) {
-      return { provider: 'local', syncEnabled: false };
+      const publicConfig = window.YOGA_SUPABASE_CONFIG || {};
+      return {
+        provider: publicConfig.url && publicConfig.anonKey ? 'supabase' : 'local',
+        supabaseUrl: publicConfig.url || '',
+        supabaseKey: publicConfig.anonKey || '',
+        syncEnabled: Boolean(publicConfig.url && publicConfig.anonKey)
+      };
     }
   }
 
   saveConfig(newConfig) {
     this.config = { ...this.config, ...newConfig };
     localStorage.setItem(CLOUD_CONFIG_KEY, JSON.stringify(this.config));
+  }
+
+  getAccessToken() {
+    try {
+      return sessionStorage.getItem('aiswaryam_admin_access_token') ||
+        sessionStorage.getItem('aiswaryam_student_access_token') ||
+        this.config.supabaseKey;
+    } catch {
+      return this.config.supabaseKey;
+    }
+  }
+
+  getAuthHeaders(extra = {}) {
+    return {
+      apikey: this.config.supabaseKey,
+      Authorization: `Bearer ${this.getAccessToken()}`,
+      ...extra
+    };
+  }
+
+  async ensureOk(response, action) {
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      throw new Error(`${action} failed (${response.status}): ${detail.slice(0, 180)}`);
+    }
+    return response;
+  }
+
+  isCloudConfigured() {
+    return Boolean(this.config.syncEnabled && this.config.provider === 'supabase' &&
+      this.config.supabaseUrl && this.config.supabaseKey);
+  }
+
+  async fetchAdminRecords(table) {
+    const allowedTables = new Set(['memberships', 'bookings']);
+    if (!allowedTables.has(table)) throw new Error('Unsupported table');
+    if (!this.isCloudConfigured()) return [];
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/${table}?select=*&order=created_at.desc`, {
+      headers: this.getAuthHeaders()
+    });
+    await this.ensureOk(response, `Load ${table}`);
+    const rows = await response.json();
+    return Array.isArray(rows) ? rows : [];
+  }
+
+  async fetchNotice() {
+    if (!this.isCloudConfigured()) return null;
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/site_settings?select=value&id=eq.top_notice&limit=1`, {
+      headers: this.getAuthHeaders()
+    });
+    await this.ensureOk(response, 'Load announcement');
+    const rows = await response.json();
+    return Array.isArray(rows) && rows.length ? String(rows[0].value || '') : '';
+  }
+
+  async saveNotice(value) {
+    if (!this.isCloudConfigured()) throw new Error('Supabase is not configured.');
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/site_settings?on_conflict=id`, {
+      method: 'POST',
+      headers: this.getAuthHeaders({
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates,return=minimal'
+      }),
+      body: JSON.stringify({ id: 'top_notice', value: String(value || '').slice(0, 500) })
+    });
+    await this.ensureOk(response, 'Save announcement');
+  }
+
+  async submitMembership(record) {
+    if (!this.isCloudConfigured()) return { persisted: false };
+    const payload = {
+      reg_id: record.regId,
+      full_name: record.fullName,
+      phone: record.phone,
+      email: record.email || null,
+      age: /^\\d+$/.test(String(record.age)) ? Number(record.age) : null,
+      gender: record.gender || null,
+      batch: record.batch,
+      branch: record.branch || null,
+      selected_plan: record.selectedPlan,
+      address: record.address || null
+    };
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/memberships`, {
+      method: 'POST',
+      headers: {
+        apikey: this.config.supabaseKey,
+        Authorization: `Bearer ${this.config.supabaseKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+    await this.ensureOk(response, 'Submit membership request');
+    return { persisted: true };
+  }
+
+  async submitBooking(record) {
+    if (!this.isCloudConfigured()) return { persisted: false };
+    const payload = {
+      booking_id: record.bookId,
+      full_name: record.name,
+      phone: record.phone,
+      session_type: record.sessionType,
+      booking_date: record.date,
+      slot: record.slot,
+      branch: record.branch,
+      notes: record.notes || null
+    };
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/bookings`, {
+      method: 'POST',
+      headers: {
+        apikey: this.config.supabaseKey,
+        Authorization: `Bearer ${this.config.supabaseKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+    await this.ensureOk(response, 'Submit booking request');
+    return { persisted: true };
   }
 
   // 1. EVENTS MANAGEMENT (Cloud + Local First)
@@ -85,12 +222,12 @@ class YogaCloudDB {
         const res = await fetch(`${this.config.supabaseUrl}/rest/v1/events?select=*&order=date.desc`, {
           headers: {
             'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`
+            'Authorization': `Bearer ${this.getAccessToken()}`
           }
         });
         if (res.ok) {
           const cloudData = await res.json();
-          if (Array.isArray(cloudData) && cloudData.length > 0) {
+          if (Array.isArray(cloudData)) {
             localStorage.setItem('aiswaryam_events', JSON.stringify(cloudData));
             return cloudData;
           }
@@ -125,49 +262,33 @@ class YogaCloudDB {
   }
 
   async saveEvent(eventObj) {
-    // Save to local cache immediately
+    if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
+      const response = await fetch(`${this.config.supabaseUrl}/rest/v1/events`, {
+        method: 'POST',
+        headers: this.getAuthHeaders({ 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
+        body: JSON.stringify(eventObj)
+      });
+      await this.ensureOk(response, 'Save event');
+      return this.fetchEvents();
+    }
+
     const current = await this.fetchEvents();
     current.unshift(eventObj);
     localStorage.setItem('aiswaryam_events', JSON.stringify(current));
-
-    // Async push to Supabase if enabled
-    if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
-      try {
-        await fetch(`${this.config.supabaseUrl}/rest/v1/events`, {
-          method: 'POST',
-          headers: {
-            'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(eventObj)
-        });
-      } catch (e) {
-        console.error('[CloudDB] Failed to sync event to cloud:', e);
-      }
-    }
     return current;
   }
 
   async deleteEvent(id) {
-    let current = await this.fetchEvents();
-    current = current.filter(e => e.id !== id);
-    localStorage.setItem('aiswaryam_events', JSON.stringify(current));
-
     if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
-      try {
-        await fetch(`${this.config.supabaseUrl}/rest/v1/events?id=eq.${id}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`
-          }
-        });
-      } catch (e) {
-        console.error('[CloudDB] Delete failed on cloud:', e);
-      }
+      const response = await fetch(`${this.config.supabaseUrl}/rest/v1/events?id=eq.${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      await this.ensureOk(response, 'Delete event');
+      return this.fetchEvents();
     }
+    const current = (await this.fetchEvents()).filter(event => event.id !== id);
+    localStorage.setItem('aiswaryam_events', JSON.stringify(current));
     return current;
   }
 
@@ -178,12 +299,12 @@ class YogaCloudDB {
         const res = await fetch(`${this.config.supabaseUrl}/rest/v1/gallery?select=*&order=id.desc`, {
           headers: {
             'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`
+            'Authorization': `Bearer ${this.getAccessToken()}`
           }
         });
         if (res.ok) {
           const cloudData = await res.json();
-          if (Array.isArray(cloudData) && cloudData.length > 0) {
+          if (Array.isArray(cloudData)) {
             localStorage.setItem('aiswaryam_gallery', JSON.stringify(cloudData));
             return cloudData;
           }
@@ -210,78 +331,117 @@ class YogaCloudDB {
   }
 
   async saveGalleryItem(photoObj) {
+    if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
+      const response = await fetch(`${this.config.supabaseUrl}/rest/v1/gallery`, {
+        method: 'POST',
+        headers: this.getAuthHeaders({ 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
+        body: JSON.stringify(photoObj)
+      });
+      await this.ensureOk(response, 'Save gallery item');
+      return this.fetchGallery();
+    }
     const current = await this.fetchGallery();
     current.unshift(photoObj);
     localStorage.setItem('aiswaryam_gallery', JSON.stringify(current));
-
-    if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
-      try {
-        await fetch(`${this.config.supabaseUrl}/rest/v1/gallery`, {
-          method: 'POST',
-          headers: {
-            'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(photoObj)
-        });
-      } catch (e) {
-        console.error('[CloudDB] Gallery cloud sync failed:', e);
-      }
-    }
     return current;
   }
 
   async deleteGalleryItem(id) {
-    let current = await this.fetchGallery();
-    current = current.filter(g => g.id !== id);
-    localStorage.setItem('aiswaryam_gallery', JSON.stringify(current));
-
     if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
-      try {
-        await fetch(`${this.config.supabaseUrl}/rest/v1/gallery?id=eq.${id}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`
-          }
-        });
-      } catch (e) {}
+      const response = await fetch(`${this.config.supabaseUrl}/rest/v1/gallery?id=eq.${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      await this.ensureOk(response, 'Delete gallery item');
+      return this.fetchGallery();
     }
+    const current = (await this.fetchGallery()).filter(item => item.id !== id);
+    localStorage.setItem('aiswaryam_gallery', JSON.stringify(current));
     return current;
   }
 
-  // 3. COMPLETE DATABASE EXPORT & BACKUP
-  exportFullBackup() {
-    const backup = {
-      exportDate: new Date().toISOString(),
-      centre: 'Yoga Studio Batticaloa',
-      events: JSON.parse(localStorage.getItem('aiswaryam_events') || '[]'),
-      gallery: JSON.parse(localStorage.getItem('aiswaryam_gallery') || '[]'),
-      memberships: JSON.parse(localStorage.getItem('aiswaryam_memberships') || '[]'),
-      bookings: JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]'),
-      notice: localStorage.getItem('aiswaryam_top_notice') || ''
-    };
+  // 3. Export a backup from the central database when configured.
+  async exportFullBackup() {
+    let backup;
+    if (this.isCloudConfigured()) {
+      const [events, gallery, memberships, bookings, notice] = await Promise.all([
+        this.fetchEvents(),
+        this.fetchGallery(),
+        this.fetchAdminRecords('memberships'),
+        this.fetchAdminRecords('bookings'),
+        this.fetchNotice()
+      ]);
+      backup = {
+        exportDate: new Date().toISOString(),
+        centre: 'Yoga Studio Batticaloa',
+        source: 'supabase',
+        events,
+        gallery,
+        memberships,
+        bookings,
+        site_settings: notice ? [{ id: 'top_notice', value: notice }] : []
+      };
+    } else {
+      backup = {
+        exportDate: new Date().toISOString(),
+        centre: 'Yoga Studio Batticaloa',
+        source: 'local-cache',
+        events: JSON.parse(localStorage.getItem('aiswaryam_events') || '[]'),
+        gallery: JSON.parse(localStorage.getItem('aiswaryam_gallery') || '[]'),
+        memberships: [],
+        bookings: [],
+        site_settings: []
+      };
+    }
 
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
-    const dlAnchorElem = document.createElement('a');
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", `YogaStudio_Batticaloa_Backup_${new Date().toISOString().slice(0,10)}.json`);
-    dlAnchorElem.click();
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `YogaStudio_Batticaloa_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  // 4. RESTORE DATABASE FROM JSON BACKUP
-  importFullBackup(jsonContent) {
+  // 4. Merge a backup into Supabase using admin-only RLS; never destructively replace tables.
+  async importFullBackup(jsonContent) {
     try {
       const data = JSON.parse(jsonContent);
-      if (data.events) localStorage.setItem('aiswaryam_events', JSON.stringify(data.events));
-      if (data.gallery) localStorage.setItem('aiswaryam_gallery', JSON.stringify(data.gallery));
-      if (data.memberships) localStorage.setItem('aiswaryam_memberships', JSON.stringify(data.memberships));
-      if (data.bookings) localStorage.setItem('aiswaryam_bookings', JSON.stringify(data.bookings));
-      if (data.notice) localStorage.setItem('aiswaryam_top_notice', data.notice);
+      if (!data || typeof data !== 'object' || Array.isArray(data)) return false;
+
+      if (this.isCloudConfigured()) {
+        const tables = [
+          ['events', data.events, 'id'],
+          ['gallery', data.gallery, 'id'],
+          ['memberships', data.memberships, 'reg_id'],
+          ['bookings', data.bookings, 'booking_id'],
+          ['site_settings', data.site_settings || (data.notice ? [{ id: 'top_notice', value: data.notice }] : []), 'id']
+        ];
+        for (const [table, rows, conflictKey] of tables) {
+          if (!Array.isArray(rows) || rows.length === 0) continue;
+          const response = await fetch(
+            `${this.config.supabaseUrl}/rest/v1/${table}?on_conflict=${encodeURIComponent(conflictKey)}`,
+            {
+              method: 'POST',
+              headers: this.getAuthHeaders({
+                'Content-Type': 'application/json',
+                Prefer: 'resolution=merge-duplicates,return=minimal'
+              }),
+              body: JSON.stringify(rows)
+            }
+          );
+          await this.ensureOk(response, `Restore ${table}`);
+        }
+        return true;
+      }
+
+      // Local-only import is retained for older offline caches.
+      if (Array.isArray(data.events)) localStorage.setItem('aiswaryam_events', JSON.stringify(data.events));
+      if (Array.isArray(data.gallery)) localStorage.setItem('aiswaryam_gallery', JSON.stringify(data.gallery));
+      if (typeof data.notice === 'string') localStorage.setItem('aiswaryam_top_notice', data.notice);
       return true;
-    } catch (e) {
-      console.error('Invalid backup file', e);
+    } catch (error) {
+      console.error('[CloudDB] Backup import failed:', error);
       return false;
     }
   }
