@@ -4,8 +4,22 @@
  * Features: Secure SHA-256 Hashed Auth, Cloud DB Sync, JSON Backup/Restore
  */
 
-// Default SHA-256 hash for 'admin123'
-const DEFAULT_PASS_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+let adminAuthenticated = false;
+let adminAccessToken = '';
+
+function getSupabaseAuthConfig() {
+  const config = window.YOGA_SUPABASE_CONFIG || {};
+  return {
+    url: String(config.url || '').replace(/\\/$/, ''),
+    anonKey: String(config.anonKey || '')
+  };
+}
+
+function requireAdminSession() {
+  if (adminAuthenticated && adminAccessToken) return true;
+  alert('பாதுகாப்பான நிர்வாக உள்நுழைவு தேவை. தயவுசெய்து மீண்டும் உள்நுழைக.');
+  return false;
+}
 
 // Encode untrusted values before inserting them into HTML templates.
 function escapeHtml(value) {
@@ -45,46 +59,121 @@ async function sha256(message) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// 1. Secure Authentication
-function initSecureAdminAuth() {
+// 1. Server-verified authentication via Supabase Auth.
+// Browser storage alone is never treated as proof of an admin session.
+async function initSecureAdminAuth() {
   const loginForm = document.getElementById('adminLoginForm');
   const authSection = document.getElementById('adminAuthSection');
   const dashSection = document.getElementById('adminDashboardSection');
   const logoutBtn = document.getElementById('adminLogoutBtn');
+  const notice = document.getElementById('adminAuthNotice');
+  const config = getSupabaseAuthConfig();
+  const tokenKey = 'aiswaryam_supabase_access_token';
 
-  // Check active session
-  const sessionToken = sessionStorage.getItem('aiswaryam_admin_token');
-  if (sessionToken && authSection && dashSection) {
-    authSection.style.display = 'none';
-    dashSection.style.display = 'block';
+  const setNotice = (message, isError = false) => {
+    if (!notice) return;
+    notice.textContent = message;
+    notice.style.background = isError ? '#FEE2E2' : '#FEF3C7';
+    notice.style.color = isError ? '#991B1B' : '#92400E';
+  };
+
+  const showDashboard = (allowed) => {
+    adminAuthenticated = Boolean(allowed);
+    if (authSection) authSection.style.display = allowed ? 'none' : 'flex';
+    if (dashSection) dashSection.style.display = allowed ? 'block' : 'none';
+    if (allowed) renderAdminAll();
+  };
+
+  const verifyAdminToken = async (token) => {
+    if (!config.url || !config.anonKey || !token) return false;
+    const response = await fetch(`${config.url}/auth/v1/user`, {
+      headers: { apikey: config.anonKey, Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) return false;
+    const user = await response.json();
+    return user && user.app_metadata && user.app_metadata.role === 'admin';
+  };
+
+  const existingToken = sessionStorage.getItem(tokenKey);
+  if (existingToken && config.url && config.anonKey) {
+    try {
+      const verified = await verifyAdminToken(existingToken);
+      if (verified) {
+        adminAccessToken = existingToken;
+        showDashboard(true);
+      } else {
+        sessionStorage.removeItem(tokenKey);
+        setNotice('உங்கள் session காலாவதியானது அல்லது admin அனுமதி இல்லை. மீண்டும் உள்நுழைக.', true);
+        showDashboard(false);
+      }
+    } catch (error) {
+      setNotice('Authentication சேவையை அணுக முடியவில்லை. இணைய இணைப்பு மற்றும் Supabase அமைப்பைச் சரிபார்க்கவும்.', true);
+      showDashboard(false);
+    }
+  } else {
+    showDashboard(false);
+    if (!config.url || !config.anonKey) {
+      setNotice('உள்நுழைவு இயக்க Supabase URL மற்றும் anon/publishable key-ஐ assets/js/supabase-config.js-ல் அமைக்கவும்.');
+      if (loginForm) loginForm.querySelector('button[type="submit"]').disabled = true;
+    }
   }
 
   if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!config.url || !config.anonKey) {
+        setNotice('Supabase configuration இல்லை. பாதுகாப்பிற்காக உள்நுழைவு முடக்கப்பட்டுள்ளது.', true);
+        return;
+      }
       const user = document.getElementById('adminUser').value.trim();
-      const pass = document.getElementById('adminPass').value.trim();
-
-      const inputHash = await sha256(pass);
-      const storedHash = localStorage.getItem('aiswaryam_admin_hash') || DEFAULT_PASS_HASH;
-
-      if (user === 'admin' && inputHash === storedHash) {
-        // Generate random session token
-        const token = 'TOK_' + Math.random().toString(36).substring(2) + Date.now();
-        sessionStorage.setItem('aiswaryam_admin_token', token);
-        authSection.style.display = 'none';
-        dashSection.style.display = 'block';
-        if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('✅ நிர்வாகியாக வெற்றிகரமாக உள்நுழைந்துள்ளீர்கள்');
-        renderAdminAll();
-      } else {
-        alert('தவறான பயனர் பெயர் அல்லது கடவுச்சொல் (Invalid Credentials)! இயல்புநிலை கடவுச்சொல்: admin123');
+      const pass = document.getElementById('adminPass').value;
+      const button = loginForm.querySelector('button[type="submit"]');
+      if (button) button.disabled = true;
+      try {
+        const response = await fetch(`${config.url}/auth/v1/token?grant_type=password`, {
+          method: 'POST',
+          headers: { apikey: config.anonKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: user, password: pass })
+        });
+        const data = await response.json();
+        if (!response.ok || !data.access_token) {
+          throw new Error('Login விவரங்கள் சரிபார்க்கப்படவில்லை.');
+        }
+        const allowed = await verifyAdminToken(data.access_token);
+        if (!allowed) {
+          await fetch(`${config.url}/auth/v1/logout`, {
+            method: 'POST',
+            headers: { apikey: config.anonKey, Authorization: `Bearer ${data.access_token}` }
+          }).catch(() => {});
+          throw new Error('இந்தக் கணக்கிற்கு நிர்வாக அனுமதி இல்லை.');
+        }
+        adminAccessToken = data.access_token;
+        sessionStorage.setItem(tokenKey, adminAccessToken);
+        showDashboard(true);
+        if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('நிர்வாகியாக உள்நுழைந்துள்ளீர்கள்.');
+      } catch (error) {
+        adminAccessToken = '';
+        adminAuthenticated = false;
+        setNotice(error.message || 'உள்நுழைவு தோல்வியடைந்தது.', true);
+        showDashboard(false);
+      } finally {
+        if (button && config.url && config.anonKey) button.disabled = false;
       }
     });
   }
 
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      sessionStorage.removeItem('aiswaryam_admin_token');
+    logoutBtn.addEventListener('click', async () => {
+      const token = adminAccessToken;
+      adminAuthenticated = false;
+      adminAccessToken = '';
+      sessionStorage.removeItem(tokenKey);
+      if (token && config.url && config.anonKey) {
+        await fetch(`${config.url}/auth/v1/logout`, {
+          method: 'POST',
+          headers: { apikey: config.anonKey, Authorization: `Bearer ${token}` }
+        }).catch(() => {});
+      }
       window.location.reload();
     });
   }
@@ -113,6 +202,7 @@ function initAdminDashboard() {
   if (addEventForm) {
     addEventForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!requireAdminSession()) return;
       const titleTa = document.getElementById('eventTitleTa').value;
       const titleEn = document.getElementById('eventTitleEn').value || titleTa;
       const titleSi = document.getElementById('eventTitleSi').value || titleTa;
@@ -151,6 +241,7 @@ function initAdminDashboard() {
   if (addPhotoForm) {
     addPhotoForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!requireAdminSession()) return;
       const title = document.getElementById('photoTitle').value;
       const meta = document.getElementById('photoMeta').value;
       const category = document.getElementById('photoCategory').value;
@@ -181,40 +272,20 @@ function initAdminDashboard() {
     input.value = localStorage.getItem('aiswaryam_top_notice') || '🌸 யோகா கலையகம்: புதிய பயிற்சி தொகுதி மாணவர் சேர்க்கை ஆரம்பமாகியுள்ளது!';
     noticeForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (!requireAdminSession()) return;
       localStorage.setItem('aiswaryam_top_notice', input.value);
       if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('✅ மேல் அறிவிப்பு பட்டி புதுப்பிக்கப்பட்டது');
     });
   }
 
-  // Change Password Form
+  // Passwords are managed by Supabase Auth; never store password hashes in browser storage.
   const changePassForm = document.getElementById('adminChangePassForm');
   if (changePassForm) {
-    changePassForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const currPass = document.getElementById('currPass').value.trim();
-      const newPass = document.getElementById('newPass').value.trim();
-      const confPass = document.getElementById('confPass').value.trim();
-
-      const currHash = await sha256(currPass);
-      const storedHash = localStorage.getItem('aiswaryam_admin_hash') || DEFAULT_PASS_HASH;
-
-      if (currHash !== storedHash) {
-        alert('தற்போதைய கடவுச்சொல் தவறானது!');
-        return;
-      }
-      if (newPass.length < 6) {
-        alert('புதிய கடவுச்சொல் குறைந்தது 6 எழுத்துகள் கொண்டிருக்க வேண்டும்.');
-        return;
-      }
-      if (newPass !== confPass) {
-        alert('புதிய கடவுச்சொற்கள் பொருந்தவில்லை!');
-        return;
-      }
-
-      const newHash = await sha256(newPass);
-      localStorage.setItem('aiswaryam_admin_hash', newHash);
+    changePassForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!requireAdminSession()) return;
+      alert('கடவுச்சொல்லை பாதுகாப்பாக மாற்ற Supabase Authentication dashboard-ஐ பயன்படுத்தவும்.');
       changePassForm.reset();
-      alert('கடவுச்சொல் வெற்றிகரமாக மாற்றப்பட்டது! அடுத்த முறை உள்நுழையும் போது புதிய கடவுச்சொல்லைப் பயன்படுத்தவும்.');
     });
   }
 
@@ -229,13 +300,14 @@ function initAdminDashboard() {
 
     cloudForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (!requireAdminSession()) return;
       const provider = document.getElementById('cloudProvider').value;
       const supabaseUrl = document.getElementById('supabaseUrl').value.trim();
       const supabaseKey = document.getElementById('supabaseKey').value.trim();
       const syncEnabled = document.getElementById('enableSync').checked;
 
       window.cloudDB.saveConfig({ provider, supabaseUrl, supabaseKey, syncEnabled });
-      if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('✅ கிளவுட் அமைப்புகள் சேமிக்கப்பட்டன!');
+      if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('கிளவுட் தரவு அமைப்புகள் சேமிக்கப்பட்டன. Supabase Auth key தனியாக assets/js/supabase-config.js-ல் அமைக்கப்பட வேண்டும்.');
     });
   }
 
