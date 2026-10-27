@@ -1,122 +1,159 @@
 /**
- * ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் - மாணவர் உள்நுழைவு & போர்ட்டல்
- * Aiswaryam Yoga - Student Portal Script
+ * ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் — பாதுகாப்பான மாணவர் போர்ட்டல்
+ * Student identity and profile are verified by Supabase Auth + RLS.
  */
+document.addEventListener('DOMContentLoaded', initStudentPortal);
 
-document.addEventListener('DOMContentLoaded', () => {
-  initStudentPortal();
-});
+function getStudentAuthConfig() {
+  const config = window.YOGA_SUPABASE_CONFIG || {};
+  return { url: String(config.url || '').replace(/\\/$/, ''), anonKey: String(config.anonKey || '') };
+}
 
-const DEMO_STUDENT = {
-  id: 'AY-101',
-  name: 'குமாரவேல் சுதாகரன் (K. Sudhakaran)',
-  phone: '0776064846',
-  email: 'sudhakaran@example.com',
-  course: 'ஹட யோகா & சூரிய நமஸ்கார வகுப்பு',
-  batch: 'காலை தொகுதி 1: 05:30 AM - 06:30 AM',
-  branch: 'No: 16, Loyds Avenue Road, Batticaloa',
-  guru: 'எஸ். ஸ்ரீதரன் (B.Sc) & ஏ. ஜெயஹரன் (B.Ed)',
-  joinedDate: '2026-01-10',
-  validUntil: '2026-12-31',
-  attendanceStreak: '28 நாட்கள் (Days)',
-  bloodGroup: 'O+ve',
-  status: 'செயலில் உள்ள உறுப்பினர் (Active Member)'
-};
+async function verifyStudentSession(token, config) {
+  const response = await fetch(`${config.url}/auth/v1/user`, {
+    headers: { apikey: config.anonKey, Authorization: `Bearer ${token}` }
+  });
+  if (!response.ok) return null;
+  return response.json();
+}
+
+async function loadStudentProfile(userId, token, config) {
+  const url = new URL(`${config.url}/rest/v1/student_profiles`);
+  url.searchParams.set('select', 'student_id,full_name,phone,course,batch,branch,status');
+  url.searchParams.set('user_id', `eq.${userId}`);
+  const response = await fetch(url, {
+    headers: { apikey: config.anonKey, Authorization: `Bearer ${token}` }
+  });
+  if (!response.ok) throw new Error('மாணவர் விவரங்களைப் பெற முடியவில்லை. நிர்வாகியைத் தொடர்புகொள்ளவும்.');
+  const rows = await response.json();
+  return Array.isArray(rows) ? rows[0] || null : null;
+}
 
 function initStudentPortal() {
   const loginForm = document.getElementById('studentLoginForm');
   const authSection = document.getElementById('studentAuthSection');
   const portalSection = document.getElementById('studentDashboardSection');
   const logoutBtn = document.getElementById('studentLogoutBtn');
+  const notice = document.getElementById('studentAuthNotice');
+  const config = getStudentAuthConfig();
+  const tokenKey = 'aiswaryam_student_access_token';
 
-  // Check existing session
-  const currentStudent = JSON.parse(sessionStorage.getItem('aiswaryam_current_student'));
+  const setNotice = (message, isError = false) => {
+    if (!notice) return;
+    notice.textContent = message;
+    notice.style.background = isError ? '#FEE2E2' : '#FEF3C7';
+    notice.style.color = isError ? '#991B1B' : '#92400E';
+  };
 
-  if (currentStudent && authSection && portalSection) {
-    authSection.style.display = 'none';
-    portalSection.style.display = 'block';
-    populateStudentData(currentStudent);
+  const showPortal = (visible) => {
+    if (authSection) authSection.style.display = visible ? 'none' : 'block';
+    if (portalSection) portalSection.style.display = visible ? 'block' : 'none';
+  };
+
+  const openStudentPortal = async (token) => {
+    const user = await verifyStudentSession(token, config);
+    if (!user) throw new Error('உங்கள் session காலாவதியானது. மீண்டும் உள்நுழைக.');
+    const profile = await loadStudentProfile(user.id, token, config);
+    if (!profile) throw new Error('இந்தக் கணக்குடன் மாணவர் சுயவிவரம் இணைக்கப்படவில்லை. கலையக நிர்வாகியைத் தொடர்புகொள்ளவும்.');
+    sessionStorage.setItem(tokenKey, token);
+    populateStudentData({
+      id: profile.student_id,
+      name: profile.full_name,
+      phone: profile.phone || '',
+      course: profile.course || 'வகுப்பு விவரங்களுக்கு நிர்வாகியைத் தொடர்புகொள்ளவும்',
+      batch: profile.batch || 'நேரம் உறுதிப்படுத்தப்படவில்லை',
+      branch: profile.branch || 'கலையகம்',
+      attendanceStreak: '—',
+      status: profile.status || 'Active'
+    });
+    showPortal(true);
+  };
+
+  showPortal(false);
+
+  const existingToken = sessionStorage.getItem(tokenKey);
+  if (existingToken && config.url && config.anonKey) {
+    openStudentPortal(existingToken).catch((error) => {
+      sessionStorage.removeItem(tokenKey);
+      showPortal(false);
+      setNotice(error.message, true);
+    });
+  } else if (!config.url || !config.anonKey) {
+    setNotice('மாணவர் உள்நுழைவுக்கு Supabase URL மற்றும் anon/publishable key-ஐ assets/js/supabase-config.js-ல் அமைக்கவும்.');
   }
 
   if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const studentId = document.getElementById('studentIdInput').value.trim();
-      const studentPhone = document.getElementById('studentPhoneInput').value.trim();
-
-      // Check registered members from localStorage
-      const registeredMembers = JSON.parse(localStorage.getItem('aiswaryam_memberships') || '[]');
-      let matchedStudent = registeredMembers.find(m => 
-        (m.regId && m.regId.toLowerCase() === studentId.toLowerCase()) || 
-        (m.phone && m.phone === studentPhone)
-      );
-
-      // Or match demo student
-      if (!matchedStudent && (studentId === 'AY-101' || studentPhone === '0776064846' || studentPhone === '0776047081')) {
-        matchedStudent = DEMO_STUDENT;
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!config.url || !config.anonKey) {
+        setNotice('Supabase configuration இல்லை. பாதுகாப்பிற்காக உள்நுழைவு முடக்கப்பட்டுள்ளது.', true);
+        return;
       }
-
-      if (matchedStudent) {
-        // Normalize fields if from registration
-        const studentProfile = {
-          id: matchedStudent.regId || matchedStudent.id || 'AY-101',
-          name: matchedStudent.fullName || matchedStudent.name || 'யோகா மாணவர்',
-          phone: matchedStudent.phone || studentPhone,
-          course: matchedStudent.selectedPlan || matchedStudent.course || 'ஹட யோகா & பிராணாயாமம்',
-          batch: matchedStudent.batch || 'காலை தொகுதி: 06:00 AM - 07:00 AM',
-          branch: 'No: 16, Loyds Avenue Road, Batticaloa',
-          guru: 'எஸ். ஸ்ரீதரன் (B.Sc) & ஏ. ஜெயஹரன் (B.Ed)',
-          attendanceStreak: '14 நாட்கள்',
-          status: 'செயலில் உள்ள உறுப்பினர் (Active)'
-        };
-
-        sessionStorage.setItem('aiswaryam_current_student', JSON.stringify(studentProfile));
-        authSection.style.display = 'none';
-        portalSection.style.display = 'block';
-        populateStudentData(studentProfile);
-        if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('வணக்கம்! மாணவர் போர்ட்டலுக்கு நல்வரவு 🙏');
-      } else {
-        alert('மாணவர் விபரம் காணப்படவில்லை! மாதிரி ஐடி (Demo ID): AY-101 அல்லது தொலைபேசி: 0776064846 பயன்படுத்தலாம்.');
+      const email = document.getElementById('studentEmailInput').value.trim();
+      const password = document.getElementById('studentPasswordInput').value;
+      const button = loginForm.querySelector('button[type="submit"]');
+      if (button) button.disabled = true;
+      try {
+        const response = await fetch(`${config.url}/auth/v1/token?grant_type=password`, {
+          method: 'POST',
+          headers: { apikey: config.anonKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (!response.ok || !data.access_token) throw new Error('மின்னஞ்சல் அல்லது கடவுச்சொல் சரியில்லை.');
+        await openStudentPortal(data.access_token);
+        setNotice('பாதுகாப்பாக உள்நுழைந்துள்ளீர்கள்.');
+        if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('மாணவர் போர்ட்டலுக்கு வரவேற்கிறோம்.');
+      } catch (error) {
+        sessionStorage.removeItem(tokenKey);
+        showPortal(false);
+        setNotice(error.message || 'உள்நுழைவு தோல்வியடைந்தது.', true);
+      } finally {
+        if (button) button.disabled = false;
       }
     });
   }
 
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      sessionStorage.removeItem('aiswaryam_current_student');
+    logoutBtn.addEventListener('click', async () => {
+      const token = sessionStorage.getItem(tokenKey);
+      sessionStorage.removeItem(tokenKey);
+      if (token && config.url && config.anonKey) {
+        await fetch(`${config.url}/auth/v1/logout`, {
+          method: 'POST',
+          headers: { apikey: config.anonKey, Authorization: `Bearer ${token}` }
+        }).catch(() => {});
+      }
       window.location.reload();
     });
   }
 }
 
 function populateStudentData(student) {
-  // Fill profile fields
-  const elName = document.getElementById('spStudentName');
-  const elId = document.getElementById('spStudentId');
-  const elCourse = document.getElementById('spStudentCourse');
-  const elBatch = document.getElementById('spStudentBatch');
-  const elBranch = document.getElementById('spStudentBranch');
-  const elStreak = document.getElementById('spStudentStreak');
-  const elStatus = document.getElementById('spStudentStatus');
+  const fields = {
+    spStudentName: student.name,
+    spStudentId: student.id,
+    spStudentCourse: student.course,
+    spStudentBatch: student.batch,
+    spStudentBranch: student.branch,
+    spStudentStreak: student.attendanceStreak || '—',
+    spStudentStatus: student.status || 'Active'
+  };
+  Object.entries(fields).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  });
 
-  if (elName) elName.textContent = student.name;
-  if (elId) elId.textContent = student.id;
-  if (elCourse) elCourse.textContent = student.course;
-  if (elBatch) elBatch.textContent = student.batch;
-  if (elBranch) elBranch.textContent = student.branch;
-  if (elStreak) elStreak.textContent = student.attendanceStreak || '12 நாட்கள்';
-  if (elStatus) elStatus.textContent = student.status || 'Active Member';
-
-  // Digital ID card elements
-  const idName = document.getElementById('idCardName');
-  const idNum = document.getElementById('idCardNumber');
-  const idBatch = document.getElementById('idCardBatch');
-  const idBranch = document.getElementById('idCardBranch');
-
-  if (idName) idName.textContent = student.name;
-  if (idNum) idNum.textContent = student.id;
-  if (idBatch) idBatch.textContent = student.batch;
-  if (idBranch) idBranch.textContent = student.branch;
+  const cardFields = {
+    idCardName: student.name,
+    idCardNumber: student.id,
+    idCardBatch: student.batch,
+    idCardBranch: student.branch
+  };
+  Object.entries(cardFields).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  });
 }
 
 window.printStudentIDCard = function() {
