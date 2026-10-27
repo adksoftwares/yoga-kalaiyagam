@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Generate a unique Registration ID
-      const regId = 'AY-' + Math.floor(100 + Math.random() * 900);
+      const regId = 'AY-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
       const regDate = new Date().toLocaleDateString('ta-IN', {
         year: 'numeric',
         month: 'long',
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         regDate,
         fullName,
         phone,
-        email: email || 'குறிப்பிடப்படவில்லை',
+        email: email || '',
         age: age || '-',
         gender,
         batch,
