@@ -12,15 +12,15 @@ $$;
 
 create table if not exists public.events (
   id bigint primary key,
-  titleTa text not null,
-  titleEn text not null,
-  titleSi text not null,
+  "titleTa" text not null,
+  "titleEn" text not null,
+  "titleSi" text not null,
   date date not null,
   time text,
   location text not null,
   category text not null,
   img text,
-  desc text,
+  "desc" text,
   created_at timestamptz not null default now()
 );
 
