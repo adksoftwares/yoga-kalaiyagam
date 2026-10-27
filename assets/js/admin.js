@@ -10,7 +10,7 @@ let adminAccessToken = '';
 function getSupabaseAuthConfig() {
   const config = window.YOGA_SUPABASE_CONFIG || {};
   return {
-    url: String(config.url || '').replace(/\\/$/, ''),
+    url: String(config.url || '').replace(/\/+$/, ''),
     anonKey: String(config.anonKey || '')
   };
 }
