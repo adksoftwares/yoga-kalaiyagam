@@ -44,7 +44,6 @@ create table if not exists public.memberships (
   batch text not null,
   branch text,
   selected_plan text not null,
-  health text,
   address text,
   status text not null default 'pending' check (status in ('pending','approved','rejected')),
   created_at timestamptz not null default now()
