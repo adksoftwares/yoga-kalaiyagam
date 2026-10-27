@@ -46,7 +46,7 @@ function initStudentPortal() {
   };
 
   const showPortal = (visible) => {
-    if (authSection) authSection.style.display = visible ? 'none' : 'block';
+    if (authSection) authSection.style.display = visible ? 'none' : 'flex';
     if (portalSection) portalSection.style.display = visible ? 'block' : 'none';
   };
 
