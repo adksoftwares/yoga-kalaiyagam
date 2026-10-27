@@ -62,20 +62,52 @@ class YogaCloudDB {
   loadConfig() {
     try {
       const cfg = localStorage.getItem(CLOUD_CONFIG_KEY);
-      return cfg ? JSON.parse(cfg) : {
-        provider: 'local', // 'supabase' | 'firebase' | 'local'
-        supabaseUrl: '',
-        supabaseKey: '',
-        syncEnabled: false
+      const publicConfig = window.YOGA_SUPABASE_CONFIG || {};
+      const defaults = {
+        provider: publicConfig.url && publicConfig.anonKey ? 'supabase' : 'local',
+        supabaseUrl: publicConfig.url || '',
+        supabaseKey: publicConfig.anonKey || '',
+        syncEnabled: Boolean(publicConfig.url && publicConfig.anonKey)
       };
+      return cfg ? { ...defaults, ...JSON.parse(cfg) } : defaults;
     } catch (e) {
-      return { provider: 'local', syncEnabled: false };
+      const publicConfig = window.YOGA_SUPABASE_CONFIG || {};
+      return {
+        provider: publicConfig.url && publicConfig.anonKey ? 'supabase' : 'local',
+        supabaseUrl: publicConfig.url || '',
+        supabaseKey: publicConfig.anonKey || '',
+        syncEnabled: Boolean(publicConfig.url && publicConfig.anonKey)
+      };
     }
   }
 
   saveConfig(newConfig) {
     this.config = { ...this.config, ...newConfig };
     localStorage.setItem(CLOUD_CONFIG_KEY, JSON.stringify(this.config));
+  }
+
+  getAccessToken() {
+    try {
+      return sessionStorage.getItem('aiswaryam_supabase_access_token') || this.config.supabaseKey;
+    } catch {
+      return this.config.supabaseKey;
+    }
+  }
+
+  getAuthHeaders(extra = {}) {
+    return {
+      apikey: this.config.supabaseKey,
+      Authorization: `Bearer ${this.getAccessToken()}`,
+      ...extra
+    };
+  }
+
+  async ensureOk(response, action) {
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      throw new Error(`${action} failed (${response.status}): ${detail.slice(0, 180)}`);
+    }
+    return response;
   }
 
   // 1. EVENTS MANAGEMENT (Cloud + Local First)
@@ -85,12 +117,12 @@ class YogaCloudDB {
         const res = await fetch(`${this.config.supabaseUrl}/rest/v1/events?select=*&order=date.desc`, {
           headers: {
             'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`
+            'Authorization': `Bearer ${this.getAccessToken()}`
           }
         });
         if (res.ok) {
           const cloudData = await res.json();
-          if (Array.isArray(cloudData) && cloudData.length > 0) {
+          if (Array.isArray(cloudData)) {
             localStorage.setItem('aiswaryam_events', JSON.stringify(cloudData));
             return cloudData;
           }
@@ -125,49 +157,33 @@ class YogaCloudDB {
   }
 
   async saveEvent(eventObj) {
-    // Save to local cache immediately
+    if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
+      const response = await fetch(`${this.config.supabaseUrl}/rest/v1/events`, {
+        method: 'POST',
+        headers: this.getAuthHeaders({ 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
+        body: JSON.stringify(eventObj)
+      });
+      await this.ensureOk(response, 'Save event');
+      return this.fetchEvents();
+    }
+
     const current = await this.fetchEvents();
     current.unshift(eventObj);
     localStorage.setItem('aiswaryam_events', JSON.stringify(current));
-
-    // Async push to Supabase if enabled
-    if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
-      try {
-        await fetch(`${this.config.supabaseUrl}/rest/v1/events`, {
-          method: 'POST',
-          headers: {
-            'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(eventObj)
-        });
-      } catch (e) {
-        console.error('[CloudDB] Failed to sync event to cloud:', e);
-      }
-    }
     return current;
   }
 
   async deleteEvent(id) {
-    let current = await this.fetchEvents();
-    current = current.filter(e => e.id !== id);
-    localStorage.setItem('aiswaryam_events', JSON.stringify(current));
-
     if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
-      try {
-        await fetch(`${this.config.supabaseUrl}/rest/v1/events?id=eq.${id}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`
-          }
-        });
-      } catch (e) {
-        console.error('[CloudDB] Delete failed on cloud:', e);
-      }
+      const response = await fetch(`${this.config.supabaseUrl}/rest/v1/events?id=eq.${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      await this.ensureOk(response, 'Delete event');
+      return this.fetchEvents();
     }
+    const current = (await this.fetchEvents()).filter(event => event.id !== id);
+    localStorage.setItem('aiswaryam_events', JSON.stringify(current));
     return current;
   }
 
@@ -178,12 +194,12 @@ class YogaCloudDB {
         const res = await fetch(`${this.config.supabaseUrl}/rest/v1/gallery?select=*&order=id.desc`, {
           headers: {
             'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`
+            'Authorization': `Bearer ${this.getAccessToken()}`
           }
         });
         if (res.ok) {
           const cloudData = await res.json();
-          if (Array.isArray(cloudData) && cloudData.length > 0) {
+          if (Array.isArray(cloudData)) {
             localStorage.setItem('aiswaryam_gallery', JSON.stringify(cloudData));
             return cloudData;
           }
@@ -210,44 +226,32 @@ class YogaCloudDB {
   }
 
   async saveGalleryItem(photoObj) {
+    if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
+      const response = await fetch(`${this.config.supabaseUrl}/rest/v1/gallery`, {
+        method: 'POST',
+        headers: this.getAuthHeaders({ 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
+        body: JSON.stringify(photoObj)
+      });
+      await this.ensureOk(response, 'Save gallery item');
+      return this.fetchGallery();
+    }
     const current = await this.fetchGallery();
     current.unshift(photoObj);
     localStorage.setItem('aiswaryam_gallery', JSON.stringify(current));
-
-    if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
-      try {
-        await fetch(`${this.config.supabaseUrl}/rest/v1/gallery`, {
-          method: 'POST',
-          headers: {
-            'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(photoObj)
-        });
-      } catch (e) {
-        console.error('[CloudDB] Gallery cloud sync failed:', e);
-      }
-    }
     return current;
   }
 
   async deleteGalleryItem(id) {
-    let current = await this.fetchGallery();
-    current = current.filter(g => g.id !== id);
-    localStorage.setItem('aiswaryam_gallery', JSON.stringify(current));
-
     if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
-      try {
-        await fetch(`${this.config.supabaseUrl}/rest/v1/gallery?id=eq.${id}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': this.config.supabaseKey,
-            'Authorization': `Bearer ${this.config.supabaseKey}`
-          }
-        });
-      } catch (e) {}
+      const response = await fetch(`${this.config.supabaseUrl}/rest/v1/gallery?id=eq.${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      await this.ensureOk(response, 'Delete gallery item');
+      return this.fetchGallery();
     }
+    const current = (await this.fetchGallery()).filter(item => item.id !== id);
+    localStorage.setItem('aiswaryam_gallery', JSON.stringify(current));
     return current;
   }
 
