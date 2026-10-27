@@ -97,7 +97,9 @@ class YogaCloudDB {
 
   getAccessToken() {
     try {
-      return sessionStorage.getItem('aiswaryam_supabase_access_token') || this.config.supabaseKey;
+      return sessionStorage.getItem('aiswaryam_admin_access_token') ||
+        sessionStorage.getItem('aiswaryam_student_access_token') ||
+        this.config.supabaseKey;
     } catch {
       return this.config.supabaseKey;
     }
@@ -122,6 +124,18 @@ class YogaCloudDB {
   isCloudConfigured() {
     return Boolean(this.config.syncEnabled && this.config.provider === 'supabase' &&
       this.config.supabaseUrl && this.config.supabaseKey);
+  }
+
+  async fetchAdminRecords(table) {
+    const allowedTables = new Set(['memberships', 'bookings']);
+    if (!allowedTables.has(table)) throw new Error('Unsupported table');
+    if (!this.isCloudConfigured()) return [];
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/${table}?select=*&order=created_at.desc`, {
+      headers: this.getAuthHeaders()
+    });
+    await this.ensureOk(response, `Load ${table}`);
+    const rows = await response.json();
+    return Array.isArray(rows) ? rows : [];
   }
 
   async submitMembership(record) {
