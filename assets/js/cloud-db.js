@@ -138,6 +138,29 @@ class YogaCloudDB {
     return Array.isArray(rows) ? rows : [];
   }
 
+  async fetchNotice() {
+    if (!this.isCloudConfigured()) return null;
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/site_settings?select=value&id=eq.top_notice&limit=1`, {
+      headers: this.getAuthHeaders()
+    });
+    await this.ensureOk(response, 'Load announcement');
+    const rows = await response.json();
+    return Array.isArray(rows) && rows.length ? String(rows[0].value || '') : '';
+  }
+
+  async saveNotice(value) {
+    if (!this.isCloudConfigured()) throw new Error('Supabase is not configured.');
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/site_settings`, {
+      method: 'POST',
+      headers: this.getAuthHeaders({
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates,return=minimal'
+      }),
+      body: JSON.stringify({ id: 'top_notice', value: String(value || '').slice(0, 500) })
+    });
+    await this.ensureOk(response, 'Save announcement');
+  }
+
   async submitMembership(record) {
     if (!this.isCloudConfigured()) return { persisted: false };
     const payload = {
