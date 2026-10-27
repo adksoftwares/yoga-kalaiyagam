@@ -295,3 +295,10 @@ img { height: auto; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+@media (max-width: 1050px) {
+  .nav-booking-cta { display: none; }
+}
+@media (max-width: 900px) {
+  .btn-student-nav { display: none; }
+}
