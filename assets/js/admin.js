@@ -7,6 +7,30 @@
 // Default SHA-256 hash for 'admin123'
 const DEFAULT_PASS_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
 
+// Encode untrusted values before inserting them into HTML templates.
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[char]);
+}
+
+function safeImageUrl(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return 'assets/images/banner.jpg';
+  try {
+    const parsed = new URL(raw, window.location.href);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      return 'assets/images/banner.jpg';
+    }
+    if (!/^https?:\/\//i.test(raw) && !raw.startsWith('/') && !raw.startsWith('./') && !raw.startsWith('../')) {
+      return 'assets/images/banner.jpg';
+    }
+    return raw;
+  } catch {
+    return 'assets/images/banner.jpg';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initSecureAdminAuth();
   initAdminDashboard();
@@ -285,17 +309,20 @@ async function renderEventsTable() {
     return;
   }
 
-  container.innerHTML = events.map(ev => `
+  container.innerHTML = events.map(ev => {
+    const id = Number.isFinite(Number(ev.id)) ? Number(ev.id) : 0;
+    return `
     <tr>
-      <td><strong>${ev.titleTa}</strong><br><small style="color:#6B7280;">${ev.titleEn || ''}</small></td>
-      <td>${ev.date} (${ev.time || ''})</td>
-      <td>${ev.location}</td>
-      <td><span style="background:#FEF3C7; padding:2px 8px; border-radius:12px; font-size:0.75rem;">${ev.category}</span></td>
+      <td><strong>${escapeHtml(ev.titleTa)}</strong><br><small style="color:#6B7280;">${escapeHtml(ev.titleEn || '')}</small></td>
+      <td>${escapeHtml(ev.date)} (${escapeHtml(ev.time || '')})</td>
+      <td>${escapeHtml(ev.location)}</td>
+      <td><span style="background:#FEF3C7; padding:2px 8px; border-radius:12px; font-size:0.75rem;">${escapeHtml(ev.category)}</span></td>
       <td>
-        <button onclick="deleteEvent(${ev.id})" style="background:#FEE2E2; border:1px solid #FCA5A5; color:#DC2626; padding:4px 8px; border-radius:4px; cursor:pointer;">நீக்குக</button>
+        <button onclick="deleteEvent(${id})" style="background:#FEE2E2; border:1px solid #FCA5A5; color:#DC2626; padding:4px 8px; border-radius:4px; cursor:pointer;">நீக்குக</button>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
 window.deleteEvent = async function(id) {
@@ -313,17 +340,20 @@ async function renderGalleryTable() {
   if (!container) return;
   const gallery = window.cloudDB ? await window.cloudDB.fetchGallery() : [];
 
-  container.innerHTML = gallery.map(item => `
+  container.innerHTML = gallery.map(item => {
+    const id = Number.isFinite(Number(item.id)) ? Number(item.id) : 0;
+    return `
     <tr>
-      <td><img src="${item.img}" style="width:50px; height:35px; object-fit:cover; border-radius:4px;"></td>
-      <td><strong>${item.title}</strong></td>
-      <td>${item.meta}</td>
-      <td>${item.category}</td>
+      <td><img src="${escapeHtml(safeImageUrl(item.img))}" alt="" loading="lazy" style="width:50px; height:35px; object-fit:cover; border-radius:4px;"></td>
+      <td><strong>${escapeHtml(item.title)}</strong></td>
+      <td>${escapeHtml(item.meta)}</td>
+      <td>${escapeHtml(item.category)}</td>
       <td>
-        <button onclick="deleteGalleryItem(${item.id})" style="background:#FEE2E2; border:1px solid #FCA5A5; color:#DC2626; padding:4px 8px; border-radius:4px; cursor:pointer;">நீக்குக</button>
+        <button onclick="deleteGalleryItem(${id})" style="background:#FEE2E2; border:1px solid #FCA5A5; color:#DC2626; padding:4px 8px; border-radius:4px; cursor:pointer;">நீக்குக</button>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
 window.deleteGalleryItem = async function(id) {
