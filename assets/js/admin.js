@@ -330,6 +330,7 @@ function initAdminDashboard() {
   const exportBtn = document.getElementById('exportDbBtn');
   if (exportBtn && window.cloudDB) {
     exportBtn.addEventListener('click', () => {
+      if (!requireAdminSession()) return;
       window.cloudDB.exportFullBackup();
       if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('📥 தரவுத்தள காப்புப் பிரதி (JSON Backup) பதிவிறக்கப்பட்டது!');
     });
@@ -338,6 +339,7 @@ function initAdminDashboard() {
   const importFile = document.getElementById('importDbFile');
   if (importFile && window.cloudDB) {
     importFile.addEventListener('change', (e) => {
+      if (!requireAdminSession()) { e.target.value = ''; return; }
       const file = e.target.files[0];
       if (!file) return;
 
@@ -358,7 +360,10 @@ function initAdminDashboard() {
   // Export Bookings to CSV
   const exportBookingsBtn = document.getElementById('exportBookingsBtn');
   if (exportBookingsBtn) {
-    exportBookingsBtn.addEventListener('click', exportBookingsCSV);
+    exportBookingsBtn.addEventListener('click', () => {
+      if (!requireAdminSession()) return;
+      exportBookingsCSV();
+    });
   }
 }
 
@@ -517,7 +522,7 @@ async function renderRegistrationsTable() {
       <td><a href="https://wa.me/94${escapeHtml(safePhone.replace(/^0/, ''))}" target="_blank" rel="noopener noreferrer" style="color:#059669;font-weight:700;">📱 ${escapeHtml(phone)}</a></td>
       <td>${escapeHtml(plan)}</td>
       <td>${escapeHtml(batch)}</td>
-      <td><span style="font-size:0.8rem;color:#4B5563;">${escapeHtml(health)}</span></td>
+      <td><span style="font-size:0.8rem;color:#4B5563;">${escapeHtml(status)}</span></td>
     </tr>`;
   }).join('');
 }
