@@ -260,13 +260,25 @@ function initDailyQuote() {
   }
 }
 
-// Dynamic Top Notice from Admin LocalStorage
-function initDynamicNotice() {
+// Shared announcement, with a local cache only as a fallback.
+async function initDynamicNotice() {
   const noticeBox = document.getElementById('dynamicTopNotice');
+  if (!noticeBox) return;
+
   const savedNotice = localStorage.getItem('aiswaryam_top_notice');
-  if (noticeBox && savedNotice) {
-    // Announcements are plain text; never interpret browser storage as HTML.
-    noticeBox.textContent = savedNotice;
+  if (savedNotice) noticeBox.textContent = savedNotice;
+
+  if (window.cloudDB && window.cloudDB.isCloudConfigured()) {
+    try {
+      const cloudNotice = await window.cloudDB.fetchNotice();
+      if (cloudNotice) {
+        noticeBox.textContent = cloudNotice;
+        localStorage.setItem('aiswaryam_top_notice', cloudNotice);
+      }
+    } catch (error) {
+      // The public site can still display its last known announcement offline.
+      console.warn('[Notice] Using cached announcement:', error);
+    }
   }
 }
 
