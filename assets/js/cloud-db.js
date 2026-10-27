@@ -173,7 +173,6 @@ class YogaCloudDB {
       batch: record.batch,
       branch: record.branch || null,
       selected_plan: record.selectedPlan,
-      health: record.health || null,
       address: record.address || null
     };
     const response = await fetch(`${this.config.supabaseUrl}/rest/v1/memberships`, {
