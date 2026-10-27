@@ -137,6 +137,12 @@ function applyLanguage(lang) {
       el.innerHTML = el.getAttribute('data-en');
     }
   });
+
+  // Translate placeholders without replacing user-entered form values.
+  document.querySelectorAll('[data-placeholder-ta], [data-placeholder-en], [data-placeholder-si]').forEach(el => {
+    const translatedPlaceholder = el.getAttribute(`data-placeholder-${lang}`);
+    if (translatedPlaceholder) el.setAttribute('placeholder', translatedPlaceholder);
+  });
 }
 
 // Mobile Menu
