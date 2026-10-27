@@ -265,7 +265,8 @@ function initDynamicNotice() {
   const noticeBox = document.getElementById('dynamicTopNotice');
   const savedNotice = localStorage.getItem('aiswaryam_top_notice');
   if (noticeBox && savedNotice) {
-    noticeBox.innerHTML = savedNotice;
+    // Announcements are plain text; never interpret browser storage as HTML.
+    noticeBox.textContent = savedNotice;
   }
 }
 
