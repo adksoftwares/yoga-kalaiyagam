@@ -87,10 +87,10 @@
           <div class="form-group">
             <span class="form-label" data-ta="விருப்பமான நேரம் *" data-en="Preferred time *" data-si="කැමති වේලාව *">விருப்பமான நேரம் *</span>
             <div style="display:flex;flex-wrap:wrap;gap:.65rem;">
-              <button class="slot-pill" type="button" data-slot="காலை 06:00 AM - 07:00 AM">காலை 06:00–07:00</button>
-              <button class="slot-pill" type="button" data-slot="காலை 07:00 AM - 08:00 AM">காலை 07:00–08:00</button>
-              <button class="slot-pill" type="button" data-slot="மாலை 05:00 PM - 06:00 PM">மாலை 05:00–06:00</button>
-              <button class="slot-pill" type="button" data-slot="மாலை 06:00 PM - 07:00 PM">மாலை 06:00–07:00</button>
+              <button class="slot-pill" type="button" data-slot="காலை 06:00 AM - 07:00 AM" data-ta="காலை 06:00–07:00" data-en="Morning 06:00–07:00" data-si="උදෑසන 06:00–07:00">காலை 06:00–07:00</button>
+              <button class="slot-pill" type="button" data-slot="காலை 07:00 AM - 08:00 AM" data-ta="காலை 07:00–08:00" data-en="Morning 07:00–08:00" data-si="උදෑසන 07:00–08:00">காலை 07:00–08:00</button>
+              <button class="slot-pill" type="button" data-slot="மாலை 05:00 PM - 06:00 PM" data-ta="மாலை 05:00–06:00" data-en="Evening 17:00–18:00" data-si="සවස 17:00–18:00">மாலை 05:00–06:00</button>
+              <button class="slot-pill" type="button" data-slot="மாலை 06:00 PM - 07:00 PM" data-ta="மாலை 06:00–07:00" data-en="Evening 18:00–19:00" data-si="සවස 18:00–19:00">மாலை 06:00–07:00</button>
             </div>
             <input id="selectedSlotInput" type="hidden" value="காலை 06:00 AM - 07:00 AM">
             <small style="display:block;margin-top:.5rem;color:var(--text-muted);">நேரங்கள் கிடைப்பதைப் பொறுத்தது; நிர்வாகி உறுதிப்படுத்துவார்.</small>
@@ -98,15 +98,15 @@
           <div class="form-group">
             <label class="form-label" for="bookBranch" data-ta="கிளை / வகுப்பு முறை *" data-en="Branch / session mode *" data-si="ශාඛාව / සැසි ආකාරය *">கிளை / வகுப்பு முறை *</label>
             <select id="bookBranch" class="form-select" required>
-              <option value="No: 16, Loyds Avenue Road, Batticaloa">Loyds Avenue, Batticaloa</option>
-              <option value="130D, Boundary Road North, Batticaloa">Boundary Road North</option>
-              <option value="No. 5 Sinnaiyah Vithanayar Road, Thimilathivu">Thimilathivu</option>
-              <option value="Online">Online / இணையவழி</option>
+              <option value="No: 16, Loyds Avenue Road, Batticaloa" data-ta="லொயிட்ஸ் அவென்யூ, மட்டக்களப்பு" data-en="Loyds Avenue, Batticaloa" data-si="ලොයිඩ්ස් ඇවනියු, මඩකලපුව">Loyds Avenue, Batticaloa</option>
+              <option value="130D, Boundary Road North, Batticaloa" data-ta="Boundary Road North" data-en="Boundary Road North" data-si="බවුන්ඩරි රෝඩ් නෝර්ත්">Boundary Road North</option>
+              <option value="No. 5 Sinnaiyah Vithanayar Road, Thimilathivu" data-ta="திமிலதீவு" data-en="Thimilathivu" data-si="තිමිලතිව්">Thimilathivu</option>
+              <option value="Online" data-ta="இணையவழி" data-en="Online" data-si="මාර්ගගත">Online / இணையவழி</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="bookNotes" data-ta="கூடுதல் குறிப்புகள் (விருப்பம்)" data-en="Anything else? (optional)" data-si="අමතර සටහන් (විකල්ප)">கூடுதல் குறிப்புகள் (விருப்பம்)</label>
-            <textarea id="bookNotes" class="form-textarea" rows="3" maxlength="500" placeholder="உங்களுக்கு ஏதேனும் விருப்பமான தகவல் இருந்தால் குறிப்பிடுங்கள்."></textarea>
+            <textarea id="bookNotes" class="form-textarea" rows="3" maxlength="500" data-placeholder-ta="உங்களுக்கு ஏதேனும் விருப்பமான தகவல் இருந்தால் குறிப்பிடுங்கள்." data-placeholder-en="Add any preferences or helpful details." data-placeholder-si="ඔබේ කැමැත්ත හෝ අමතර විස්තර සඳහන් කරන්න." placeholder="உங்களுக்கு ஏதேனும் விருப்பமான தகவல் இருந்தால் குறிப்பிடுங்கள்."></textarea>
           </div>
           <button class="btn-primary" type="submit" style="width:100%;justify-content:center;" data-ta="முன்பதிவு கோரிக்கையை அனுப்புக" data-en="Request a session" data-si="සැසියක් ඉල්ලන්න">முன்பதிவு கோரிக்கையை அனுப்புக</button>
           <p style="font-size:.85rem;color:var(--text-muted);margin-top:1rem;">உங்கள் முன்பதிவு கோரிக்கை WhatsApp வழியாக அனுப்பப்பட வேண்டும். நேரம் உறுதிப்படுத்தப்பட்டதாக இந்தப் படிவம் பொருளல்ல.</p>
