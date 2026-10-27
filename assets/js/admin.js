@@ -363,18 +363,35 @@ function initAdminDashboard() {
 }
 
 async function renderAdminAll() {
-  updateStats();
+  await updateStats();
   await renderEventsTable();
   await renderGalleryTable();
   await renderRegistrationsTable();
   await renderBookingsTable();
 }
 
-function updateStats() {
-  const events = JSON.parse(localStorage.getItem('aiswaryam_events') || '[]');
-  const gallery = JSON.parse(localStorage.getItem('aiswaryam_gallery') || '[]');
-  const members = JSON.parse(localStorage.getItem('aiswaryam_memberships') || '[]');
-  const bookings = JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]');
+async function updateStats() {
+  let events = JSON.parse(localStorage.getItem('aiswaryam_events') || '[]');
+  let gallery = JSON.parse(localStorage.getItem('aiswaryam_gallery') || '[]');
+  let members = JSON.parse(localStorage.getItem('aiswaryam_memberships') || '[]');
+  let bookings = JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]');
+
+  if (adminAuthenticated && window.cloudDB && window.cloudDB.isCloudConfigured()) {
+    try {
+      const [cloudEvents, cloudGallery, cloudMembers, cloudBookings] = await Promise.all([
+        window.cloudDB.fetchEvents(),
+        window.cloudDB.fetchGallery(),
+        window.cloudDB.fetchAdminRecords('memberships'),
+        window.cloudDB.fetchAdminRecords('bookings')
+      ]);
+      events = cloudEvents;
+      gallery = cloudGallery;
+      members = cloudMembers;
+      bookings = cloudBookings;
+    } catch (error) {
+      console.error('[Admin] Statistics sync failed:', error);
+    }
+  }
 
   const elEvents = document.getElementById('statTotalEvents');
   const elGallery = document.getElementById('statTotalGallery');
