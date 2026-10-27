@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>மாணவர் உள்நுழைவு & போர்ட்டல் | யோகா கலையகம் (Yoga Studio)</title>
+  <meta name="description" content="ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் மாணவர் போர்ட்டல் - உறுப்பினர் அட்டை, தினசரி பயிற்சி அட்டவணை மற்றும் நேரலை இணைப்பு.">
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#78350F">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-notice-bar">
+    <span id="dynamicTopNotice">🌸 மாணவர் போர்ட்டல்: உங்கள் தினசரி ஆசன அட்டவணை மற்றும் வகுப்புகளை இங்கே காணலாம்.</span>
+    <a href="index.html">முகப்புக்குச் செல்ல →</a>
+  </div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="container nav-container">
+      <a href="index.html" class="site-logo">
+        <img src="assets/images/logo.svg" alt="யோகா கலையகம்" height="52">
+      </a>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link" data-ta="முகப்பு" data-en="Home" data-si="මුල් පිටුව">முகப்பு</a></li>
+          <li><a href="about.html" class="nav-link" data-ta="எங்களைப் பற்றி" data-en="About Us" data-si="අප ගැන">எங்களைப் பற்றி</a></li>
+          <li><a href="courses.html" class="nav-link" data-ta="பயிற்சிகள் <span class='badge-soon'>விரைவில்</span>" data-en="Courses <span class='badge-soon'>Soon</span>" data-si="පාඨමාලා <span class='badge-soon'>ළඟදීම</span>">பயிற்சிகள் <span class="badge-soon">விரைவில்</span></a></li>
+          <li><a href="booking.html" class="nav-link" data-ta="முன்பதிவு <span class='badge-soon'>விரைவில்</span>" data-en="Online Booking <span class='badge-soon'>Soon</span>" data-si="වෙන්කරවා ගැනීම <span class='badge-soon'>ළඟදීම</span>">முன்பதிவு <span class="badge-soon">விரைவில்</span></a></li>
+          <li><a href="membership.html" class="nav-link" data-ta="உறுப்பினர் சேர்க்கை <span class='badge-soon'>விரைவில்</span>" data-en="Membership <span class='badge-soon'>Soon</span>" data-si="සාමාජිකත්වය <span class='badge-soon'>ළඟදීම</span>">உறுப்பினர் சேர்க்கை <span class="badge-soon">விரைவில்</span></a></li>
+          <li><a href="events.html" class="nav-link" data-ta="நிகழ்வுகள் & ஆல்பம்" data-en="Events & Gallery" data-si="සිදුවීම් සහ ඡායාරූප">நிகழ்வுகள் & ஆல்பம்</a></li>
+          <li><a href="contact.html" class="nav-link" data-ta="தொடர்புக்கு" data-en="Contact" data-si="අප අමතන්න">தொடர்புக்கு</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <select id="langSelect" class="lang-select-box" aria-label="Select Language">
+          <option value="ta">தமிழ்</option>
+          <option value="en">English</option>
+          <option value="si">සිංහල</option>
+        </select>
+        <button id="meditationChimeBtn" class="audio-chime-btn" title="புனித மணி நாதம்">🔔</button>
+        <button class="mobile-nav-toggle" aria-label="Toggle Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Section (Visible when not logged in) -->
+  <section id="studentAuthSection" class="section" style="background: radial-gradient(circle at 10% 20%, #FFFBEB 0%, #FDFBF7 70%); min-height: 75vh; display: flex; align-items: center;">
+    <div class="container" style="max-width: 500px;">
+      <div style="background: #FFFFFF; border: 1.5px solid #FDE68A; border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-lg); text-align: center;">
+        <img src="assets/images/logo.svg" alt="யோகா கலையகம்" height="60" style="margin: 0 auto 1rem auto;">
+        
+        <h2 style="font-size: 1.6rem; color: #78350F; margin-bottom: 0.5rem;" data-ta="மாணவர் உள்நுழைவு" data-en="Student Portal Login" data-si="ශිෂ්‍ය පිවිසුම">
+          மாணவர் உள்நுழைவு
+        </h2>
+        <p style="font-size: 0.9rem; color: #6B7280; margin-bottom: 1.75rem;" data-ta="தங்களின் மாணவர் ஐடி (Student ID) அல்லது தொலைபேசி எண்ணை உள்ளிடவும்." data-en="Enter your registered Student ID or Phone Number." data-si="ඔබගේ ලියාපදිංචි ශිෂ්‍ය අංකය හෝ දුරකථන අංකය ඇතුළත් කරන්න.">
+          தங்களின் மாணவர் ஐடி (Student ID) அல்லது தொலைபேசி எண்ணை உள்ளிடவும்.
+        </p>
+
+        <form id="studentLoginForm">
+          <div class="form-group" style="text-align: left;">
+            <label class="form-label" for="studentIdInput">மாணவர் ஐடி (Student ID) / தொலைபேசி எண் <span class="req">*</span></label>
+            <input type="text" id="studentIdInput" class="form-input" placeholder="எ.கா: AY-101 அல்லது 0776064846" required>
+          </div>
+
+          <div class="form-group" style="text-align: left;">
+            <label class="form-label" for="studentPhoneInput">கடவுச்சொல் / தொலைபேசி உறுதிப்படுத்தல்</label>
+            <input type="password" id="studentPhoneInput" class="form-input" placeholder="தொலைபேசி எண் (0776064846)">
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%; font-size: 1rem; padding: 0.8rem;">
+            உள்நுழைக (Login)
+          </button>
+        </form>
+
+        <div style="margin-top: 1.5rem; padding: 0.85rem; background: #FEF3C7; border-radius: 8px; font-size: 0.82rem; color: #92400E; text-align: left;">
+          💡 <strong>மாதிரி மாணவர் விபரம் (Demo Login):</strong><br>
+          • மாணவர் ஐடி (ID): <code>AY-101</code><br>
+          • தொலைபேசி எண்: <code>0776064846</code>
+        </div>
+
+        <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #6B7280;">
+          புதிய மாணவரா? <a href="membership.html" style="color: #047857; font-weight: 700;">இங்கே உறுப்பினர் ஆகுக →</a>
+        </p>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed #E5E7EB;">
+          <a href="index.html" class="btn-secondary" style="display: inline-flex; width: 100%; justify-content: center; font-size: 0.92rem; padding: 0.65rem 1rem; color: #047857; border: 1.5px solid #047857; font-weight: 700;">
+            ← லாகின் இன்றி பொது இணையதளத்தைப் பார்க்க (Browse Website)
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Student Dashboard Section (Visible after login) -->
+  <section id="studentDashboardSection" class="section" style="display: none; background: #FDFBF7; padding-top: 3rem;">
+    <div class="container">
+      
+      <!-- Top Welcome Strip -->
+      <div style="display: flex; justify-content: space-between; align-items: center; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="sub-badge" style="background:#D1FAE5; color:#064E3B;">வணக்கம் (Ayubowan / Welcome)</span>
+          <h2 style="font-size: 1.8rem; color: #78350F; margin: 0.25rem 0;" id="spStudentName">யோகா மாணவர்</h2>
+          <p style="font-size: 0.9rem; color: #6B7280; margin: 0;">
+            மாணவர் எண்: <strong id="spStudentId" style="color:#D97706;">AY-101</strong> | நிலை: <span id="spStudentStatus" style="color:#047857; font-weight:600;">Active Member</span>
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <button onclick="printStudentIDCard()" class="btn-secondary" style="font-size: 0.85rem;">
+            🖨️ அடையாள அட்டை அச்சிடுக
+          </button>
+          <button id="studentLogoutBtn" class="btn-secondary" style="background:#FEE2E2; border-color:#FCA5A5; color:#DC2626; font-size: 0.85rem;">
+            வெளியேறு (Logout)
+          </button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem;">
+        
+        <!-- Left: Course Details, Live Zoom, Daily Practice -->
+        <div>
+          <!-- Course Card -->
+          <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: var(--radius-md); padding: 1.75rem; margin-bottom: 1.75rem; box-shadow: var(--shadow-sm);">
+            <h3 style="font-size: 1.3rem; color: #78350F; margin-bottom: 1rem; border-bottom: 1px solid #F3F4F6; padding-bottom: 0.5rem;">
+              📚 தற்போதைய யோகா வகுப்பு விபரம்
+            </h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.92rem; margin-bottom: 1.25rem;">
+              <div>
+                <span style="color:#6B7280; display:block;">பயிற்சி வகுப்பு:</span>
+                <strong id="spStudentCourse" style="color:#1F2937;">ஹட யோகா & சூரிய நமஸ்காரம்</strong>
+              </div>
+              <div>
+                <span style="color:#6B7280; display:block;">பயிற்சி நேரம் (Batch):</span>
+                <strong id="spStudentBatch" style="color:#047857;">காலை 05:30 AM - 06:30 AM</strong>
+              </div>
+              <div>
+                <span style="color:#6B7280; display:block;">பயிற்சி கூடம் (Branch):</span>
+                <strong id="spStudentBranch" style="color:#78350F;">No: 16, Loyds Avenue Road, Batticaloa</strong>
+              </div>
+              <div>
+                <span style="color:#6B7280; display:block;">தொடர் வருகை (Streak):</span>
+                <strong id="spStudentStreak" style="color:#D97706;">28 நாட்கள் 🔥</strong>
+              </div>
+            </div>
+
+            <!-- Live Zoom Link Button -->
+            <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-sm); padding: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+              <div>
+                <strong style="color: #1D4ED8; display: block; font-size: 1rem;">🎥 ஆன்லைன் நேரலை வகுப்பு (Live Class)</strong>
+                <small style="color: #4B5563;">இணைப்பு எண்: 849 2039 1049 | கடவுச்சொல்: yoga123</small>
+              </div>
+              <a href="https://zoom.us" target="_blank" class="btn-primary" style="background:#2563EB; font-size: 0.85rem; padding: 0.5rem 1rem;">
+                Zoom வகுப்பில் இணைக
+              </a>
+            </div>
+          </div>
+
+          <!-- Daily Asana Routine -->
+          <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: var(--radius-md); padding: 1.75rem; box-shadow: var(--shadow-sm);">
+            <h3 style="font-size: 1.3rem; color: #78350F; margin-bottom: 1rem; border-bottom: 1px solid #F3F4F6; padding-bottom: 0.5rem;">
+              🧘‍♂️ இன்றைய வீட்டுப் பயிற்சி அட்டவணை (Daily Asanas)
+            </h3>
+            
+            <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.92rem;">
+              <li style="display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem; background: #FDFBF7; border-radius: 6px;">
+                <span style="width: 28px; height: 28px; border-radius: 50%; background: #D97706; color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:700;">1</span>
+                <div>
+                  <strong>சூரிய நமஸ்காரம் (Surya Namaskara):</strong> 12 சுற்றுகள் (காலை சூரிய ஒளியில்)
+                </div>
+              </li>
+              <li style="display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem; background: #FDFBF7; border-radius: 6px;">
+                <span style="width: 28px; height: 28px; border-radius: 50%; background: #047857; color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:700;">2</span>
+                <div>
+                  <strong>நாடி சுத்தி பிராணாயாமம் (Nadi Shodhana):</strong> 15 நிமிடங்கள்
+                </div>
+              </li>
+              <li style="display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem; background: #FDFBF7; border-radius: 6px;">
+                <span style="width: 28px; height: 28px; border-radius: 50%; background: #7C3AED; color:#FFF; display:flex; align-items:center; justify-content:center; font-weight:700;">3</span>
+                <div>
+                  <strong>பிரணவ தியானம் & சாந்தி ஆசனம்:</strong> 10 நிமிடங்கள் மன அமைதி
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right: Digital Student ID Card -->
+        <div>
+          <div class="student-id-card">
+            <div class="student-id-header">
+              <div>
+                <strong style="color: #FDE68A; font-size: 1rem; display: block;">ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம்</strong>
+                <small style="font-size: 0.75rem; opacity: 0.9;">YOGA STUDIO • BATTICALOA, SRI LANKA</small>
+              </div>
+              <span style="background: #F59E0B; color: #78350F; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 10px;">
+                IUYF AFFILIATED
+              </span>
+            </div>
+
+            <div class="student-id-body">
+              <div class="student-id-avatar">🧘</div>
+              <div>
+                <h4 id="idCardName" style="color: #FFFFFF; font-size: 1.15rem; margin-bottom: 0.2rem;">குமாரவேல் சுதாகரன்</h4>
+                <div style="font-size: 0.8rem; color: #A7F3D0; margin-bottom: 0.35rem;">பதிவு எண்: <strong id="idCardNumber" style="color:#FFF;">AY-101</strong></div>
+                <div style="font-size: 0.8rem; color: #FEF3C7;" id="idCardBatch">காலை தொகுதி: 05:30 AM - 06:30 AM</div>
+                <div style="font-size: 0.75rem; color: #D1FAE5; margin-top: 0.25rem;" id="idCardBranch">No: 16, Loyds Avenue Road, Batticaloa</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; border-top: 1px dashed rgba(255, 255, 255, 0.3); padding-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+              <span>குருஜி: எஸ். ஸ்ரீதரன் & ஏ. ஜெயஹரன்</span>
+              <span>செல்லுபடியாகும் காலம்: 2026</span>
+            </div>
+          </div>
+
+          <!-- Direct Guruji Guidance Box -->
+          <div style="background: #FFFFFF; border: 1px solid #FDE68A; border-radius: var(--radius-md); padding: 1.5rem; margin-top: 1.75rem; box-shadow: var(--shadow-sm);">
+            <h4 style="color: #78350F; margin-bottom: 0.5rem;">👨‍🏫 குருஜியின் நேரடி ஆலோசனை</h4>
+            <p style="font-size: 0.88rem; color: #4B5563; line-height: 1.6; margin-bottom: 1rem;">
+              உடற்பயிற்சி மற்றும் உணவு முறை குறித்த சந்தேகங்களை தலைமை குருஜி எஸ். ஸ்ரீதரன் அல்லது யோகா தெரபிஸ்ட் ஏ. ஜெயஹரன் அவர்களிடம் நேரடியாக வாட்ஸ்அப்பில் கேட்கலாம்.
+            </p>
+            <a href="https://wa.me/94776064846?text=வணக்கம்%20குருஜி,%20நான்%20யோகா%20மாணவர்%20(AY-101)%20பேசுகிறேன்." target="_blank" class="btn-whatsapp" style="width: 100%; justify-content: center; font-size: 0.88rem;">
+              குருஜியிடம் வாட்ஸ்அப்பில் ஆலோசிக்க
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-bottom-strip" style="border-top: none; padding-top: 0;">
+        <div>© 2026 ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் (Yoga Studio Batticaloa). அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.</div>
+        <div><a href="admin.html" style="color: #FBBF24;">நிர்வாக உள்நுழைவு (Admin Portal)</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/student.js"></script>
+  <script src="assets/js/pwa.js"></script>
+</body>
+</html>

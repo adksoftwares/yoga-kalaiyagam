@@ -1,0 +1,99 @@
+/* ========================================================
+   ஸ்ரீ ஐஸ்வர்யம் யோகா மையம் - அனிமேஷன்கள் & விளைவுகள்
+   Aiswaryam Yoga Animations & Keyframes
+   ======================================================== */
+
+@keyframes breathExpand {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(4, 120, 87, 0.2);
+  }
+  40% {
+    transform: scale(1.35);
+    box-shadow: 0 0 50px rgba(4, 120, 87, 0.45), 0 0 80px rgba(217, 119, 6, 0.3);
+  }
+  60% {
+    transform: scale(1.35);
+    box-shadow: 0 0 55px rgba(217, 119, 6, 0.5);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes pulseSlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes sunRaysSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-float {
+  animation: floatGentle 6s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 3s ease-in-out infinite;
+}
+
+.breathing-circle-active {
+  animation: breathExpand 16s ease-in-out infinite;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-nav {
+  background: rgba(253, 251, 247, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(217, 119, 6, 0.15);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 35px -10px rgba(217, 119, 6, 0.12), 0 10px 20px -5px rgba(4, 120, 87, 0.08);
+  border-color: rgba(217, 119, 6, 0.3);
+}

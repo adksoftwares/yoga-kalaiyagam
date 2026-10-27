@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>நிர்வாக கட்டுப்பாட்டு பலகை (Admin Dashboard) | யோகா கலையகம்</title>
+  <meta name="description" content="ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் நிகழ்வுகள், புகைப்படங்கள் மற்றும் மாணவர் சேர்க்கை மேலாண்மை பலகை.">
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body style="background: #F8FAFC;">
+
+  <!-- Header -->
+  <header class="main-header" style="background: #111827; border-bottom: 2px solid #D97706;">
+    <div class="container nav-container">
+      <a href="index.html" class="site-logo">
+        <img src="assets/images/logo.svg" alt="யோகா கலையகம்" height="48" style="filter: brightness(0) invert(1);">
+      </a>
+      <div style="color: #FBBF24; font-weight: 700; font-size: 1.05rem;">
+        ⚙️ நிர்வாக கட்டுப்பாட்டு தளம் (Admin Dashboard)
+      </div>
+      <div>
+        <a href="index.html" class="btn-primary" style="font-size: 0.88rem; padding: 0.5rem 1.15rem; background: #D97706; color: #FFFFFF; font-weight: 700; text-decoration: none; border-radius: 9999px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+          🌐 பொது இணையதளம் (Public Website)
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Section (When logged out) -->
+  <section id="adminAuthSection" class="section" style="min-height: 80vh; display: flex; align-items: center;">
+    <div class="container" style="max-width: 440px;">
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-lg); text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔐</div>
+        <h2 style="font-size: 1.5rem; color: #1E293B; margin-bottom: 0.5rem;">நிர்வாக உள்நுழைவு (Admin Login)</h2>
+        <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 1.5rem;">நிகழ்வுகள் மற்றும் புகைப்படங்களை மாற்ற நிர்வாக கடவுச்சொல்லை உள்ளிடவும்.</p>
+
+        <form id="adminLoginForm">
+          <div class="form-group" style="text-align: left;">
+            <label class="form-label">பயனர் பெயர் (Username)</label>
+            <input type="text" id="adminUser" class="form-input" value="admin" required>
+          </div>
+          <div class="form-group" style="text-align: left;">
+            <label class="form-label">கடவுச்சொல் (Password)</label>
+            <input type="password" id="adminPass" class="form-input" placeholder="கடவுச்சொல்..." required>
+          </div>
+          <button type="submit" class="btn-primary" style="width: 100%; padding: 0.75rem;">உள்நுழைக (Login)</button>
+        </form>
+
+        <div style="margin-top: 1.25rem; font-size: 0.8rem; color: #94A3B8;">
+          குறிப்பு: இயல்புநிலை கடவுச்சொல்: <code>admin123</code>
+        </div>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed #E2E8F0;">
+          <p style="font-size: 0.88rem; color: #64748B; margin-bottom: 0.75rem;">
+            லாகின் செய்யாமல் பொது இணையதளத்தைப் பார்க்க வேண்டுமா?
+          </p>
+          <a href="index.html" class="btn-secondary" style="display: inline-flex; width: 100%; justify-content: center; font-size: 0.92rem; padding: 0.65rem 1rem; color: #047857; border: 1.5px solid #047857; font-weight: 700;">
+            ← பொது இணையதளத்தைப் பார்க்க (Browse Website)
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Dashboard (When logged in) -->
+  <section id="adminDashboardSection" style="display: none; padding: 2rem 0;">
+    <div class="container">
+      
+      <!-- Dashboard Layout -->
+      <div class="dashboard-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="dashboard-sidebar">
+          <div style="padding-bottom: 1rem; border-bottom: 1px solid #E5E7EB; margin-bottom: 1rem;">
+            <strong style="color: #1E293B; display: block; font-size: 1rem;">யோகா கலையகம்</strong>
+            <small style="color: #64748B;">மட்டக்களப்பு, இலங்கை</small>
+          </div>
+
+          <ul class="sidebar-menu-list">
+            <li>
+              <button class="sidebar-menu-btn active" data-target="tabEvents">
+                <span>📅</span> நிகழ்வுகள் (Events)
+              </button>
+            </li>
+            <li>
+              <button class="sidebar-menu-btn" data-target="tabGallery">
+                <span>🖼️</span> புகைப்படத் தொகுப்பு (Gallery)
+              </button>
+            </li>
+            <li>
+              <button class="sidebar-menu-btn" data-target="tabMembers">
+                <span>📋</span> சேர்க்கை விண்ணப்பங்கள் (Members)
+              </button>
+            </li>
+            <li>
+              <button class="sidebar-menu-btn" data-target="tabBookings">
+                <span>🎟️</span> ஆன்லைன் முன்பதிவுகள் (Bookings)
+              </button>
+            </li>
+            <li>
+              <button class="sidebar-menu-btn" data-target="tabNotice">
+                <span>📢</span> மேல் அறிவிப்பு பட்டி (Notice)
+              </button>
+            </li>
+            <li>
+              <button class="sidebar-menu-btn" data-target="tabCloud">
+                <span>☁️</span> கிளவுட் ஒத்திசைவு (Cloud Sync)
+              </button>
+            </li>
+            <li>
+              <button class="sidebar-menu-btn" data-target="tabSecurity">
+                <span>🔐</span> கடவுச்சொல் மாற்றம் (Security)
+              </button>
+            </li>
+            <li style="margin-top: 1.5rem; border-top: 1px solid #E5E7EB; padding-top: 1rem;">
+              <button id="adminLogoutBtn" class="sidebar-menu-btn" style="color: #DC2626;">
+                <span>🚪</span> வெளியேறு (Logout)
+              </button>
+            </li>
+          </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="dashboard-main-content">
+          
+          <!-- Statistics Badges -->
+          <div class="stat-badge-grid">
+            <div class="stat-badge-card">
+              <span style="font-size: 0.8rem; color:#64748B;">மொத்த நிகழ்வுகள்</span>
+              <div id="statTotalEvents" style="font-size: 1.75rem; font-weight: 800; color: #D97706;">0</div>
+            </div>
+            <div class="stat-badge-card">
+              <span style="font-size: 0.8rem; color:#64748B;">மொத்த புகைப்படங்கள்</span>
+              <div id="statTotalGallery" style="font-size: 1.75rem; font-weight: 800; color: #047857;">0</div>
+            </div>
+            <div class="stat-badge-card">
+              <span style="font-size: 0.8rem; color:#64748B;">சேர்க்கை விண்ணப்பங்கள்</span>
+              <div id="statTotalMembers" style="font-size: 1.75rem; font-weight: 800; color: #2563EB;">0</div>
+            </div>
+            <div class="stat-badge-card">
+              <span style="font-size: 0.8rem; color:#64748B;">ஆன்லைன் முன்பதிவுகள்</span>
+              <div id="statTotalBookings" style="font-size: 1.75rem; font-weight: 800; color: #7C3AED;">0</div>
+            </div>
+          </div>
+
+          <!-- TAB 1: Events Manager -->
+          <div id="tabEvents" class="admin-tab-pane">
+            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+              📅 நிகழ்வுகள் மேலாண்மை (Manage Events)
+            </h3>
+
+            <!-- Add Event Form -->
+            <div style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; margin-bottom: 2rem;">
+              <h4 style="color: #92400E; margin-bottom: 1rem;">+ புதிய நிகழ்வைச் சேர்க்கவும்</h4>
+              <form id="addEventForm">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">நிகழ்வு தலைப்பு (தமிழ்) <span class="req">*</span></label>
+                    <input type="text" id="eventTitleTa" class="form-input" placeholder="உதாரணம்: சிறப்பு பௌர்ணமி தியானம்" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Event Title (English)</label>
+                    <input type="text" id="eventTitleEn" class="form-input" placeholder="Example: Full Moon Meditation Camp">
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">නැවතුම් මාතෘකාව (Sinhala)</label>
+                    <input type="text" id="eventTitleSi" class="form-input" placeholder="Example: පුර පසළොස්වක ධ්‍යාන කඳවුර">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">வகை (Category) <span class="req">*</span></label>
+                    <select id="eventCategory" class="form-select">
+                      <option value="events">பொது நிகழ்வு (General Event)</option>
+                      <option value="camps">முகாம் (Camp)</option>
+                      <option value="kids">குழந்தைகள் (Kids)</option>
+                      <option value="women">பெண்கள் நலம் (Women)</option>
+                      <option value="convocation">பட்டமளிப்பு (Convocation)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">தேதி (Date) <span class="req">*</span></label>
+                    <input type="date" id="eventDate" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">நேரம் (Time) <span class="req">*</span></label>
+                    <input type="text" id="eventTime" class="form-input" placeholder="எ.கா: காலை 06:00 AM" required>
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">இடம் (Location / Venue) <span class="req">*</span></label>
+                    <input type="text" id="eventLocation" class="form-input" placeholder="எ.கா: யோகா கலையகம், லொயிட்ஸ் அவென்யூ" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">பட முகவரி (Image Path / URL)</label>
+                    <input type="text" id="eventImgUrl" class="form-input" placeholder="assets/images/banner.jpg அல்லது புகைப்பட URL">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">விளக்கம் (Description)</label>
+                  <textarea id="eventDesc" class="form-textarea" rows="2" placeholder="நிகழ்வின் சிறப்பம்சங்கள்..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary" style="padding: 0.65rem 1.75rem;">
+                  நிகழ்வைச் சேமிக்கவும் (Add Event)
+                </button>
+              </form>
+            </div>
+
+            <!-- Current Events Table -->
+            <h4 style="color: #1E293B; margin-bottom: 0.75rem;">தற்போதுள்ள நிகழ்வுகள் பட்டியல்:</h4>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>நிகழ்வு தலைப்பு</th>
+                    <th>தேதி & நேரம்</th>
+                    <th>இடம்</th>
+                    <th>பிரிவு</th>
+                    <th>செயல்பாடு</th>
+                  </tr>
+                </thead>
+                <tbody id="adminEventsList"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 2: Gallery Manager -->
+          <div id="tabGallery" class="admin-tab-pane" style="display: none;">
+            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+              🖼️ புகைப்பட ஆல்பம் மேலாண்மை (Manage Gallery)
+            </h3>
+
+            <!-- Add Photo Form -->
+            <div style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; margin-bottom: 2rem;">
+              <h4 style="color: #92400E; margin-bottom: 1rem;">+ புதிய புகைப்படத்தைச் சேர்க்கவும்</h4>
+              <form id="addPhotoForm">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">படத் தலைப்பு (Photo Title) <span class="req">*</span></label>
+                    <input type="text" id="photoTitle" class="form-input" placeholder="எ.கா: யோகா கலையகம் - பயிற்சி நிகழ்வு" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">இடம் & பங்கேற்பாளர் விபரம் (Meta)</label>
+                    <input type="text" id="photoMeta" class="form-input" placeholder="எ.கா: மட்டக்களப்பு | 100+ நபர்கள்">
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">வகை (Category)</label>
+                    <select id="photoCategory" class="form-select">
+                      <option value="events">நிகழ்வுகள் (Events)</option>
+                      <option value="camps">முகாம்கள் (Camps)</option>
+                      <option value="kids">குழந்தைகள் (Kids)</option>
+                      <option value="women">பெண்கள் நலம் (Women)</option>
+                      <option value="convocation">பட்டமளிப்பு (Convocation)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">பட முகவரி (Path / URL) <span class="req">*</span></label>
+                    <input type="text" id="photoUrl" class="form-input" placeholder="assets/images/banner.jpg அல்லது https://..." required>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn-primary" style="padding: 0.65rem 1.75rem;">
+                  புகைப்படத்தைச் சேர்க்க (Add Photo)
+                </button>
+              </form>
+            </div>
+
+            <!-- Current Gallery Table -->
+            <h4 style="color: #1E293B; margin-bottom: 0.75rem;">ஆல்பத்தில் உள்ள புகைப்படங்கள்:</h4>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>படம்</th>
+                    <th>தலைப்பு</th>
+                    <th>விபரம்</th>
+                    <th>பிரிவு</th>
+                    <th>செயல்பாடு</th>
+                  </tr>
+                </thead>
+                <tbody id="adminGalleryList"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 3: Registered Members -->
+          <div id="tabMembers" class="admin-tab-pane" style="display: none;">
+            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+              📋 உறுப்பினர் சேர்க்கை விண்ணப்பங்கள் (Registered Members)
+            </h3>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>பதிவு ஐடி</th>
+                    <th>பெயர்</th>
+                    <th>தொலைபேசி</th>
+                    <th>திட்டம்</th>
+                    <th>நேரம் (Batch)</th>
+                    <th>உடல்நிலை</th>
+                  </tr>
+                </thead>
+                <tbody id="adminRegistrationsList"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 4: Bookings -->
+          <div id="tabBookings" class="admin-tab-pane" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <h3 style="font-size: 1.35rem; color: #78350F; margin: 0;">
+                🎟️ ஆன்லைன் முன்பதிவுகள் பட்டியல் (Online Bookings)
+              </h3>
+              <button id="exportBookingsBtn" class="btn-secondary" style="font-size: 0.85rem;">
+                📥 Excel / CSV வடிவில் பதிவிறக்குக
+              </button>
+            </div>
+
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>முன்பதிவு ஐடி</th>
+                    <th>பெயர்</th>
+                    <th>தொலைபேசி</th>
+                    <th>அமர்வு வகை</th>
+                    <th>தேதி & நேரம்</th>
+                    <th>கிளை</th>
+                  </tr>
+                </thead>
+                <tbody id="adminBookingsList"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 5: Top Notice Editor -->
+          <div id="tabNotice" class="admin-tab-pane" style="display: none;">
+            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+              📢 மேல் அறிவிப்பு பட்டி மேலாண்மை (Top Announcement Banner)
+            </h3>
+            <p style="font-size: 0.9rem; color: #64748B; margin-bottom: 1.5rem;">
+              இங்கே மாற்றப்படும் வாசகம் இணையதளத்தின் அனைத்து பக்கங்களின் மேலேயும் உடனடியாகத் தோன்றும்.
+            </p>
+
+            <form id="adminNoticeForm" style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; max-width: 650px;">
+              <div class="form-group">
+                <label class="form-label">அறிவிப்பு உரை (Announcement Text)</label>
+                <textarea id="adminNoticeInput" class="form-textarea" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn-primary" style="padding: 0.65rem 1.75rem;">
+                அறிவிப்பை புதுப்பிக்கவும் (Save Notice)
+              </button>
+            </form>
+          </div>
+
+          <!-- TAB 6: Cloud DB Settings & Full Backup -->
+          <div id="tabCloud" class="admin-tab-pane" style="display: none;">
+            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+              ☁️ நிகழ்நேர கிளவுட் ஒத்திசைவு & தரவுத்தள சேமிப்பு (Cloud Sync & Backup)
+            </h3>
+            <p style="font-size: 0.9rem; color: #64748B; margin-bottom: 1.5rem;">
+              அட்மின் போர்ட்டலில் நீங்கள் செய்யும் மாற்றங்கள் அனைத்து மாணவர்களின் மொபைல்களிலும் உடனுக்குடன் தானாகவே தெரிய கிளவுட் தரவுத்தளத்தை (Supabase / REST) இணைக்கலாம்.
+            </p>
+
+            <!-- Cloud Config Form -->
+            <form id="cloudConfigForm" style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; margin-bottom: 2rem;">
+              <h4 style="color: #92400E; margin-bottom: 1rem;">கிளவுட் தரவுத்தள அமைப்புகள் (Cloud Provider):</h4>
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">வழங்குநர் (Database Provider)</label>
+                  <select id="cloudProvider" class="form-select">
+                    <option value="local">ஆஃப்லைன் & லோக்கல் மோடு (Offline LocalStorage)</option>
+                    <option value="supabase">Supabase PostgreSQL (இலவச கிளவுட்)</option>
+                  </select>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; padding-top: 1.5rem;">
+                  <label class="check-label" style="font-weight: 700; color: #047857;">
+                    <input type="checkbox" id="enableSync"> நேரலை கிளவுட் ஒத்திசைவை இயக்கு (Enable Cloud Sync)
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label">Supabase Project URL</label>
+                  <input type="url" id="supabaseUrl" class="form-input" placeholder="https://your-project.supabase.co">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Supabase Anon Public API Key</label>
+                  <input type="text" id="supabaseKey" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary" style="padding: 0.65rem 1.75rem;">
+                கிளவுட் அமைப்புகளைச் சேமிக்கவும் (Save Cloud Config)
+              </button>
+            </form>
+
+            <!-- Complete Database JSON Backup & Restore -->
+            <div style="background: #F0FDF4; border: 1px solid #A7F3D0; border-radius: var(--radius-sm); padding: 1.5rem;">
+              <h4 style="color: #065F46; margin-bottom: 0.5rem;">💾 முழுமையான தரவுத்தள காப்புப் பிரதி (JSON Backup & Restore):</h4>
+              <p style="font-size: 0.88rem; color: #374151; margin-bottom: 1.25rem;">
+                அனைத்து மாணவர்கள், முன்பதிவுகள், நிகழ்வுகள் மற்றும் புகைப்படங்களை ஒரே கோப்பாக பதிவிறக்கம் செய்து பாதுகாத்துக் கொள்ளலாம்.
+              </p>
+
+              <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                <button type="button" id="exportDbBtn" class="btn-primary" style="background:#059669;">
+                  📥 தரவுத்தளத்தை பதிவிறக்குக (Export Backup)
+                </button>
+
+                <label class="btn-secondary" style="cursor: pointer; margin: 0;">
+                  📤 கோப்பிலிருந்து மீட்டமை (Restore JSON)
+                  <input type="file" id="importDbFile" accept=".json" style="display: none;">
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 7: Change Password Pane -->
+          <div id="tabSecurity" class="admin-tab-pane" style="display: none;">
+            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+              🔐 நிர்வாக கடவுச்சொல் மாற்றம் (Security Settings)
+            </h3>
+            <p style="font-size: 0.9rem; color: #64748B; margin-bottom: 1.5rem;">
+              உங்கள் நிர்வாக கணக்கின் கடவுச்சொல்லை SHA-256 என்க்ரிப்ஷன் முறையில் பாதுகாப்பாக மாற்றலாம்.
+            </p>
+
+            <form id="adminChangePassForm" style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; max-width: 500px;">
+              <div class="form-group">
+                <label class="form-label">தற்போதைய கடவுச்சொல் (Current Password) <span class="req">*</span></label>
+                <input type="password" id="currPass" class="form-input" placeholder="இயல்புநிலை: admin123" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">புதிய கடவுச்சொல் (New Password) <span class="req">*</span></label>
+                <input type="password" id="newPass" class="form-input" placeholder="குறைந்தது 6 எழுத்துகள்" minlength="6" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">புதிய கடவுச்சொல்லை உறுதிப்படுத்துக (Confirm) <span class="req">*</span></label>
+                <input type="password" id="confPass" class="form-input" placeholder="மீண்டும் உள்ளிடவும்" required>
+              </div>
+              <button type="submit" class="btn-primary" style="padding: 0.65rem 1.75rem;">
+                கடவுச்சொல்லை மாற்று (Update Password)
+              </button>
+            </form>
+          </div>
+
+        </main>
+
+      </div>
+
+    </div>
+  </section>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/cloud-db.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

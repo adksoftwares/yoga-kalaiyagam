@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFBEB"/>
+      <stop offset="40%" stop-color="#FEF3C7"/>
+      <stop offset="70%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#FED7AA"/>
+    </linearGradient>
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <linearGradient id="mountGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E2E8F0" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#CBD5E1" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="mountGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#A7F3D0" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#059669" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="goldPetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Base / Rounded Container -->
+  <rect width="600" height="500" rx="32" fill="url(#skyGrad)"/>
+
+  <!-- Distant Mountains -->
+  <path d="M-20 340 L120 220 L240 310 L400 190 L520 290 L620 200 L620 500 L-20 500 Z" fill="url(#mountGrad1)"/>
+  
+  <!-- Golden Morning Sun -->
+  <circle cx="300" cy="220" r="110" fill="url(#sunGrad)" opacity="0.85" filter="url(#softGlow)"/>
+  
+  <!-- Concentric Spiritual Aura Rings -->
+  <circle cx="300" cy="220" r="130" stroke="#F59E0B" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="6 6"/>
+  <circle cx="300" cy="220" r="155" stroke="#F59E0B" stroke-opacity="0.2" stroke-width="1.5" stroke-dasharray="10 6"/>
+  <circle cx="300" cy="220" r="185" stroke="#10B981" stroke-opacity="0.25" stroke-width="1.5"/>
+
+  <!-- Midground Mountains / Hills with lush green tint -->
+  <path d="M-10 380 Q140 280 290 350 T610 340 L610 500 L-10 500 Z" fill="url(#mountGrad2)"/>
+
+  <!-- Water / Lotus Pond Reflection Base -->
+  <path d="M0 410 Q300 395 600 410 L600 500 L0 500 Z" fill="#047857" opacity="0.95"/>
+  <ellipse cx="300" cy="425" rx="220" ry="25" fill="#065F46" opacity="0.7"/>
+
+  <!-- Golden Floating Lotus Platform -->
+  <g transform="translate(300, 400)">
+    <!-- Base Ripples -->
+    <ellipse cx="0" cy="18" rx="140" ry="14" fill="#FBBF24" opacity="0.35" filter="url(#softGlow)"/>
+    <ellipse cx="0" cy="15" rx="100" ry="10" fill="#34D399" opacity="0.6"/>
+
+    <!-- Lotus Petals Base -->
+    <path d="M-80 12 C-50 25 -20 28 0 28 C20 28 50 25 80 12 C60 -2 30 -5 0 -5 C-30 -5 -60 -2 -80 12 Z" fill="#D97706"/>
+    <!-- Outer Petals Left & Right -->
+    <path d="M-75 10 C-95 -10 -90 -30 -65 -35 C-55 -15 -45 0 -75 10 Z" fill="url(#goldPetal)"/>
+    <path d="M75 10 C95 -10 90 -30 65 -35 C55 -15 45 0 75 10 Z" fill="url(#goldPetal)"/>
+    <!-- Middle Petals -->
+    <path d="M-50 8 C-65 -25 -45 -45 -25 -42 C-20 -20 -30 -5 -50 8 Z" fill="#F59E0B"/>
+    <path d="M50 8 C65 -25 45 -45 25 -42 C20 -20 30 -5 50 8 Z" fill="#F59E0B"/>
+    <path d="M-30 8 C-35 -35 -15 -52 0 -55 C15 -52 35 -35 30 8 Z" fill="#FDE68A"/>
+    <path d="M-20 6 C-20 -30 0 -48 0 -48 C0 -48 20 -30 20 6 Z" fill="#FFFFFF" opacity="0.8"/>
+  </g>
+
+  <!-- Yogi Silhouette in Padmasana (Meditative Pose) -->
+  <g transform="translate(300, 290)">
+    <!-- Aura of the Yogi -->
+    <circle cx="0" cy="-35" r="45" fill="#FEF3C7" opacity="0.5"/>
+    <circle cx="0" cy="-70" r="22" fill="#FDE68A" opacity="0.6"/>
+
+    <!-- Head & Chignon/Topknot -->
+    <circle cx="0" cy="-72" r="16" fill="#1E293B"/>
+    <circle cx="0" cy="-88" r="7" fill="#1E293B"/>
+
+    <!-- Neck & Shoulders -->
+    <path d="M-6 -56 L6 -56 L12 -42 L-12 -42 Z" fill="#1E293B"/>
+    <!-- Torso -->
+    <path d="M-28 -40 C-22 -15 -18 10 -22 30 L22 30 C18 10 22 -15 28 -40 Z" fill="#1E293B"/>
+
+    <!-- Arms in Dhyana Mudra / Gyan Mudra on Knees -->
+    <!-- Left Arm -->
+    <path d="M-26 -38 C-45 -20 -55 5 -60 25 C-52 32 -38 25 -32 20 C-36 10 -30 -10 -18 -30 Z" fill="#1E293B"/>
+    <!-- Right Arm -->
+    <path d="M26 -38 C45 -20 55 5 60 25 C52 32 38 25 32 20 C36 10 30 -10 18 -30 Z" fill="#1E293B"/>
+
+    <!-- Cross Legs (Padmasana) -->
+    <path d="M-68 32 C-60 15 -35 25 0 28 C35 25 60 15 68 32 C65 52 25 55 0 55 C-25 55 -65 52 -68 32 Z" fill="#1E293B"/>
+    <!-- Knees & Feet folds -->
+    <ellipse cx="-52" cy="35" rx="14" ry="9" fill="#0F172A"/>
+    <ellipse cx="52" cy="35" rx="14" ry="9" fill="#0F172A"/>
+    <ellipse cx="0" cy="36" rx="16" ry="7" fill="#0F172A"/>
+
+    <!-- Third Eye Sparkle (Ajna Chakra) -->
+    <circle cx="0" cy="-73" r="2.5" fill="#F59E0B" filter="url(#softGlow)"/>
+    <!-- Heart Chakra (Anahata) gentle glow -->
+    <circle cx="0" cy="-18" r="4" fill="#10B981" opacity="0.8" filter="url(#softGlow)"/>
+  </g>
+
+  <!-- Floating Energy particles / Light Orbs -->
+  <circle cx="210" cy="180" r="3.5" fill="#F59E0B" opacity="0.7"/>
+  <circle cx="390" cy="170" r="3" fill="#F59E0B" opacity="0.6"/>
+  <circle cx="160" cy="270" r="4" fill="#34D399" opacity="0.8"/>
+  <circle cx="440" cy="260" r="3.5" fill="#34D399" opacity="0.7"/>
+  <circle cx="280" cy="110" r="2.5" fill="#FDE68A" opacity="0.9"/>
+  <circle cx="320" cy="115" r="2.5" fill="#FDE68A" opacity="0.9"/>
+
+  <!-- Decorative Sacred Tamil Om in subtle backdrop watermark -->
+  <g transform="translate(480, 70)" opacity="0.18">
+    <circle cx="40" cy="40" r="38" stroke="#D97706" stroke-width="2"/>
+    <text x="40" y="54" font-size="42" font-family="'Noto Sans Tamil', serif" font-weight="900" fill="#B45309" text-anchor="middle">ௐ</text>
+  </g>
+  <g transform="translate(40, 70)" opacity="0.18">
+    <circle cx="40" cy="40" r="38" stroke="#059669" stroke-width="2"/>
+    <text x="40" y="54" font-size="42" font-family="'Noto Sans Tamil', serif" font-weight="900" fill="#059669" text-anchor="middle">ௐ</text>
+  </g>
+</svg>
