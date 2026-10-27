@@ -106,3 +106,199 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* Human-centred UI pass: quieter surfaces, clearer hierarchy, and comfortable touch targets. */
+:root {
+  --ui-ink: #24352f;
+  --ui-muted: #65736c;
+  --ui-paper: #fffdf8;
+  --ui-line: #e7e4d8;
+  --ui-green: #276b52;
+  --ui-green-deep: #1f513f;
+  --ui-sand: #f4efe3;
+  --ui-radius: 16px;
+  --ui-shadow: 0 8px 28px rgba(42, 54, 43, 0.07);
+}
+
+html { scroll-padding-top: 6rem; }
+body {
+  color: var(--ui-ink);
+  background: var(--ui-paper);
+  text-rendering: optimizeLegibility;
+}
+p { line-height: 1.8; }
+h1, h2, h3, h4 { text-wrap: balance; }
+.container { width: min(100% - 2.5rem, 1180px); }
+.section { padding-block: clamp(3.25rem, 6vw, 5.5rem); }
+.section-title-wrap { margin-bottom: clamp(2rem, 4vw, 3rem); }
+.section-title { font-size: clamp(1.8rem, 3.3vw, 2.45rem); letter-spacing: -0.025em; }
+.section-desc { max-width: 66ch; margin-inline: auto; line-height: 1.85; }
+::selection { background: #dcebe0; color: #1e4032; }
+
+/* Keep the palette rooted in natural greens and warm neutrals rather than shiny effects. */
+.main-header {
+  background: rgba(255, 253, 248, 0.96);
+  border-bottom-color: rgba(39, 107, 82, 0.12);
+  box-shadow: 0 3px 14px rgba(38, 50, 42, 0.035);
+}
+.top-notice-bar {
+  background: #285d49;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.top-notice-bar a { color: #fff3d2; }
+.site-logo img { object-fit: contain; }
+.nav-menu { gap: clamp(0.7rem, 1.4vw, 1.25rem); }
+.nav-link { font-size: 0.9rem; }
+.nav-link:hover, .nav-link.active { color: var(--ui-green); }
+.nav-link.active::after { background: var(--ui-green); }
+.lang-select-box {
+  background: #f5f7f2;
+  border-color: #cbd9ce;
+  color: var(--ui-green-deep);
+}
+.btn-primary {
+  background: var(--ui-green);
+  box-shadow: 0 3px 9px rgba(39, 107, 82, 0.16);
+}
+.btn-primary:hover {
+  background: var(--ui-green-deep);
+  box-shadow: 0 5px 14px rgba(39, 107, 82, 0.2);
+}
+.btn-secondary { border-color: #9ab8a5; }
+.btn-secondary:hover { background: #edf5ee; }
+.btn-whatsapp { box-shadow: none; }
+
+/* The hero should feel welcoming and editorial, not like a generated landing-page template. */
+.hero-section {
+  background: linear-gradient(180deg, #f7f5ec 0%, var(--ui-paper) 100%);
+}
+.hero-banner-card {
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 10px 26px rgba(42, 54, 43, 0.08);
+}
+.hero-banner-card img { max-height: 420px; }
+.hero-welcome-tag {
+  background: #edf4e9;
+  border-color: #d8e6d6;
+  color: #285d49;
+}
+.hero-heading {
+  letter-spacing: -0.035em;
+  line-height: 1.16;
+}
+.hero-heading span.highlight { color: var(--ui-green); }
+.hero-subtext { max-width: 58ch; line-height: 1.9; }
+
+/* Shared surfaces: gentle borders, consistent corners, and no excessive hover movement. */
+:where(.card, .feature-card, .course-card, .event-card, .gallery-item, .testimonial-card,
+       .contact-card, .info-card, .stat-card, .plan-card) {
+  border-radius: var(--ui-radius);
+}
+:where(.feature-card, .course-card, .event-card, .testimonial-card, .contact-card, .info-card, .stat-card) {
+  box-shadow: 0 3px 14px rgba(42, 54, 43, 0.045);
+}
+:where(.feature-card, .course-card, .event-card, .testimonial-card, .contact-card, .info-card, .stat-card):hover {
+  box-shadow: var(--ui-shadow);
+}
+:where(.btn-primary, .btn-secondary, .btn-whatsapp, .btn-student-nav) {
+  min-height: 44px;
+}
+:where(input, select, textarea, button) { font-size: max(1rem, 0.95em); }
+:where(.form-input, .form-select, .form-textarea) {
+  min-height: 46px;
+  border-radius: 10px;
+  background: #fffefa;
+}
+:where(.form-textarea, textarea) { min-height: 120px; }
+:where(.form-input, .form-select, .form-textarea):focus {
+  border-color: var(--ui-green);
+  box-shadow: 0 0 0 3px rgba(39, 107, 82, 0.12);
+}
+:where(label, .form-label) { line-height: 1.55; }
+:where(.btn-primary, .btn-secondary, .btn-whatsapp, .plan-card, .slot-pill) {
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
+}
+:where(.btn-primary, .btn-secondary, .btn-whatsapp):hover { transform: translateY(-1px); }
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline-color: #2f785b;
+}
+img { height: auto; }
+:where(.gallery-item, .event-card, .course-card) img {
+  border-radius: 10px;
+}
+
+/* Mobile navigation, forms, and reading widths stay comfortable on smaller screens. */
+@media (max-width: 1080px) {
+  .container { width: min(100% - 2rem, 1180px); }
+  .nav-container { gap: 0.75rem; }
+  .nav-menu { gap: 0.75rem; }
+  .nav-link { font-size: 0.86rem; }
+}
+@media (max-width: 900px) {
+  .main-header .nav-container { flex-wrap: wrap; }
+  .main-header nav { order: 3; width: 100%; }
+  .nav-menu {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem 0 0.75rem;
+    border-top: 1px solid var(--ui-line);
+  }
+  .nav-menu.active { display: flex; }
+  .nav-menu li { width: 100%; }
+  .nav-link {
+    display: block;
+    padding: 0.8rem 0.35rem;
+    border-bottom: 1px solid rgba(231, 228, 216, 0.72);
+    font-size: 0.98rem;
+  }
+  .nav-link.active::after { display: none; }
+  .nav-actions { margin-left: auto; gap: 0.45rem; }
+  .mobile-nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--ui-line);
+    background: #fffefa;
+    font-size: 1.25rem;
+  }
+  .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .hero-heading { font-size: clamp(2.1rem, 7vw, 3rem); }
+}
+@media (max-width: 600px) {
+  .container { width: min(100% - 1.5rem, 1180px); padding-inline: 0; }
+  .section { padding-block: 3rem; }
+  .top-notice-bar { padding: 0.55rem 0.75rem; gap: 0.3rem 0.6rem; font-size: 0.82rem; }
+  .site-logo { gap: 0.45rem; }
+  .site-logo img { height: 43px; max-width: 155px; }
+  .nav-actions { gap: 0.35rem; }
+  .audio-chime-btn { width: 38px; height: 38px; }
+  .lang-select-box { max-width: 100px; padding-inline: 0.5rem; }
+  .btn-primary, .btn-secondary, .btn-whatsapp { padding: 0.72rem 1rem; }
+  .hero-section { padding-bottom: 2.75rem; }
+  .hero-banner-card { margin-bottom: 1.25rem; border-radius: 9px; }
+  .hero-banner-card img { min-height: 150px; object-fit: cover; }
+  .hero-heading { margin-bottom: 0.9rem; }
+  .section-title-wrap { text-align: left; }
+  .section-desc { margin-inline: 0; }
+  .modal-overlay { padding: 0.65rem; }
+  .modal-content { width: 100%; border-radius: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+@media (max-width: 1050px) {
+  .nav-booking-cta { display: none; }
+}
+@media (max-width: 900px) {
+  .btn-student-nav { display: none; }
+}

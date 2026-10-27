@@ -149,21 +149,39 @@ function applyLanguage(lang) {
 function initMobileMenu() {
   const toggleBtn = document.querySelector('.mobile-nav-toggle');
   const navMenu = document.querySelector('.nav-menu');
+  if (!toggleBtn || !navMenu) return;
 
-  if (toggleBtn && navMenu) {
-    toggleBtn.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-      const isExpanded = navMenu.classList.contains('active');
-      toggleBtn.innerHTML = isExpanded ? '✕' : '☰';
-    });
+  const setMenuOpen = (isOpen) => {
+    navMenu.classList.toggle('active', isOpen);
+    toggleBtn.setAttribute('aria-expanded', String(isOpen));
+    toggleBtn.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+    toggleBtn.textContent = isOpen ? '✕' : '☰';
+  };
 
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        if (toggleBtn) toggleBtn.innerHTML = '☰';
-      });
-    });
-  }
+  toggleBtn.setAttribute('aria-controls', navMenu.id || 'primary-navigation');
+  if (!navMenu.id) navMenu.id = 'primary-navigation';
+  setMenuOpen(false);
+
+  toggleBtn.addEventListener('click', () => {
+    setMenuOpen(!navMenu.classList.contains('active'));
+  });
+
+  navMenu.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => setMenuOpen(false));
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && navMenu.classList.contains('active')) {
+      setMenuOpen(false);
+      toggleBtn.focus();
+    }
+  });
+
+  document.addEventListener('click', event => {
+    if (!navMenu.contains(event.target) && !toggleBtn.contains(event.target)) {
+      setMenuOpen(false);
+    }
+  });
 }
 
 // Meditative Chime (Web Audio API Synthesizer - 100% offline!)
