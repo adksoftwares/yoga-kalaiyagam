@@ -226,13 +226,17 @@ function initAdminDashboard() {
         desc
       };
 
-      if (window.cloudDB) {
+      try {
+        if (!window.cloudDB || !window.cloudDB.isCloudConfigured()) throw new Error('Supabase configuration is required.');
         await window.cloudDB.saveEvent(newEvent);
+        addEventForm.reset();
+        await renderEventsTable();
+        updateStats();
+        if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('புதிய நிகழ்வு சேமிக்கப்பட்டது.');
+      } catch (error) {
+        alert('நிகழ்வைச் சேமிக்க முடியவில்லை. Supabase configuration மற்றும் admin RLS அனுமதியைச் சரிபார்க்கவும்.');
+        console.error('[Admin] Event save failed:', error);
       }
-      addEventForm.reset();
-      await renderEventsTable();
-      updateStats();
-      if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('✅ புதிய நிகழ்வு கிளவுடில் சேமிக்கப்பட்டது');
     });
   }
 
@@ -255,13 +259,17 @@ function initAdminDashboard() {
         img
       };
 
-      if (window.cloudDB) {
+      try {
+        if (!window.cloudDB || !window.cloudDB.isCloudConfigured()) throw new Error('Supabase configuration is required.');
         await window.cloudDB.saveGalleryItem(newPhoto);
+        addPhotoForm.reset();
+        await renderGalleryTable();
+        updateStats();
+        if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('புதிய புகைப்படம் சேர்க்கப்பட்டது.');
+      } catch (error) {
+        alert('புகைப்படத்தைச் சேமிக்க முடியவில்லை. Supabase configuration மற்றும் admin RLS அனுமதியைச் சரிபார்க்கவும்.');
+        console.error('[Admin] Gallery save failed:', error);
       }
-      addPhotoForm.reset();
-      await renderGalleryTable();
-      updateStats();
-      if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('✅ புதிய புகைப்படம் சேர்க்கப்பட்டது');
     });
   }
 
@@ -270,11 +278,18 @@ function initAdminDashboard() {
   if (noticeForm) {
     const input = document.getElementById('adminNoticeInput');
     input.value = localStorage.getItem('aiswaryam_top_notice') || '🌸 யோகா கலையகம்: புதிய பயிற்சி தொகுதி மாணவர் சேர்க்கை ஆரம்பமாகியுள்ளது!';
-    noticeForm.addEventListener('submit', (e) => {
+    noticeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!requireAdminSession()) return;
-      localStorage.setItem('aiswaryam_top_notice', input.value);
-      if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('✅ மேல் அறிவிப்பு பட்டி புதுப்பிக்கப்பட்டது');
+      try {
+        if (!window.cloudDB || !window.cloudDB.isCloudConfigured()) throw new Error('Supabase configuration is required.');
+        await window.cloudDB.saveNotice(input.value);
+        localStorage.setItem('aiswaryam_top_notice', input.value);
+        if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('மேல் அறிவிப்பு புதுப்பிக்கப்பட்டது.');
+      } catch (error) {
+        alert('அறிவிப்பைச் சேமிக்க முடியவில்லை. Supabase configuration மற்றும் admin RLS அனுமதியைச் சரிபார்க்கவும்.');
+        console.error('[Admin] Notice save failed:', error);
+      }
     });
   }
 
@@ -351,8 +366,8 @@ async function renderAdminAll() {
   updateStats();
   await renderEventsTable();
   await renderGalleryTable();
-  renderRegistrationsTable();
-  renderBookingsTable();
+  await renderRegistrationsTable();
+  await renderBookingsTable();
 }
 
 function updateStats() {
@@ -401,11 +416,15 @@ async function renderEventsTable() {
 window.deleteEvent = async function(id) {
   if (!requireAdminSession()) return;
   if (!confirm('இந்த நிகழ்வை நிச்சயமாக நீக்க விரும்புகிறீர்களா?')) return;
-  if (window.cloudDB) {
+  try {
+    if (!window.cloudDB || !window.cloudDB.isCloudConfigured()) throw new Error('Supabase configuration is required.');
     await window.cloudDB.deleteEvent(id);
     await renderEventsTable();
     updateStats();
-    if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('🗑️ நிகழ்வு நீக்கப்பட்டது');
+    if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('நிகழ்வு நீக்கப்பட்டது.');
+  } catch (error) {
+    alert('நிகழ்வை நீக்க முடியவில்லை. Supabase configuration மற்றும் admin RLS அனுமதியைச் சரிபார்க்கவும்.');
+    console.error('[Admin] Event delete failed:', error);
   }
 };
 
@@ -433,11 +452,15 @@ async function renderGalleryTable() {
 window.deleteGalleryItem = async function(id) {
   if (!requireAdminSession()) return;
   if (!confirm('இந்த புகைப்படத்தை நீக்கவா?')) return;
-  if (window.cloudDB) {
+  try {
+    if (!window.cloudDB || !window.cloudDB.isCloudConfigured()) throw new Error('Supabase configuration is required.');
     await window.cloudDB.deleteGalleryItem(id);
     await renderGalleryTable();
     updateStats();
-    if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('🗑️ படம் நீக்கப்பட்டது');
+    if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('புகைப்படம் நீக்கப்பட்டது.');
+  } catch (error) {
+    alert('புகைப்படத்தை நீக்க முடியவில்லை. Supabase configuration மற்றும் admin RLS அனுமதியைச் சரிபார்க்கவும்.');
+    console.error('[Admin] Gallery delete failed:', error);
   }
 };
 
