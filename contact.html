@@ -148,7 +148,7 @@
             <h3 style="font-size: 1.4rem; color: #78350F; margin-bottom: 1rem;">விசாரணைப் படிவம் (Quick Inquiry)</h3>
             <p style="font-size: 0.92rem; color: #4B5563; margin-bottom: 1.5rem;">தங்களின் கேள்விகளை அனுப்புங்கள். எங்களின் யோகா ஆலோசகர் உங்களை விரைவில் தொடர்புகொள்வார்.</p>
 
-            <form id="contactInquiryForm" onsubmit="event.preventDefault(); alert('நன்றி! உங்கள் செய்தி பெறப்பட்டது. யோகா கலையகம் ஆலோசகர் விரைவில் தங்களை தொடர்புகொள்வார்.'); this.reset();">
+            <form id="contactInquiryForm">
               <div class="form-group">
                 <label class="form-label">தங்கள் பெயர் (Name) <span class="req">*</span></label>
                 <input type="text" class="form-input" placeholder="பெயர்..." required>
@@ -176,8 +176,10 @@
               </div>
 
               <button type="submit" class="btn-primary" style="width: 100%;">
-                செய்தி அனுப்புக (Send Inquiry)
+                WhatsApp மூலம் தொடர்க (Continue to WhatsApp)
               </button>
+              <p id="contactInquiryStatus" role="status" aria-live="polite" style="margin-top:0.75rem;font-size:0.9rem;color:#4B5563;"></p>
+              <a id="contactWhatsAppFallback" hidden target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display:inline-flex;margin-top:0.5rem;">WhatsApp-ஐத் திறக்கவும்</a>
             </form>
           </div>
 
@@ -213,5 +215,6 @@
   </footer>
 
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/contact.js"></script>
 </body>
 </html>
