@@ -119,6 +119,66 @@ class YogaCloudDB {
     return response;
   }
 
+  isCloudConfigured() {
+    return Boolean(this.config.syncEnabled && this.config.provider === 'supabase' &&
+      this.config.supabaseUrl && this.config.supabaseKey);
+  }
+
+  async submitMembership(record) {
+    if (!this.isCloudConfigured()) return { persisted: false };
+    const payload = {
+      reg_id: record.regId,
+      full_name: record.fullName,
+      phone: record.phone,
+      email: record.email || null,
+      age: /^\\d+$/.test(String(record.age)) ? Number(record.age) : null,
+      gender: record.gender || null,
+      batch: record.batch,
+      branch: record.branch || null,
+      selected_plan: record.selectedPlan,
+      health: record.health || null,
+      address: record.address || null
+    };
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/memberships`, {
+      method: 'POST',
+      headers: {
+        apikey: this.config.supabaseKey,
+        Authorization: `Bearer ${this.config.supabaseKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+    await this.ensureOk(response, 'Submit membership request');
+    return { persisted: true };
+  }
+
+  async submitBooking(record) {
+    if (!this.isCloudConfigured()) return { persisted: false };
+    const payload = {
+      booking_id: record.bookId,
+      full_name: record.name,
+      phone: record.phone,
+      session_type: record.sessionType,
+      booking_date: record.date,
+      slot: record.slot,
+      branch: record.branch,
+      notes: record.notes || null
+    };
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/bookings`, {
+      method: 'POST',
+      headers: {
+        apikey: this.config.supabaseKey,
+        Authorization: `Bearer ${this.config.supabaseKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+    await this.ensureOk(response, 'Submit booking request');
+    return { persisted: true };
+  }
+
   // 1. EVENTS MANAGEMENT (Cloud + Local First)
   async fetchEvents() {
     if (this.config.syncEnabled && this.config.provider === 'supabase' && this.config.supabaseUrl) {
