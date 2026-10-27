@@ -54,6 +54,30 @@ const DEFAULT_GALLERY_ITEMS = [
   }
 ];
 
+// Encode untrusted database/local-storage values before rendering HTML.
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[char]);
+}
+
+function safeImageUrl(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return 'assets/images/banner.jpg';
+  try {
+    const parsed = new URL(raw, window.location.href);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      return 'assets/images/banner.jpg';
+    }
+    if (!/^https?:\/\//i.test(raw) && !raw.startsWith('/') && !raw.startsWith('./') && !raw.startsWith('../')) {
+      return 'assets/images/banner.jpg';
+    }
+    return raw;
+  } catch {
+    return 'assets/images/banner.jpg';
+  }
+}
+
 // 1. DYNAMIC EVENTS RENDERER (Clean real events or friendly announcement)
 async function renderDynamicEvents() {
   const container = document.getElementById('dynamicEventsContainer');
@@ -116,15 +140,15 @@ async function renderDynamicEvents() {
             <div style="padding: 1.5rem; flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                 <span style="background: #FEF3C7; color: #92400E; font-size: 0.8rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 999px;">
-                  📅 ${ev.date} ${ev.time ? '• ' + ev.time : ''}
+                  📅 ${escapeHtml(ev.date)} ${ev.time ? '• ' + escapeHtml(ev.time) : ''}
                 </span>
                 <span style="font-size: 0.75rem; color: #047857; font-weight: 600;">
-                  📍 ${ev.location}
+                  📍 ${escapeHtml(ev.location)}
                 </span>
               </div>
-              <h3 style="font-size: 1.25rem; color: #78350F; margin-bottom: 0.65rem;">${title}</h3>
+              <h3 style="font-size: 1.25rem; color: #78350F; margin-bottom: 0.65rem;">${escapeHtml(title)}</h3>
               <p style="font-size: 0.9rem; color: #4B5563; line-height: 1.5; margin-bottom: 1.25rem;">
-                ${ev.desc || ''}
+                ${escapeHtml(ev.desc || '')}
               </p>
             </div>
             <div style="padding: 1rem 1.5rem; background: #FDFBF7; border-top: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center;">
@@ -158,11 +182,11 @@ async function renderDynamicGallery() {
   }
 
   container.innerHTML = items.map(item => `
-    <div class="gallery-card" data-category="${item.category}">
-      <img src="${item.img}" alt="${item.title}" class="gallery-thumb" onerror="this.src='assets/images/banner.jpg'">
+    <div class="gallery-card" data-category="${escapeHtml(item.category)}">
+      <img src="${escapeHtml(safeImageUrl(item.img))}" alt="${escapeHtml(item.title)}" class="gallery-thumb" loading="lazy" onerror="this.onerror=null;this.src='assets/images/banner.jpg'">
       <div class="gallery-info">
-        <h4 class="gallery-title">${item.title}</h4>
-        <p class="gallery-meta">📍 ${item.meta}</p>
+        <h4 class="gallery-title">${escapeHtml(item.title)}</h4>
+        <p class="gallery-meta">📍 ${escapeHtml(item.meta)}</p>
       </div>
     </div>
   `).join('');
