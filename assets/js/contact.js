@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
       fallbackLink.hidden = false;
     }
     if (status) status.textContent = 'உங்கள் செய்தி WhatsApp-ல் தயார். திறக்கும் சாளரத்தில் Send அழுத்தினால் மட்டுமே செய்தி அனுப்பப்படும்.';
-    const popup = window.open(url, '_blank', 'noopener,noreferrer');
-    if (!popup && status) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+    if (status) {
       status.textContent += ' WhatsApp திறக்கவில்லை என்றால் கீழே உள்ள இணைப்பைத் தேர்ந்தெடுக்கவும்.';
     }
   });
