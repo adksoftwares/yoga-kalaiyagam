@@ -413,27 +413,18 @@
             <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
               🔐 நிர்வாக கடவுச்சொல் மாற்றம் (Security Settings)
             </h3>
-            <p style="font-size: 0.9rem; color: #64748B; margin-bottom: 1.5rem;">
-              உங்கள் நிர்வாக கணக்கின் கடவுச்சொல்லை SHA-256 என்க்ரிப்ஷன் முறையில் பாதுகாப்பாக மாற்றலாம்.
-            </p>
-
-            <form id="adminChangePassForm" style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; max-width: 500px;">
-              <div class="form-group">
-                <label class="form-label">தற்போதைய கடவுச்சொல் (Current Password) <span class="req">*</span></label>
-                <input type="password" id="currPass" class="form-input" placeholder="Supabase Auth password" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">புதிய கடவுச்சொல் (New Password) <span class="req">*</span></label>
-                <input type="password" id="newPass" class="form-input" placeholder="குறைந்தது 6 எழுத்துகள்" minlength="6" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">புதிய கடவுச்சொல்லை உறுதிப்படுத்துக (Confirm) <span class="req">*</span></label>
-                <input type="password" id="confPass" class="form-input" placeholder="மீண்டும் உள்ளிடவும்" required>
-              </div>
-              <button type="submit" class="btn-primary" style="padding: 0.65rem 1.75rem;">
-                கடவுச்சொல்லை மாற்று (Update Password)
-              </button>
-            </form>
+            <div style="background:#FFFDF8;border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:1.5rem;max-width:640px;">
+              <h4 style="color:#92400E;margin-bottom:.6rem;">கடவுச்சொல் மற்றும் கணக்கு பாதுகாப்பு</h4>
+              <p style="font-size:.92rem;color:#4B5563;margin-bottom:.75rem;">
+                இந்த இணையதளம் browser-ல் கடவுச்சொற்களைச் சேமிக்காது. நிர்வாகக் கணக்கின் password reset மற்றும் MFA போன்ற பாதுகாப்பு அமைப்புகளை Supabase Authentication dashboard-ல் நிர்வகிக்கவும்.
+              </p>
+              <ul style="padding-left:1.25rem;color:#4B5563;font-size:.9rem;display:grid;gap:.45rem;">
+                <li>தனித்துவமான வலுவான கடவுச்சொல்லைப் பயன்படுத்தவும்.</li>
+                <li>Admin பயனருக்கு மட்டும் `app_metadata.role = "admin"` வழங்கவும்.</li>
+                <li>பொதுப் பயனருக்கு admin role வழங்க வேண்டாம்.</li>
+                <li>அணுகல் இழந்தால் Supabase Auth வழியாக password reset செய்யவும்.</li>
+              </ul>
+            </div>
           </div>
 
         </main>
