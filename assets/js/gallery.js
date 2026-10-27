@@ -69,7 +69,8 @@ function safeImageUrl(value) {
     if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
       return 'assets/images/banner.jpg';
     }
-    if (!/^https?:\/\//i.test(raw) && !raw.startsWith('/') && !raw.startsWith('./') && !raw.startsWith('../')) {
+    const hasExplicitScheme = /^[a-z][a-z\\d+.-]*:/i.test(raw);
+    if (hasExplicitScheme && parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
       return 'assets/images/banner.jpg';
     }
     return raw;
