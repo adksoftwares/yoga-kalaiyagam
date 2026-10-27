@@ -78,31 +78,22 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.open(CACHE_NAME).then(async (cache) => {
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    try {
+      const response = await fetch(request);
+      if (response && response.ok && response.type === 'basic') {
+        cache.put(request, response.clone()).catch(() => {});
+      }
+      return response;
+    } catch (error) {
       const cached = await cache.match(request);
-      const network = fetch(request).then((response) => {
-        if (response && response.ok && response.type === 'basic') {
-          cache.put(request, response.clone()).catch(() => {});
-        }
-        return response;
-      });
-
-      if (cached) {
-        // Refresh the cached static asset without delaying the current response.
-        event.waitUntil(network.catch(() => {}));
-        return cached;
+      if (cached) return cached;
+      if (request.mode === 'navigate') {
+        const fallback = await cache.match('./index.html');
+        if (fallback) return fallback;
       }
-
-      try {
-        return await network;
-      } catch (error) {
-        if (request.mode === 'navigate') {
-          const fallback = await cache.match('./index.html');
-          if (fallback) return fallback;
-        }
-        throw error;
-      }
-    })
-  );
+      throw error;
+    }
+  })());
 });
