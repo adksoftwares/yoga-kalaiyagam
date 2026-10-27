@@ -22,7 +22,7 @@ function safeImageUrl(value) {
     if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
       return 'assets/images/banner.jpg';
     }
-    const hasExplicitScheme = /^[a-z][a-z\\d+.-]*:/i.test(raw);
+    const hasExplicitScheme = /^[a-z][a-z\d+.-]*:/i.test(raw);
     if (hasExplicitScheme && parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
       return 'assets/images/banner.jpg';
     }
