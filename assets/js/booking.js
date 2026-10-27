@@ -35,7 +35,7 @@ function initBookingSystem() {
       dateInput.min = new Date().toISOString().split('T')[0];
     }
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name = document.getElementById('bookName').value.trim();
@@ -64,16 +64,26 @@ function initBookingSystem() {
         createdDate: new Date().toLocaleDateString()
       };
 
-      // Store in LocalStorage
-      const bookings = JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]');
-      bookings.push(bookingData);
-      localStorage.setItem('aiswaryam_bookings', JSON.stringify(bookings));
+      // Persist centrally when configured. A request is not a confirmed reservation.
+      let persisted = false;
+      try {
+        if (window.cloudDB) {
+          const result = await window.cloudDB.submitBooking(bookingData);
+          persisted = Boolean(result && result.persisted);
+        }
+      } catch (error) {
+        alert('முன்பதிவு கோரிக்கையைச் சேமிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும் அல்லது WhatsApp வழியாகத் தொடர்புகொள்ளவும்.');
+        console.error('[Booking] Submission failed:', error);
+        return;
+      }
 
-      // Populate Pass Modal
+      bookingData.status = persisted ? 'Pending confirmation' : 'Draft — send via WhatsApp';
       showBookingPass(bookingData);
 
       if (window.AiswaryamYoga && window.AiswaryamYoga.showToast) {
-        window.AiswaryamYoga.showToast('✅ முன்பதிவு உறுதி செய்யப்பட்டது!');
+        window.AiswaryamYoga.showToast(persisted
+          ? 'முன்பதிவு கோரிக்கை பெறப்பட்டது. நேரம் நிர்வாகியால் உறுதிப்படுத்தப்படும்.'
+          : 'கோரிக்கை தயார். உறுதிப்படுத்த WhatsApp பொத்தானைத் தேர்ந்தெடுக்கவும்.');
       }
     });
   }
