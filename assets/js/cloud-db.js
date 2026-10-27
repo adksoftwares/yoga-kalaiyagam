@@ -360,37 +360,88 @@ class YogaCloudDB {
     return current;
   }
 
-  // 3. COMPLETE DATABASE EXPORT & BACKUP
-  exportFullBackup() {
-    const backup = {
-      exportDate: new Date().toISOString(),
-      centre: 'Yoga Studio Batticaloa',
-      events: JSON.parse(localStorage.getItem('aiswaryam_events') || '[]'),
-      gallery: JSON.parse(localStorage.getItem('aiswaryam_gallery') || '[]'),
-      memberships: JSON.parse(localStorage.getItem('aiswaryam_memberships') || '[]'),
-      bookings: JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]'),
-      notice: localStorage.getItem('aiswaryam_top_notice') || ''
-    };
+  // 3. Export a backup from the central database when configured.
+  async exportFullBackup() {
+    let backup;
+    if (this.isCloudConfigured()) {
+      const [events, gallery, memberships, bookings, notice] = await Promise.all([
+        this.fetchEvents(),
+        this.fetchGallery(),
+        this.fetchAdminRecords('memberships'),
+        this.fetchAdminRecords('bookings'),
+        this.fetchNotice()
+      ]);
+      backup = {
+        exportDate: new Date().toISOString(),
+        centre: 'Yoga Studio Batticaloa',
+        source: 'supabase',
+        events,
+        gallery,
+        memberships,
+        bookings,
+        site_settings: notice ? [{ id: 'top_notice', value: notice }] : []
+      };
+    } else {
+      backup = {
+        exportDate: new Date().toISOString(),
+        centre: 'Yoga Studio Batticaloa',
+        source: 'local-cache',
+        events: JSON.parse(localStorage.getItem('aiswaryam_events') || '[]'),
+        gallery: JSON.parse(localStorage.getItem('aiswaryam_gallery') || '[]'),
+        memberships: [],
+        bookings: [],
+        site_settings: []
+      };
+    }
 
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
-    const dlAnchorElem = document.createElement('a');
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", `YogaStudio_Batticaloa_Backup_${new Date().toISOString().slice(0,10)}.json`);
-    dlAnchorElem.click();
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `YogaStudio_Batticaloa_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  // 4. RESTORE DATABASE FROM JSON BACKUP
-  importFullBackup(jsonContent) {
+  // 4. Merge a backup into Supabase using admin-only RLS; never destructively replace tables.
+  async importFullBackup(jsonContent) {
     try {
       const data = JSON.parse(jsonContent);
-      if (data.events) localStorage.setItem('aiswaryam_events', JSON.stringify(data.events));
-      if (data.gallery) localStorage.setItem('aiswaryam_gallery', JSON.stringify(data.gallery));
-      if (data.memberships) localStorage.setItem('aiswaryam_memberships', JSON.stringify(data.memberships));
-      if (data.bookings) localStorage.setItem('aiswaryam_bookings', JSON.stringify(data.bookings));
-      if (data.notice) localStorage.setItem('aiswaryam_top_notice', data.notice);
+      if (!data || typeof data !== 'object' || Array.isArray(data)) return false;
+
+      if (this.isCloudConfigured()) {
+        const tables = [
+          ['events', data.events, 'id'],
+          ['gallery', data.gallery, 'id'],
+          ['memberships', data.memberships, 'reg_id'],
+          ['bookings', data.bookings, 'booking_id'],
+          ['site_settings', data.site_settings || (data.notice ? [{ id: 'top_notice', value: data.notice }] : []), 'id']
+        ];
+        for (const [table, rows, conflictKey] of tables) {
+          if (!Array.isArray(rows) || rows.length === 0) continue;
+          const response = await fetch(
+            `${this.config.supabaseUrl}/rest/v1/${table}?on_conflict=${encodeURIComponent(conflictKey)}`,
+            {
+              method: 'POST',
+              headers: this.getAuthHeaders({
+                'Content-Type': 'application/json',
+                Prefer: 'resolution=merge-duplicates,return=minimal'
+              }),
+              body: JSON.stringify(rows)
+            }
+          );
+          await this.ensureOk(response, `Restore ${table}`);
+        }
+        return true;
+      }
+
+      // Local-only import is retained for older offline caches.
+      if (Array.isArray(data.events)) localStorage.setItem('aiswaryam_events', JSON.stringify(data.events));
+      if (Array.isArray(data.gallery)) localStorage.setItem('aiswaryam_gallery', JSON.stringify(data.gallery));
+      if (typeof data.notice === 'string') localStorage.setItem('aiswaryam_top_notice', data.notice);
       return true;
-    } catch (e) {
-      console.error('Invalid backup file', e);
+    } catch (error) {
+      console.error('[CloudDB] Backup import failed:', error);
       return false;
     }
   }
