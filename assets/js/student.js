@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', initStudentPortal);
 
 function getStudentAuthConfig() {
   const config = window.YOGA_SUPABASE_CONFIG || {};
-  return { url: String(config.url || '').replace(/\\/$/, ''), anonKey: String(config.anonKey || '') };
+  return { url: String(config.url || '').replace(/\/+$/, ''), anonKey: String(config.anonKey || '') };
 }
 
 async function verifyStudentSession(token, config) {
