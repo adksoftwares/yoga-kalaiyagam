@@ -64,6 +64,12 @@ create table if not exists public.bookings (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.site_settings (
+  id text primary key,
+  value text not null default '',
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.student_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   student_id text not null unique,
@@ -117,3 +123,11 @@ grant insert on public.memberships, public.bookings to anon, authenticated;
 grant select, update, delete on public.memberships, public.bookings to authenticated;
 grant select on public.student_profiles to authenticated;
 grant insert, update, delete on public.student_profiles to authenticated;
+
+alter table public.site_settings enable row level security;
+drop policy if exists "Public can read announcements" on public.site_settings;
+create policy "Public can read announcements" on public.site_settings for select to anon, authenticated using (true);
+drop policy if exists "Admins manage announcements" on public.site_settings;
+create policy "Admins manage announcements" on public.site_settings for all to authenticated using (public.is_yoga_admin()) with check (public.is_yoga_admin());
+grant select on public.site_settings to anon, authenticated;
+grant insert, update, delete on public.site_settings to authenticated;
