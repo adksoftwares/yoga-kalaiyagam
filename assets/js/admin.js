@@ -569,20 +569,45 @@ async function renderBookingsTable() {
   }).join('');
 }
 
-function exportBookingsCSV() {
-  const bookings = JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]');
-  if (bookings.length === 0) {
+async function exportBookingsCSV() {
+  let bookings = [];
+  try {
+    if (window.cloudDB && window.cloudDB.isCloudConfigured() && adminAuthenticated) {
+      bookings = await window.cloudDB.fetchAdminRecords('bookings');
+    } else {
+      bookings = JSON.parse(localStorage.getItem('aiswaryam_bookings') || '[]');
+    }
+  } catch (error) {
+    alert('முன்பதிவுகளை ஏற்றுமதி செய்ய முடியவில்லை. Cloud/RLS அமைப்பைச் சரிபார்க்கவும்.');
+    console.error('[Admin] Booking export failed:', error);
+    return;
+  }
+  if (!bookings.length) {
     alert('ஏற்றுமதி செய்வதற்கு முன்பதிவுகள் எதுவும் இல்லை.');
     return;
   }
-  let csv = 'BookID,Name,Phone,Session,Date,Slot,Branch\n';
-  bookings.forEach(b => {
-    csv += `"${b.bookId}","${b.name}","${b.phone}","${b.sessionType}","${b.date}","${b.slot}","${b.branch}"\n`;
-  });
 
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const csvCell = (value) => {
+    let text = String(value ?? '');
+    if (/^[=+@\\-\\t\\r]/.test(text)) text = "'" + text;
+    return '"' + text.replace(/"/g, '""') + '"';
+  };
+  const rows = [['BookID','Name','Phone','Session','Date','Slot','Branch']];
+  bookings.forEach((item) => rows.push([
+    item.booking_id || item.bookId,
+    item.full_name || item.name,
+    item.phone,
+    item.session_type || item.sessionType,
+    item.booking_date || item.date,
+    item.slot,
+    item.branch
+  ]));
+  const csv = rows.map(row => row.map(csvCell).join(',')).join('\\r\\n');
+  const blob = new Blob(['\\uFEFF', csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
+  const objectUrl = URL.createObjectURL(blob);
+  link.href = objectUrl;
   link.download = `YogaStudio_Batticaloa_Bookings_${new Date().toISOString().slice(0,10)}.csv`;
   link.click();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 }
