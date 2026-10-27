@@ -63,13 +63,13 @@
 
         <form id="studentLoginForm">
           <div class="form-group" style="text-align: left;">
-            <label class="form-label" for="studentIdInput">மாணவர் ஐடி (Student ID) / தொலைபேசி எண் <span class="req">*</span></label>
-            <input type="text" id="studentIdInput" class="form-input" placeholder="எ.கா: AY-101 அல்லது 0776064846" required>
+            <label class="form-label" for="studentEmailInput">மின்னஞ்சல் முகவரி (Email) <span class="req">*</span></label>
+            <input type="email" id="studentEmailInput" class="form-input" autocomplete="username" placeholder="you@example.com" required>
           </div>
 
           <div class="form-group" style="text-align: left;">
-            <label class="form-label" for="studentPhoneInput">கடவுச்சொல் / தொலைபேசி உறுதிப்படுத்தல்</label>
-            <input type="password" id="studentPhoneInput" class="form-input" placeholder="தொலைபேசி எண் (0776064846)">
+            <label class="form-label" for="studentPasswordInput">கடவுச்சொல் (Password) <span class="req">*</span></label>
+            <input type="password" id="studentPasswordInput" class="form-input" autocomplete="current-password" minlength="8" required>
           </div>
 
           <button type="submit" class="btn-primary" style="width: 100%; font-size: 1rem; padding: 0.8rem;">
@@ -77,10 +77,8 @@
           </button>
         </form>
 
-        <div style="margin-top: 1.5rem; padding: 0.85rem; background: #FEF3C7; border-radius: 8px; font-size: 0.82rem; color: #92400E; text-align: left;">
-          💡 <strong>மாதிரி மாணவர் விபரம் (Demo Login):</strong><br>
-          • மாணவர் ஐடி (ID): <code>AY-101</code><br>
-          • தொலைபேசி எண்: <code>0776064846</code>
+        <div id="studentAuthNotice" role="status" style="margin-top: 1.5rem; padding: 0.85rem; background: #FEF3C7; border-radius: 8px; font-size: 0.82rem; color: #92400E; text-align: left;">
+          பாதுகாப்பான மாணவர் உள்நுழைவுக்கு மையத்தின் நிர்வாகி உருவாக்கிய கணக்கு தேவை. Demo credentials பயன்படுத்தப்படாது.
         </div>
 
         <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #6B7280;">
@@ -246,6 +244,7 @@
   </footer>
 
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/supabase-config.js"></script>
   <script src="assets/js/student.js"></script>
   <script src="assets/js/pwa.js"></script>
 </body>
