@@ -508,7 +508,7 @@ async function renderRegistrationsTable() {
     const name = item.full_name || item.fullName || '';
     const plan = item.selected_plan || item.selectedPlan || '';
     const batch = item.batch || '';
-    const health = item.health || '';
+    const status = item.status || 'pending';
     const safePhone = phone.replace(/[^0-9]/g, '');
     return `
     <tr>
