@@ -150,7 +150,7 @@ class YogaCloudDB {
 
   async saveNotice(value) {
     if (!this.isCloudConfigured()) throw new Error('Supabase is not configured.');
-    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/site_settings`, {
+    const response = await fetch(`${this.config.supabaseUrl}/rest/v1/site_settings?on_conflict=id`, {
       method: 'POST',
       headers: this.getAuthHeaders({
         'Content-Type': 'application/json',
