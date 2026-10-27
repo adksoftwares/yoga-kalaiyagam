@@ -47,8 +47,8 @@
           <button type="submit" class="btn-primary" style="width: 100%; padding: 0.75rem;">உள்நுழைக (Login)</button>
         </form>
 
-        <div style="margin-top: 1.25rem; font-size: 0.8rem; color: #94A3B8;">
-          குறிப்பு: இயல்புநிலை கடவுச்சொல்: <code>admin123</code>
+        <div id="adminAuthNotice" role="status" style="margin-top: 1.25rem; padding: 0.9rem; background: #FEF3C7; color: #92400E; border-radius: 10px; font-size: 0.85rem;">
+          பாதுகாப்பான நிர்வாக உள்நுழைவுக்கு Supabase Auth அமைப்பு தேவை. Demo/default password பயன்படுத்தப்படாது.
         </div>
 
         <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed #E2E8F0;">
@@ -464,6 +464,7 @@
   </section>
 
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/supabase-config.js"></script>
   <script src="assets/js/cloud-db.js"></script>
   <script src="assets/js/admin.js"></script>
 </body>
