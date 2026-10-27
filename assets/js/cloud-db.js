@@ -69,7 +69,16 @@ class YogaCloudDB {
         supabaseKey: publicConfig.anonKey || '',
         syncEnabled: Boolean(publicConfig.url && publicConfig.anonKey)
       };
-      return cfg ? { ...defaults, ...JSON.parse(cfg) } : defaults;
+      if (!cfg) return defaults;
+      const saved = JSON.parse(cfg);
+      return {
+        ...defaults,
+        ...saved,
+        supabaseUrl: publicConfig.url || saved.supabaseUrl || '',
+        supabaseKey: publicConfig.anonKey || saved.supabaseKey || '',
+        provider: publicConfig.url && publicConfig.anonKey ? 'supabase' : (saved.provider || 'local'),
+        syncEnabled: publicConfig.url && publicConfig.anonKey ? true : Boolean(saved.syncEnabled)
+      };
     } catch (e) {
       const publicConfig = window.YOGA_SUPABASE_CONFIG || {};
       return {
