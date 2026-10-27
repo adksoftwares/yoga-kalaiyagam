@@ -329,10 +329,15 @@ function initAdminDashboard() {
   // Full Database Backup & Restore buttons
   const exportBtn = document.getElementById('exportDbBtn');
   if (exportBtn && window.cloudDB) {
-    exportBtn.addEventListener('click', () => {
+    exportBtn.addEventListener('click', async () => {
       if (!requireAdminSession()) return;
-      window.cloudDB.exportFullBackup();
-      if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('📥 தரவுத்தள காப்புப் பிரதி (JSON Backup) பதிவிறக்கப்பட்டது!');
+      try {
+        await window.cloudDB.exportFullBackup();
+        if (window.AiswaryamYoga) window.AiswaryamYoga.showToast('காப்புப் பிரதி பதிவிறக்கப்பட்டது.');
+      } catch (error) {
+        alert('காப்புப் பிரதி உருவாக்க முடியவில்லை. Supabase அனுமதிகள் மற்றும் இணைப்பைச் சரிபார்க்கவும்.');
+        console.error('[Admin] Backup export failed:', error);
+      }
     });
   }
 
@@ -344,13 +349,13 @@ function initAdminDashboard() {
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = (event) => {
-        const success = window.cloudDB.importFullBackup(event.target.result);
+      reader.onload = async (event) => {
+        const success = await window.cloudDB.importFullBackup(event.target.result);
         if (success) {
-          alert('✅ தரவுத்தளம் வெற்றிகரமாக மீட்டமைக்கப்பட்டது!');
+          alert('காப்புப் பிரதி merge செய்யப்பட்டது. ஏற்கனவே உள்ள பதிவுகள் நீக்கப்படவில்லை.');
           window.location.reload();
         } else {
-          alert('தவறான JSON கோப்பு.');
+          alert('காப்புப் பிரதி இறக்குமதி செய்ய முடியவில்லை. கோப்பு வடிவம் மற்றும் Supabase அனுமதிகளைச் சரிபார்க்கவும்.');
         }
       };
       reader.readAsText(file);
