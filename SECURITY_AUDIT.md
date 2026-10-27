@@ -1,130 +1,123 @@
-# Yoga Kalaiyagam — Repository Audit
+# Yoga Kalaiyagam — Code & Security Audit
 
-Audit date: 2026-10-28  
-Branch reviewed: `main` at `c49d380f7407822e3cc15f77eeecd092edc08714`  
-Scope: tracked HTML, CSS, JavaScript, PWA manifest/service worker, README, and bundled ZIP metadata.  
-Method: static code inspection. This is not a penetration test or an end-to-end browser test.
+Audit update: 2026-10-28  
+Repository: `adksoftwares/yoga-kalaiyagam`  
+Base reviewed: `main` at `c49d380f7407822e3cc15f77eeecd092edc08714`  
+Working branch: `audit/safe-hardening`  
+Review method: repository-wide static source inspection plus GitHub Actions checks. No browser end-to-end run or live Supabase penetration/RLS test was performed.
 
-## Executive summary
+## Summary
 
-The repository is a static HTML/CSS/JavaScript website with a PWA shell and optional browser-side Supabase REST integration. There is no application server, server-side session validation, automated test suite, or deployment/security-header configuration in the current source tree. The current version should **not** be treated as production-safe for admin management or private student data.
+The site is a static HTML/CSS/JavaScript PWA. This branch keeps the existing branding, pages, images and multilingual navigation while replacing insecure demo authentication patterns, making booking/membership pages usable, improving data handling and documenting the backend setup.
 
-## Repository inventory
+**Important:** secure admin/student login and central persistence only become active after a Supabase project is configured and its schema/RLS is applied. The repository cannot configure a third-party database without project access and credentials. The default public configuration intentionally contains no keys, so admin/student login fails closed instead of using a public demo password.
+
+## File inventory
 
 - Public pages: `index.html`, `about.html`, `courses.html`, `events.html`, `contact.html`
-- User workflows: `booking.html`, `membership.html`, `student-portal.html`
-- Admin UI: `admin.html`
-- Styles: `assets/css/style.css`, `assets/css/animations.css`
-- Browser scripts: `assets/js/main.js`, `cloud-db.js`, `admin.js`, `booking.js`, `membership.js`, `student.js`, `gallery.js`, `pranayama.js`, `pwa.js`
-- PWA: `manifest.json`, `sw.js`, `assets/images/icons/*`
-- Media: `assets/images/*`
-- A bundled ZIP, `Aiswaryam_Yoga_Website.zip`, is committed alongside the source. It can drift from the actual source and should be regenerated from the reviewed version when distributing.
+- Request forms: `booking.html`, `membership.html`
+- Authenticated portals: `student-portal.html`, `admin.html`
+- Styles: `assets/css/style.css`, `assets/css/animations.css`, `assets/css/polish.css`
+- Scripts: `assets/js/main.js`, `cloud-db.js`, `admin.js`, `booking.js`, `membership.js`, `student.js`, `gallery.js`, `contact.js`, `pwa.js`, `pranayama.js`, `supabase-config.js`
+- Backend schema and setup: `supabase/schema.sql`, `SUPABASE_SETUP.md`
+- Repeatable checks: `scripts/check-static-site.mjs`, `.github/workflows/static-audit.yml`
 
-## Findings by severity
+## Findings and remediation
 
-### Critical — Admin authentication is client-side only
+### Critical — Original admin login trusted browser storage
 
-Files: `admin.html`, `assets/js/admin.js`
+**Original issue:** the previous code included a known `admin123` hash and displayed the password; it treated a browser sessionStorage value as authentication. Password changes were browser-local.
 
-- The source contains a known SHA-256 hash for the password `admin123`, and the login page explicitly displays that password.
-- The username is hard-coded to `admin`.
-- A value in `sessionStorage` is treated as an authenticated session without server verification; a visitor can set browser storage from developer tools.
-- Password changes are stored only in `localStorage`, so they are browser-specific and do not secure the site for other visitors.
-- SHA-256 alone is not an appropriate password-storage system. More importantly, hashing in public JavaScript cannot protect an admin account.
+**Changes in this branch:**
+- Removed the default-password login path and public password hint.
+- Admin login now uses Supabase Auth, verifies the access token against the Auth API, and checks `app_metadata.role === "admin"`.
+- Admin actions require an in-memory verified session; cloud writes use the authenticated access token.
+- Database write permissions are designed around the `public.is_yoga_admin()` RLS policy.
+- If Supabase settings are absent, the admin login stays disabled.
 
-**Required fix:** move authentication and authorization to a server-side service; store passwords using a modern password-hashing algorithm (Argon2id or bcrypt), use secure session cookies, rate-limit login attempts, and check authorization on every write/delete endpoint. Until that exists, do not use this dashboard to manage sensitive or business-critical data on a public deployment.
+**Still required:** set project URL/anon key in `assets/js/supabase-config.js`, create the admin Auth account, assign trusted app metadata, apply the SQL schema, and test with a non-admin account to prove write denial.
 
-### Critical — Student portal has a public demo bypass
+### Critical — Original student portal used demo data and phone-only matching
 
-Files: `student-portal.html`, `assets/js/student.js`
+**Original issue:** the previous student script exposed a demo student profile and allowed local membership/phone matching. Static HTML also contained a sample meeting ID/password.
 
-- Demo student ID and phone values are embedded in the page and JavaScript.
-- The login checks locally stored membership records and can match either the registration ID or phone field; this is not proof of identity.
-- Student profile/session data is stored in `sessionStorage` and is never verified by a server.
+**Changes in this branch:**
+- Removed the demo student credentials and profile fallback.
+- Student login now uses email/password through Supabase Auth.
+- The profile is loaded by authenticated user ID from `student_profiles`; RLS restricts reads to that student or an admin.
+- Removed the public sample meeting credentials and fake default student ID/streak.
+- Student access fails closed if Supabase is not configured or no profile is assigned.
 
-**Required fix:** remove demo access from production; add server-side student authentication, verified account recovery, and per-student authorization. Never return another student's profile based only on an ID or phone number.
+**Still required:** create each student Auth user and a matching `student_profiles` row; configure the project and test authorization.
 
-### High — Booking and membership are browser-local, not centralized
+### High — Booking and membership pages were “Coming Soon”
 
-Files: `assets/js/booking.js`, `assets/js/membership.js`, `assets/js/admin.js`, `assets/js/cloud-db.js`
+**Original issue:** `booking.html` and `membership.html` did not contain the forms expected by their scripts.
 
-- Bookings and memberships are written to `localStorage`; data does not automatically reach the studio or another device.
-- Browser clearing, private mode, device changes, or storage failures can remove or hide records.
-- Admin tables read these records from the same browser, so they are not a reliable central register.
-- The booking form's WhatsApp action opens a pre-filled message; that is not a server-confirmed booking or slot reservation.
+**Changes in this branch:**
+- Added responsive request forms and request-summary modals.
+- Added WhatsApp handoff and made copy clear that a request is not a confirmed booking, membership, or payment.
+- Added optional Supabase insertion for central request storage.
+- Stopped saving membership/health details into localStorage. The central membership schema also excludes health details; health notes are only included in the WhatsApp draft the visitor chooses to send.
+- Fixed local-date handling and reduced request-ID collision likelihood.
 
-**Required fix:** persist records in a central database through an authorized backend/API; validate fields on the server; define booking statuses; prevent duplicate/over-capacity slots transactionally; send explicit confirmation only after persistence succeeds. Treat phone numbers and registration details as personal data.
+**Still required:** add anti-spam/rate limiting (preferably a server-side/Edge Function with CAPTCHA verification), verify date/slot availability transactionally, and have studio staff confirm requests. Direct anonymous REST inserts are not a complete abuse-prevention strategy.
 
-### High — Cloud synchronization can silently diverge
+### High — Cloud writes could fail silently
 
-File: `assets/js/cloud-db.js`
+**Changes in this branch:**
+- Added explicit HTTP response checks for event/gallery writes and deletes.
+- Cloud data is now treated as empty when the server returns an empty array instead of silently reusing old local data.
+- Admin record tables and statistics can read central membership/booking records with the authenticated admin token.
+- Shared announcements are stored in `site_settings` and can be read publicly as plain text.
+- Booking CSV export supports central records and neutralizes spreadsheet formula-leading cells.
 
-- Supabase REST calls are made from the browser. An anon/public key is visible by design, so strict Supabase Row Level Security (RLS) and least-privilege policies are mandatory; a public key is not an admin secret.
-- Save/delete paths do not consistently check HTTP response status, so a failed REST request can be logged or ignored while the local copy has already changed.
-- Fetch logic only returns cloud arrays when they contain at least one row. An intentionally empty cloud table may therefore fall back to stale local data.
-- The schema, constraints, RLS policies, backups, and actual project configuration were not available for verification.
+**Still required:** deploy schema/RLS, check policies against the real Supabase project, and add backup/restore and conflict-resolution procedures. Public anon keys are expected to be visible; never use a service-role key in frontend code.
 
-**Required fix:** define and version the schema, verify RLS for every table, check all HTTP statuses and response bodies, surface sync failures in the UI, define a deterministic cloud-vs-cache policy, and add backup/restore tests. Do not place a Supabase service-role key in browser code.
+### High — Dynamic HTML could enable stored XSS
 
-### High — Stored XSS risk in dynamic rendering
+**Changes in this branch:**
+- Escaped untrusted event/gallery/registration/booking values before rendering.
+- Validated gallery image URL protocols.
+- Changed announcement rendering from `innerHTML` to `textContent`.
+- Added `noopener noreferrer` to new-tab contact links where applicable.
 
-Files: `assets/js/admin.js`, `assets/js/gallery.js`, `assets/js/main.js`
+**Still required:** add a restrictive Content Security Policy and server-side validation; escaping in a static frontend is defense-in-depth, not a replacement for safe data policies.
 
-- Event/gallery fields and the announcement are interpolated into `innerHTML`.
-- Data can originate from admin input, local storage, or cloud rows. If untrusted markup is rendered, it may execute in a visitor's browser.
+### Medium — Contact form falsely claimed delivery
 
-**Changes in this audit branch:** added HTML escaping for dynamic event/gallery fields in admin/public renderers, validated image URL protocols, and changed announcements to render as plain text. These are defence-in-depth fixes, not a substitute for server validation or a restrictive Content Security Policy.
+**Changes in this branch:** the contact form now builds a WhatsApp enquiry, displays an explicit status, and provides a fallback link. It does not claim a message was delivered before the visitor sends it.
 
-### Medium — Contact form reports success without delivery
+### Medium — PWA cache scope and accessibility
 
-File: `contact.html`
+**Changes in this branch:**
+- Service worker caches an explicit allowlist of same-origin public assets, avoids precaching the student portal, and deletes only this app's old cache names.
+- Added focus-visible styles, reduced-motion support, restrained interactions and modal styling.
+- Added new scripts/styles to the cache allowlist.
 
-- The form's inline submit handler displays a success alert and resets the form, but no server, email provider, or WhatsApp handoff is called.
+### Medium — Documentation drift
 
-**Required fix:** connect the form to an actual delivery mechanism, report success only after it succeeds, show errors on failure, and add server-side validation and abuse protection.
+**Changes in this branch:** README and setup instructions now describe the actual code paths, explain configuration, and warn that the committed ZIP is a legacy snapshot rather than the authoritative source.
 
-### Medium — PWA cache policy was too broad
+## CI checks
 
-File: `sw.js`
+GitHub Actions runs `node scripts/check-static-site.mjs` to validate:
+- JavaScript syntax for `.js` and `.mjs` files
+- JSON parsing
+- Local HTML `src` and `href` references
 
-- The previous fetch handler could cache arbitrary successful GET responses, including cross-origin responses.
-- Cache cleanup could delete unrelated cache names from the same origin.
-- The student portal was in the precache list.
+The latest completed runs on this branch passed those static checks. This does **not** establish browser behavior, database connectivity, RLS correctness, accessibility conformance, or production security.
 
-**Changes in this audit branch:** cache only an explicit list of same-origin public static assets; exclude the student portal from precaching; only delete old caches with this app's prefix; add a public-home fallback for offline navigation.
+## Go-live checklist
 
-### Medium — Documentation and verification gaps
+- [ ] Configure `assets/js/supabase-config.js` with the project URL and anon/publishable key only.
+- [ ] Apply `supabase/schema.sql` and review all policies.
+- [ ] Create the admin account and set `app_metadata.role = "admin"` through a trusted admin path.
+- [ ] Create student accounts and matching profiles.
+- [ ] Add rate limiting/CAPTCHA for anonymous booking and membership submissions.
+- [ ] Test anonymous, student, non-admin and admin access separately.
+- [ ] Verify real booking submissions, WhatsApp handoff, event/gallery CRUD, empty-table behavior and backup recovery.
+- [ ] Configure HTTPS, security headers/CSP, privacy/retention notice, and a monitored backup schedule.
+- [ ] Regenerate or remove the legacy ZIP so it matches the reviewed source.
 
-Files: `README.md`, repository root
-
-- README advertises the default admin credentials and has feature descriptions that need to be checked against the actual page flows.
-- There is no existing automated test/lint script or CI workflow in the tracked source.
-- The repository includes a ZIP alongside editable source, creating a risk that the distributed ZIP will not match later fixes.
-
-**Changes in this audit branch:** added a lightweight Node-based static checker and a GitHub Actions workflow for JavaScript syntax, JSON parsing, and local HTML asset links.
-
-## Changes included in this audit branch
-
-1. `sw.js`: scoped cache handling to public same-origin assets and app-owned cache names.
-2. `assets/js/main.js`: render announcement text with `textContent`, not `innerHTML`.
-3. `assets/js/admin.js`: escape event/gallery values and validate image URL protocols before rendering.
-4. `assets/js/gallery.js`: escape event/gallery content and validate image URL protocols.
-5. `scripts/check-static-site.mjs` and `.github/workflows/static-audit.yml`: repeatable static checks.
-6. This report documents findings and remaining work.
-
-## Recommended remediation sequence
-
-1. **Before production:** replace client-only admin/student login with server-side authentication and authorization; remove demo credentials and public default access.
-2. Implement central booking/membership APIs and a database schema; apply RLS/permissions, server validation, rate limiting, logging, and backups.
-3. Fix cloud sync semantics: empty-table handling, HTTP errors, retry policy, conflict resolution, and clear user feedback.
-4. Wire contact delivery and confirmation workflows.
-5. Verify multilingual page coverage, responsive layouts, accessibility, navigation, broken assets, PWA update/offline behaviour, and data export/import.
-6. Run CI checks, then perform browser end-to-end tests on desktop and mobile with test data before merging/deployment.
-7. Rebuild the bundled ZIP from the reviewed source or remove the ZIP from source control and publish generated releases instead.
-
-## Verification status
-
-- Static code review: performed for the files listed above.
-- Browser end-to-end testing: not performed in this audit.
-- Supabase schema/RLS/project settings: not independently verified.
-- Production readiness: **not yet approved** until the Critical and High remaining backend/data findings are resolved.
+**Status:** code-level hardening and static CI are in place on this branch. Production readiness remains conditional on Supabase configuration, abuse controls and live authorization verification.
