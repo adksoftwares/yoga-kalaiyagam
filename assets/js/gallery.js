@@ -9,50 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGalleryFilterAndLightbox();
 });
 
-const DEFAULT_GALLERY_ITEMS = [
-  { 
-    id: 1, 
-    title: 'ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் - பிரதான அரங்கம் & ஆசான்கள்', 
-    meta: 'மட்டக்களப்பு | தலைமை யோகா கலையகம்', 
-    img: 'assets/images/banner.jpg', 
-    category: 'events' 
-  },
-  { 
-    id: 2, 
-    title: 'யோகா குரு S. ஸ்ரீதரன் (B.Sc Psych, Yoga Guru)', 
-    meta: 'உளவியல் ஆலோசகர் & யோகா குரு', 
-    img: 'assets/images/sritharan.jpg', 
-    category: 'camps' 
-  },
-  { 
-    id: 3, 
-    title: 'யோகா தெரபிஸ்ட் A. ஜெயஹரன் (B.Ed, Yoga Therapist)', 
-    meta: 'மருத்துவ யோகா சிகிச்சையாளர்', 
-    img: 'assets/images/jayaharan.jpg', 
-    category: 'camps' 
-  },
-  { 
-    id: 4, 
-    title: 'ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் - உத்தியோகபூர்வ இலச்சினை', 
-    meta: 'மட்டக்களப்பு | பதிவு பெற்ற யோகா மையம்', 
-    img: 'assets/images/logo_kalaiyagam.png', 
-    category: 'convocation' 
-  },
-  { 
-    id: 5, 
-    title: 'International Union Yoga Federation (IUYF) அங்கீகாரம்', 
-    meta: 'சர்வதேச யோகா கூட்டமைப்பு சான்றிதழ் அங்கீகாரம்', 
-    img: 'assets/images/iuyf_logo.png', 
-    category: 'convocation' 
-  },
-  { 
-    id: 6, 
-    title: 'ஸ்ரீ ஐஸ்வர்யம் யோகா நிறுவனம்', 
-    meta: 'பாரம்பரிய யோகா கல்வி மற்றும் சிகிச்சை மையம்', 
-    img: 'assets/images/logo_institution.png', 
-    category: 'events' 
-  }
-];
+const DEFAULT_GALLERY_ITEMS = [];
 
 // Encode untrusted database/local-storage values before rendering HTML.
 function escapeHtml(value) {
@@ -182,12 +139,52 @@ async function renderDynamicGallery() {
     }
   }
 
+  // Filter out any legacy dummy mock items
+  if (Array.isArray(items)) {
+    items = items.filter(item => {
+      if (!item || !item.title) return false;
+      const t = item.title;
+      if (t.includes('பிரதான அரங்கம்') || t.includes('பிரதான பதாகை') || t.includes('International Union') || t.includes('ஸ்ரீ ஐஸ்வர்யம் யோகா நிறுவனம்')) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  if (!items || items.length === 0) {
+    container.className = '';
+    container.innerHTML = `
+      <div style="background: #FAF8F5; border: 1.5px dashed #A35438; border-radius: var(--radius-md); padding: 2.5rem 1.5rem; text-align: center; max-width: 680px; margin: 0 auto; box-shadow: 0 4px 15px rgba(163,84,56,0.06);">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📸</div>
+        <h3 style="color: #172A22; font-size: 1.35rem; margin-bottom: 0.5rem;"
+            data-ta="நிகழ்வு புகைப்படங்கள் விரைவில் பதிவேற்றப்படும்"
+            data-en="Event Photos Coming Soon"
+            data-si="සිදුවීම් ඡායාරූප ළඟදීම උඩුගත කෙරේ">
+          நிகழ்வு புகைப்படங்கள் விரைவில் பதிவேற்றப்படும்
+        </h3>
+        <p style="color: #4F5C56; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; max-width: 540px; margin-left: auto; margin-right: auto;"
+           data-ta="யோகா கலையகத்தின் சிறப்பு நிகழ்வுகள் மற்றும் பயிற்சி முகாம்களின் வண்ணப் புகைப்படங்கள் விரைவில் இங்கே பதிவேற்றப்படும்."
+           data-en="High-quality event photographs and workshop highlights will be uploaded here soon."
+           data-si="යෝග කලායතනයේ විශේෂ අවස්ථා සහ වැඩමුළු ඡායාරූප ඉක්මනින් මෙහි උඩුගත කෙරේ.">
+          யோகா கலையகத்தின் சிறப்பு நிகழ்வுகள் மற்றும் பயிற்சி முகாம்களின் வண்ணப் புகைப்படங்கள் விரைவில் இங்கே பதிவேற்றப்படும்.
+        </p>
+        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+          <a href="https://wa.me/94776064846?text=வணக்கம்,%20யோகா%20கலையகத்தின்%20நிகழ்வு%20புகைப்படங்கள்%20மற்றும்%20விபரங்களை%20அறிய%20விரும்புகிறேன்." target="_blank" class="btn-whatsapp" style="padding: 0.65rem 1.4rem; font-size: 0.9rem; border-radius: 999px;">
+            💬 வாட்ஸ்அப்பில் தொடர்பு கொள்ள
+          </a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  container.className = 'gallery-grid';
   container.innerHTML = items.map(item => `
-    <div class="gallery-card" data-category="${escapeHtml(item.category)}">
+    <div class="gallery-card" data-category="${escapeHtml(item.category || 'all')}">
       <img src="${escapeHtml(safeImageUrl(item.img))}" alt="${escapeHtml(item.title)}" class="gallery-thumb" loading="lazy" onerror="this.onerror=null;this.src='assets/images/banner.jpg'">
       <div class="gallery-info">
         <h4 class="gallery-title">${escapeHtml(item.title)}</h4>
-        <p class="gallery-meta">📍 ${escapeHtml(item.meta)}</p>
+        <p class="gallery-meta">📍 ${escapeHtml(item.meta || '')}</p>
       </div>
     </div>
   `).join('');

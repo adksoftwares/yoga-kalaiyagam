@@ -9,50 +9,7 @@ const CLOUD_CONFIG_KEY = 'aiswaryam_cloud_config';
 // Default Master Data (No fake events; real events published by admin)
 const DEFAULT_EVENTS = [];
 
-const DEFAULT_GALLERY = [
-  { 
-    id: 1, 
-    title: 'ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் - பிரதான பதாகை & ஆசான்கள்', 
-    meta: 'மட்டக்களப்பு | தலைமை யோகா கலையகம்', 
-    img: 'assets/images/banner.jpg', 
-    category: 'events' 
-  },
-  { 
-    id: 2, 
-    title: 'யோகா குரு S. ஸ்ரீதரன் (B.Sc Psych, Yoga Guru)', 
-    meta: 'உளவியல் & தியான ஆசான் | பிரதான பயிற்றுவிப்பாளர்', 
-    img: 'assets/images/sritharan.jpg', 
-    category: 'camps' 
-  },
-  { 
-    id: 3, 
-    title: 'யோகா தெரபிஸ்ட் A. ஜெயஹரன் (B.Ed, Yoga Therapist)', 
-    meta: 'மருத்துவ யோகா சிகிச்சையாளர் | உடற்பிணி நிவாரணம்', 
-    img: 'assets/images/jayaharan.jpg', 
-    category: 'camps' 
-  },
-  { 
-    id: 4, 
-    title: 'ஸ்ரீ ஐஸ்வர்யம் யோகா கலையகம் - உத்தியோகபூர்வ இலச்சினை', 
-    meta: 'மட்டக்களப்பு | பதிவு பெற்ற யோகா மையம்', 
-    img: 'assets/images/logo_kalaiyagam.png', 
-    category: 'convocation' 
-  },
-  { 
-    id: 5, 
-    title: 'International Union Yoga Federation (IUYF) அங்கீகாரம்', 
-    meta: 'சர்வதேச யோகா கூட்டமைப்பு சான்றிதழ் அங்கீகாரம்', 
-    img: 'assets/images/iuyf_logo.png', 
-    category: 'convocation' 
-  },
-  { 
-    id: 6, 
-    title: 'ஸ்ரீ ஐஸ்வர்யம் யோகா நிறுவனம்', 
-    meta: 'பாரம்பரிய யோகா கல்வி மற்றும் சிகிச்சை மையம்', 
-    img: 'assets/images/logo_institution.png', 
-    category: 'events' 
-  }
-];
+const DEFAULT_GALLERY = [];
 
 class YogaCloudDB {
   constructor() {
@@ -318,13 +275,15 @@ class YogaCloudDB {
     if (!local) return DEFAULT_GALLERY;
     try {
       const parsed = JSON.parse(local);
-      // If legacy gallery has dummy SVG items, replace with authentic studio assets
-      const hasOldSvgs = Array.isArray(parsed) && parsed.some(item => item.img && item.img.includes('event') && item.img.endsWith('.svg'));
-      if (hasOldSvgs || !parsed.length) {
-        localStorage.setItem('aiswaryam_gallery', JSON.stringify(DEFAULT_GALLERY));
-        return DEFAULT_GALLERY;
+      const isLegacyMock = Array.isArray(parsed) && parsed.some(item => 
+        (item.img && item.img.includes('event') && item.img.endsWith('.svg')) ||
+        (item.title && (item.title.includes('பிரதான அரங்கம்') || item.title.includes('பிரதான பதாகை')))
+      );
+      if (isLegacyMock) {
+        localStorage.removeItem('aiswaryam_gallery');
+        return [];
       }
-      return parsed;
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       return DEFAULT_GALLERY;
     }

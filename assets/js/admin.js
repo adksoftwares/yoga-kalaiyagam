@@ -459,6 +459,10 @@ async function renderGalleryTable() {
   const container = document.getElementById('adminGalleryList');
   if (!container) return;
   const gallery = window.cloudDB ? await window.cloudDB.fetchGallery() : [];
+  if (!gallery.length) {
+    container.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:1.5rem; color:#4F5C56;">புகைப்படங்கள் எதுவும் இதுவரை சேர்க்கப்படவில்லை. புதிய புகைப்படங்களை மேலே உள்ள படிவத்தின் மூலம் சேர்க்கலாம்.</td></tr>';
+    return;
+  }
 
   container.innerHTML = gallery.map(item => {
     const id = Number.isFinite(Number(item.id)) ? Number(item.id) : 0;
