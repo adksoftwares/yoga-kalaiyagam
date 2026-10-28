@@ -5,6 +5,12 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Permanently strip Courses and Booking tabs from the navigation menu if present or cached
+  document.querySelectorAll('.main-header .nav-menu li a[href*="courses.html"], .main-header .nav-menu li a[href*="booking.html"]').forEach(el => {
+    const li = el.closest('li');
+    if (li) li.remove();
+  });
+
   initMobileMenu();
   initTrilingualSwitcher();
   initMeditativeChime();

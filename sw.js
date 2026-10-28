@@ -3,7 +3,7 @@
  * Only same-origin, explicitly listed public static assets are cached.
  * Admin/student portal pages and third-party/API responses are not pre-cached.
  */
-const CACHE_NAME = 'yoga-studio-pwa-v10';
+const CACHE_NAME = 'yoga-studio-pwa-v11';
 
 const STATIC_ASSETS = [
   './',
@@ -43,10 +43,10 @@ const STATIC_PATHS = new Set(
 );
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(STATIC_ASSETS))
-      .then(() => self.skipWaiting())
   );
 });
 
