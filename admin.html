@@ -8,19 +8,19 @@
   <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body style="background: #F8FAFC;">
+<body style="background: #FAF8F5;">
 
   <!-- Header -->
-  <header class="main-header" style="background: #111827; border-bottom: 2px solid #D97706;">
+  <header class="main-header" style="background: #162720; border-bottom: 2px solid #A35438;">
     <div class="container nav-container">
       <a href="index.html" class="site-logo">
         <img src="assets/images/logo.svg" alt="யோகா கலையகம்" height="48" style="filter: brightness(0) invert(1);">
       </a>
-      <div style="color: #FBBF24; font-weight: 700; font-size: 1.05rem;">
+      <div style="color: #E2BE7E; font-weight: 700; font-size: 1.05rem;">
         ⚙️ நிர்வாக கட்டுப்பாட்டு தளம் (Admin Dashboard)
       </div>
       <div>
-        <a href="index.html" class="btn-primary" style="font-size: 0.88rem; padding: 0.5rem 1.15rem; background: #D97706; color: #FFFFFF; font-weight: 700; text-decoration: none; border-radius: 9999px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+        <a href="index.html" class="btn-primary" style="font-size: 0.88rem; padding: 0.5rem 1.15rem; background: #A35438; color: #FFFFFF; font-weight: 700; text-decoration: none; border-radius: 9999px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
           🌐 பொது இணையதளம் (Public Website)
         </a>
       </div>
@@ -47,7 +47,7 @@
           <button type="submit" class="btn-primary" style="width: 100%; padding: 0.75rem;">உள்நுழைக (Login)</button>
         </form>
 
-        <div id="adminAuthNotice" role="status" style="margin-top: 1.25rem; padding: 0.9rem; background: #FEF3C7; color: #92400E; border-radius: 10px; font-size: 0.85rem;">
+        <div id="adminAuthNotice" role="status" style="margin-top: 1.25rem; padding: 0.9rem; background: #F8EFEA; color: #8A4128; border-radius: 10px; font-size: 0.85rem;">
           பாதுகாப்பான நிர்வாக உள்நுழைவுக்கு Supabase Auth அமைப்பு தேவை. Demo/default password பயன்படுத்தப்படாது.
         </div>
 
@@ -55,7 +55,7 @@
           <p style="font-size: 0.88rem; color: #64748B; margin-bottom: 0.75rem;">
             லாகின் செய்யாமல் பொது இணையதளத்தைப் பார்க்க வேண்டுமா?
           </p>
-          <a href="index.html" class="btn-secondary" style="display: inline-flex; width: 100%; justify-content: center; font-size: 0.92rem; padding: 0.65rem 1rem; color: #047857; border: 1.5px solid #047857; font-weight: 700;">
+          <a href="index.html" class="btn-secondary" style="display: inline-flex; width: 100%; justify-content: center; font-size: 0.92rem; padding: 0.65rem 1rem; color: #234A3B; border: 1.5px solid #234A3B; font-weight: 700;">
             ← பொது இணையதளத்தைப் பார்க்க (Browse Website)
           </a>
         </div>
@@ -128,11 +128,11 @@
           <div class="stat-badge-grid">
             <div class="stat-badge-card">
               <span style="font-size: 0.8rem; color:#64748B;">மொத்த நிகழ்வுகள்</span>
-              <div id="statTotalEvents" style="font-size: 1.75rem; font-weight: 800; color: #D97706;">0</div>
+              <div id="statTotalEvents" style="font-size: 1.75rem; font-weight: 800; color: #A35438;">0</div>
             </div>
             <div class="stat-badge-card">
               <span style="font-size: 0.8rem; color:#64748B;">மொத்த புகைப்படங்கள்</span>
-              <div id="statTotalGallery" style="font-size: 1.75rem; font-weight: 800; color: #047857;">0</div>
+              <div id="statTotalGallery" style="font-size: 1.75rem; font-weight: 800; color: #234A3B;">0</div>
             </div>
             <div class="stat-badge-card">
               <span style="font-size: 0.8rem; color:#64748B;">சேர்க்கை விண்ணப்பங்கள்</span>
@@ -146,13 +146,13 @@
 
           <!-- TAB 1: Events Manager -->
           <div id="tabEvents" class="admin-tab-pane">
-            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.35rem; color: #172A22; margin-bottom: 1.25rem;">
               📅 நிகழ்வுகள் மேலாண்மை (Manage Events)
             </h3>
 
             <!-- Add Event Form -->
-            <div style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; margin-bottom: 2rem;">
-              <h4 style="color: #92400E; margin-bottom: 1rem;">+ புதிய நிகழ்வைச் சேர்க்கவும்</h4>
+            <div style="background: #FAF8F5; border: 1px solid #E6DFD5; border-radius: var(--radius-sm); padding: 1.5rem; margin-bottom: 2rem;">
+              <h4 style="color: #8A4128; margin-bottom: 1rem;">+ புதிய நிகழ்வைச் சேர்க்கவும்</h4>
               <form id="addEventForm">
                 <div class="form-grid-2">
                   <div class="form-group">
@@ -235,13 +235,13 @@
 
           <!-- TAB 2: Gallery Manager -->
           <div id="tabGallery" class="admin-tab-pane" style="display: none;">
-            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.35rem; color: #172A22; margin-bottom: 1.25rem;">
               🖼️ புகைப்பட ஆல்பம் மேலாண்மை (Manage Gallery)
             </h3>
 
             <!-- Add Photo Form -->
-            <div style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; margin-bottom: 2rem;">
-              <h4 style="color: #92400E; margin-bottom: 1rem;">+ புதிய புகைப்படத்தைச் சேர்க்கவும்</h4>
+            <div style="background: #FAF8F5; border: 1px solid #E6DFD5; border-radius: var(--radius-sm); padding: 1.5rem; margin-bottom: 2rem;">
+              <h4 style="color: #8A4128; margin-bottom: 1rem;">+ புதிய புகைப்படத்தைச் சேர்க்கவும்</h4>
               <form id="addPhotoForm">
                 <div class="form-grid-2">
                   <div class="form-group">
@@ -297,7 +297,7 @@
 
           <!-- TAB 3: Registered Members -->
           <div id="tabMembers" class="admin-tab-pane" style="display: none;">
-            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.35rem; color: #172A22; margin-bottom: 1.25rem;">
               📋 உறுப்பினர் சேர்க்கை விண்ணப்பங்கள் (Registered Members)
             </h3>
             <div class="data-table-wrap">
@@ -320,7 +320,7 @@
           <!-- TAB 4: Bookings -->
           <div id="tabBookings" class="admin-tab-pane" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-              <h3 style="font-size: 1.35rem; color: #78350F; margin: 0;">
+              <h3 style="font-size: 1.35rem; color: #172A22; margin: 0;">
                 🎟️ ஆன்லைன் முன்பதிவுகள் பட்டியல் (Online Bookings)
               </h3>
               <button id="exportBookingsBtn" class="btn-secondary" style="font-size: 0.85rem;">
@@ -347,14 +347,14 @@
 
           <!-- TAB 5: Top Notice Editor -->
           <div id="tabNotice" class="admin-tab-pane" style="display: none;">
-            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.35rem; color: #172A22; margin-bottom: 1.25rem;">
               📢 மேல் அறிவிப்பு பட்டி மேலாண்மை (Top Announcement Banner)
             </h3>
             <p style="font-size: 0.9rem; color: #64748B; margin-bottom: 1.5rem;">
               இங்கே மாற்றப்படும் வாசகம் இணையதளத்தின் அனைத்து பக்கங்களின் மேலேயும் உடனடியாகத் தோன்றும்.
             </p>
 
-            <form id="adminNoticeForm" style="background: #FFFDF8; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 1.5rem; max-width: 650px;">
+            <form id="adminNoticeForm" style="background: #FAF8F5; border: 1px solid #E6DFD5; border-radius: var(--radius-sm); padding: 1.5rem; max-width: 650px;">
               <div class="form-group">
                 <label class="form-label">அறிவிப்பு உரை (Announcement Text)</label>
                 <textarea id="adminNoticeInput" class="form-textarea" rows="3" required></textarea>
@@ -367,21 +367,21 @@
 
           <!-- TAB 6: Cloud DB Settings & Full Backup -->
           <div id="tabCloud" class="admin-tab-pane" style="display: none;">
-            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.35rem; color: #172A22; margin-bottom: 1.25rem;">
               ☁️ நிகழ்நேர கிளவுட் ஒத்திசைவு & தரவுத்தள சேமிப்பு (Cloud Sync & Backup)
             </h3>
             <p style="font-size: 0.9rem; color: #64748B; margin-bottom: 1.5rem;">
               அட்மின் போர்ட்டலில் நீங்கள் செய்யும் மாற்றங்கள் அனைத்து மாணவர்களின் மொபைல்களிலும் உடனுக்குடன் தானாகவே தெரிய கிளவுட் தரவுத்தளத்தை (Supabase / REST) இணைக்கலாம்.
             </p>
 
-            <div style="background:#FFFDF8;border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:1.25rem;margin-bottom:1.5rem;">
-              <h4 style="color:#92400E;margin-bottom:.6rem;">பாதுகாப்பான இணைப்பு அமைப்புகள்</h4>
+            <div style="background: #FAF8F5;border: 1px solid #E6DFD5;border-radius:var(--radius-sm);padding:1.25rem;margin-bottom:1.5rem;">
+              <h4 style="color: #8A4128;margin-bottom:.6rem;">பாதுகாப்பான இணைப்பு அமைப்புகள்</h4>
               <p style="font-size:.92rem;color:#4B5563;margin-bottom:.6rem;">
                 Supabase project URL மற்றும் anon/publishable key ஆகியவை repository-யின்
                 <code>assets/js/supabase-config.js</code> கோப்பில் அமைக்கப்பட வேண்டும்.
                 இந்த dashboard-ல் ரகசிய keys சேமிக்கப்படுவதில்லை.
               </p>
-              <p style="font-size:.85rem;color:#92400E;margin:0;">
+              <p style="font-size:.85rem;color: #8A4128;margin:0;">
                 <strong>முக்கியம்:</strong> service-role key அல்லது database password-ஐ frontend code-ல் சேர்க்க வேண்டாம்.
                 தரவுகளின் பாதுகாப்பை Supabase Row Level Security (RLS) கட்டுப்படுத்த வேண்டும்.
               </p>
@@ -389,7 +389,7 @@
             </div>
 
             <!-- Complete Database JSON Backup & Restore -->
-            <div style="background: #F0FDF4; border: 1px solid #A7F3D0; border-radius: var(--radius-sm); padding: 1.5rem;">
+            <div style="background: #F3F7F5; border: 1px solid #C5D8CD; border-radius: var(--radius-sm); padding: 1.5rem;">
               <h4 style="color: #065F46; margin-bottom: 0.5rem;">💾 முழுமையான தரவுத்தள காப்புப் பிரதி (JSON Backup & Restore):</h4>
               <p style="font-size: 0.88rem; color: #374151; margin-bottom: 1.25rem;">
                 மைய தரவுத்தளத்தில் உள்ள நிகழ்வுகள், புகைப்படங்கள், சேர்க்கை கோரிக்கைகள் மற்றும் முன்பதிவுகளை JSON கோப்பாக பதிவிறக்கலாம். மீட்டமைப்பு புதிய/திருத்தப்பட்ட பதிவுகளை merge செய்யும்; ஏற்கனவே உள்ள பதிவுகளை நீக்காது.
@@ -410,11 +410,11 @@
 
           <!-- TAB 7: Change Password Pane -->
           <div id="tabSecurity" class="admin-tab-pane" style="display: none;">
-            <h3 style="font-size: 1.35rem; color: #78350F; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.35rem; color: #172A22; margin-bottom: 1.25rem;">
               🔐 நிர்வாக கடவுச்சொல் மாற்றம் (Security Settings)
             </h3>
-            <div style="background:#FFFDF8;border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:1.5rem;max-width:640px;">
-              <h4 style="color:#92400E;margin-bottom:.6rem;">கடவுச்சொல் மற்றும் கணக்கு பாதுகாப்பு</h4>
+            <div style="background: #FAF8F5;border: 1px solid #E6DFD5;border-radius:var(--radius-sm);padding:1.5rem;max-width:640px;">
+              <h4 style="color: #8A4128;margin-bottom:.6rem;">கடவுச்சொல் மற்றும் கணக்கு பாதுகாப்பு</h4>
               <p style="font-size:.92rem;color:#4B5563;margin-bottom:.75rem;">
                 இந்த இணையதளம் browser-ல் கடவுச்சொற்களைச் சேமிக்காது. நிர்வாகக் கணக்கின் password reset மற்றும் MFA போன்ற பாதுகாப்பு அமைப்புகளை Supabase Authentication dashboard-ல் நிர்வகிக்கவும்.
               </p>

@@ -1,6 +1,6 @@
 /* Human-led finishing touches: calm spacing, clear focus, and restrained motion. */
 :where(a, button, input, select, textarea, summary):focus-visible {
-  outline: 3px solid rgba(4, 120, 87, 0.55);
+  outline: 3px solid rgba(35, 74, 59, 0.45);
   outline-offset: 3px;
 }
 
@@ -13,8 +13,8 @@
 }
 
 :where(.form-input, .form-select, .form-textarea):focus {
-  border-color: var(--secondary, #047857);
-  box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.12);
+  border-color: var(--primary, #234A3B);
+  box-shadow: 0 0 0 3px rgba(35, 74, 59, 0.12);
 }
 
 :where(.btn-primary, .btn-secondary) {
@@ -84,7 +84,7 @@
   color: var(--text-main, #1f2937);
 }
 .plan-card.featured {
-  border-color: var(--secondary, #047857);
+  border-color: var(--primary, #234A3B);
   box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.1);
 }
 .slot-pill {
@@ -96,9 +96,9 @@
   cursor: pointer;
 }
 .slot-pill.active {
-  border-color: var(--secondary, #047857);
-  background: var(--secondary-light, #d1fae5);
-  color: var(--secondary-dark, #064e3b);
+  border-color: var(--primary, #234A3B);
+  background: var(--primary-light, #EDF3F0);
+  color: var(--primary-dark, #163227);
   font-weight: 700;
 }
 @media (max-width: 640px) {
@@ -110,12 +110,12 @@
 
 /* Human-centred UI pass: quieter surfaces, clearer hierarchy, and comfortable touch targets. */
 :root {
-  --ui-ink: #24352f;
+  --ui-ink: #172A22;
   --ui-muted: #65736c;
-  --ui-paper: #fffdf8;
-  --ui-line: #e7e4d8;
-  --ui-green: #276b52;
-  --ui-green-deep: #1f513f;
+  --ui-paper: #FAF8F5;
+  --ui-line: #E6DFD5;
+  --ui-green: #234A3B;
+  --ui-green-deep: #163227;
   --ui-sand: #f4efe3;
   --ui-radius: 16px;
   --ui-shadow: 0 8px 28px rgba(42, 54, 43, 0.07);
@@ -143,27 +143,27 @@ h1, h2, h3, h4 { text-wrap: balance; }
   box-shadow: 0 3px 14px rgba(38, 50, 42, 0.035);
 }
 .top-notice-bar {
-  background: #285d49;
+  background: #1B352A; border-bottom: 1px solid rgba(201, 160, 92, 0.25);
   font-size: 0.9rem;
   line-height: 1.55;
 }
-.top-notice-bar a { color: #fff3d2; }
+.top-notice-bar a { color: #E2BE7E; }
 .site-logo img { object-fit: contain; }
 .nav-menu { gap: clamp(0.7rem, 1.4vw, 1.25rem); }
 .nav-link { font-size: 0.9rem; }
 .nav-link:hover, .nav-link.active { color: var(--ui-green); }
-.nav-link.active::after { background: var(--ui-green); }
+.nav-link.active::after { background: #A35438; }
 .lang-select-box {
   background: #f5f7f2;
   border-color: #cbd9ce;
   color: var(--ui-green-deep);
 }
 .btn-primary {
-  background: var(--ui-green);
+  background: #A35438;
   box-shadow: 0 3px 9px rgba(39, 107, 82, 0.16);
 }
 .btn-primary:hover {
-  background: var(--ui-green-deep);
+  background: #8A4128;
   box-shadow: 0 5px 14px rgba(39, 107, 82, 0.2);
 }
 .btn-secondary { border-color: #9ab8a5; }

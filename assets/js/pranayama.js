@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Box Breathing cycle: Inhale (4s) -> Hold (4s) -> Exhale (4s) -> Hold (4s)
   const phases = [
-    { nameTa: 'மூச்சை உள்ளிழுக்கவும்', nameEn: 'Inhale Gently', duration: 4, scale: 1.35, color: '#047857' },
-    { nameTa: 'மூச்சை அடக்கவும் (கும்பகம்)', nameEn: 'Hold Breath', duration: 4, scale: 1.35, color: '#D97706' },
+    { nameTa: 'மூச்சை உள்ளிழுக்கவும்', nameEn: 'Inhale Gently', duration: 4, scale: 1.35, color: '#234A3B' },
+    { nameTa: 'மூச்சை அடக்கவும் (கும்பகம்)', nameEn: 'Hold Breath', duration: 4, scale: 1.35, color: '#A35438' },
     { nameTa: 'மூச்சை வெளியிடவும் (ரேசகம்)', nameEn: 'Exhale Slowly', duration: 4, scale: 1.0, color: '#2563EB' },
     { nameTa: 'இயல்பு நிலை (சூன்யகம்)', nameEn: 'Rest & Be Still', duration: 4, scale: 1.0, color: '#7C3AED' }
   ];
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
       startBtn.textContent = lang === 'ta' ? 'தொடங்கு (Start)' : 'Start';
       startBtn.style.background = '';
       circle.style.transform = 'scale(1)';
-      circle.style.background = 'radial-gradient(circle, #34D399, #047857)';
+      circle.style.background = 'radial-gradient(circle, #4E7D6A, #234A3B)';
       stateLabel.textContent = lang === 'ta' ? 'தொடங்கத் தயார்' : 'Ready to Begin';
       countLabel.textContent = '4';
     });

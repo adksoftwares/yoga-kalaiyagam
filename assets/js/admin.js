@@ -431,7 +431,7 @@ async function renderEventsTable() {
       <td><strong>${escapeHtml(ev.titleTa)}</strong><br><small style="color:#6B7280;">${escapeHtml(ev.titleEn || '')}</small></td>
       <td>${escapeHtml(ev.date)} (${escapeHtml(ev.time || '')})</td>
       <td>${escapeHtml(ev.location)}</td>
-      <td><span style="background:#FEF3C7; padding:2px 8px; border-radius:12px; font-size:0.75rem;">${escapeHtml(ev.category)}</span></td>
+      <td><span style="background: #F8EFEA; padding:2px 8px; border-radius:12px; font-size:0.75rem;">${escapeHtml(ev.category)}</span></td>
       <td>
         <button onclick="deleteEvent(${id})" style="background:#FEE2E2; border:1px solid #FCA5A5; color:#DC2626; padding:4px 8px; border-radius:4px; cursor:pointer;">நீக்குக</button>
       </td>

@@ -57,10 +57,10 @@ function showInstallBanner() {
     banner.className = 'pwa-install-banner';
     banner.innerHTML = `
       <div style="display:flex; align-items:center; gap:0.75rem;">
-        <img src="assets/images/icons/icon-192.png" width="40" height="40" style="border-radius:10px; border:1px solid #FDE68A;">
+        <img src="assets/images/icons/icon-192.png" width="40" height="40" style="border-radius:10px; border: 1px solid #E6DFD5;">
         <div>
-          <strong style="display:block; font-size:0.88rem; color:#78350F;">யோகா கலையகம் செயலியை நிறுவவும்</strong>
-          <small style="color:#047857; font-size:0.75rem;">மொபைல் திரையில் உடனே சேர்க்க (Install App)</small>
+          <strong style="display:block; font-size:0.88rem; color: #172A22;">யோகா கலையகம் செயலியை நிறுவவும்</strong>
+          <small style="color: #234A3B; font-size:0.75rem;">மொபைல் திரையில் உடனே சேர்க்க (Install App)</small>
         </div>
       </div>
       <div style="display:flex; align-items:center; gap:0.5rem;">

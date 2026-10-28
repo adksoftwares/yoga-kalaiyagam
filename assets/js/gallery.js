@@ -101,9 +101,9 @@ async function renderDynamicEvents() {
 
   if (!events || events.length === 0) {
     container.innerHTML = `
-      <div style="background: #FFFDF8; border: 1.5px dashed #D97706; border-radius: var(--radius-md); padding: 2.5rem 1.5rem; text-align: center; max-width: 680px; margin: 0 auto; box-shadow: 0 4px 15px rgba(217,119,6,0.06);">
+      <div style="background: #FAF8F5; border: 1.5px dashed #A35438; border-radius: var(--radius-md); padding: 2.5rem 1.5rem; text-align: center; max-width: 680px; margin: 0 auto; box-shadow: 0 4px 15px rgba(163,84,56,0.06);">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🗓️</div>
-        <h3 style="color: #78350F; font-size: 1.35rem; margin-bottom: 0.5rem;"
+        <h3 style="color: #172A22; font-size: 1.35rem; margin-bottom: 0.5rem;"
             data-ta="விரைவில் புதிய யோகா நிகழ்வுகள் அறிவிக்கப்படும்"
             data-en="Upcoming Yoga Events Will Be Announced Soon"
             data-si="ඉදිරි යෝග සිදුවීම් ළඟදීම ප්‍රකාශයට පත් කෙරේ">
@@ -137,23 +137,23 @@ async function renderDynamicEvents() {
         if (curLang === 'si' && ev.titleSi) title = ev.titleSi;
         const msg = encodeURIComponent(`வணக்கம், நான் யோகா கலையகத்தின் "${title}" நிகழ்வில் பங்குபெற முன்பதிவு செய்ய விரும்புகிறேன்.`);
         return `
-          <div style="background: #FFFFFF; border-radius: var(--radius-md); box-shadow: 0 4px 15px rgba(0,0,0,0.06); overflow: hidden; border-top: 4px solid #D97706; display: flex; flex-direction: column;">
+          <div style="background: #FFFFFF; border-radius: var(--radius-md); box-shadow: 0 4px 15px rgba(0,0,0,0.06); overflow: hidden; border-top: 3px solid #A35438; display: flex; flex-direction: column;">
             <div style="padding: 1.5rem; flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                <span style="background: #FEF3C7; color: #92400E; font-size: 0.8rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 999px;">
+                <span style="background: #F8EFEA; color: #8A4128; font-size: 0.8rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 999px;">
                   📅 ${escapeHtml(ev.date)} ${ev.time ? '• ' + escapeHtml(ev.time) : ''}
                 </span>
-                <span style="font-size: 0.75rem; color: #047857; font-weight: 600;">
+                <span style="font-size: 0.75rem; color: #234A3B; font-weight: 600;">
                   📍 ${escapeHtml(ev.location)}
                 </span>
               </div>
-              <h3 style="font-size: 1.25rem; color: #78350F; margin-bottom: 0.65rem;">${escapeHtml(title)}</h3>
+              <h3 style="font-size: 1.25rem; color: #172A22; margin-bottom: 0.65rem;">${escapeHtml(title)}</h3>
               <p style="font-size: 0.9rem; color: #4B5563; line-height: 1.5; margin-bottom: 1.25rem;">
                 ${escapeHtml(ev.desc || '')}
               </p>
             </div>
             <div style="padding: 1rem 1.5rem; background: #FDFBF7; border-top: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.85rem; color: #047857; font-weight: 700;">உறுதிப்படுத்தப்பட்ட நிகழ்வு</span>
+              <span style="font-size: 0.85rem; color: #234A3B; font-weight: 700;">உறுதிப்படுத்தப்பட்ட நிகழ்வு</span>
               <a href="https://wa.me/94776064846?text=${msg}" target="_blank" class="btn-whatsapp" style="padding: 0.45rem 1rem; font-size: 0.85rem; border-radius: 999px;">
                 வாட்ஸ்அப் பதிவு →
               </a>
