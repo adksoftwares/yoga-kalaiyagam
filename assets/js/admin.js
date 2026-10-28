@@ -30,19 +30,19 @@ function escapeHtml(value) {
 
 function safeImageUrl(value) {
   const raw = String(value ?? '').trim();
-  if (!raw) return 'assets/images/banner.jpg';
+  if (!raw) return 'assets/images/logo_kalaiyagam.png';
   try {
     const parsed = new URL(raw, window.location.href);
     if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
-      return 'assets/images/banner.jpg';
+      return 'assets/images/logo_kalaiyagam.png';
     }
     const hasExplicitScheme = /^[a-z][a-z\d+.-]*:/i.test(raw);
     if (hasExplicitScheme && parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
-      return 'assets/images/banner.jpg';
+      return 'assets/images/logo_kalaiyagam.png';
     }
     return raw;
   } catch {
-    return 'assets/images/banner.jpg';
+    return 'assets/images/logo_kalaiyagam.png';
   }
 }
 
@@ -211,7 +211,7 @@ function initAdminDashboard() {
       const location = document.getElementById('eventLocation').value;
       const category = document.getElementById('eventCategory').value;
       const desc = document.getElementById('eventDesc').value;
-      let img = document.getElementById('eventImgUrl').value || 'assets/images/banner.jpg';
+      let img = document.getElementById('eventImgUrl').value || 'assets/images/logo_kalaiyagam.png';
 
       const newEvent = {
         id: Date.now(),
@@ -249,7 +249,7 @@ function initAdminDashboard() {
       const title = document.getElementById('photoTitle').value;
       const meta = document.getElementById('photoMeta').value;
       const category = document.getElementById('photoCategory').value;
-      let img = document.getElementById('photoUrl').value || 'assets/images/banner.jpg';
+      let img = document.getElementById('photoUrl').value || 'assets/images/logo_kalaiyagam.png';
 
       const newPhoto = {
         id: Date.now(),

@@ -20,19 +20,19 @@ function escapeHtml(value) {
 
 function safeImageUrl(value) {
   const raw = String(value ?? '').trim();
-  if (!raw) return 'assets/images/banner.jpg';
+  if (!raw) return 'assets/images/logo_kalaiyagam.png';
   try {
     const parsed = new URL(raw, window.location.href);
     if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
-      return 'assets/images/banner.jpg';
+      return 'assets/images/logo_kalaiyagam.png';
     }
     const hasExplicitScheme = /^[a-z][a-z\d+.-]*:/i.test(raw);
     if (hasExplicitScheme && parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
-      return 'assets/images/banner.jpg';
+      return 'assets/images/logo_kalaiyagam.png';
     }
     return raw;
   } catch {
-    return 'assets/images/banner.jpg';
+    return 'assets/images/logo_kalaiyagam.png';
   }
 }
 
@@ -181,7 +181,7 @@ async function renderDynamicGallery() {
   container.className = 'gallery-grid';
   container.innerHTML = items.map(item => `
     <div class="gallery-card" data-category="${escapeHtml(item.category || 'all')}">
-      <img src="${escapeHtml(safeImageUrl(item.img))}" alt="${escapeHtml(item.title)}" class="gallery-thumb" loading="lazy" onerror="this.onerror=null;this.src='assets/images/banner.jpg'">
+      <img src="${escapeHtml(safeImageUrl(item.img))}" alt="${escapeHtml(item.title)}" class="gallery-thumb" loading="lazy" onerror="this.onerror=null;this.src='assets/images/logo_kalaiyagam.png'">
       <div class="gallery-info">
         <h4 class="gallery-title">${escapeHtml(item.title)}</h4>
         <p class="gallery-meta">📍 ${escapeHtml(item.meta || '')}</p>
