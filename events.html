@@ -13,7 +13,17 @@
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#234A3B">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=12">
+  <script>
+    (function() {
+      function cleanPermanentNav() {
+        var obsolete = document.querySelectorAll('.main-header .nav-menu a[href*="courses.html"], .main-header .nav-menu a[href*="booking.html"]');
+        obsolete.forEach(function(a) { var li = a.closest('li'); if (li) li.remove(); });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', cleanPermanentNav); }
+      else { cleanPermanentNav(); }
+    })();
+  </script>
 </head>
 <body>
 
@@ -34,18 +44,18 @@
         </div>
       </a>
 
-      <!-- Navigation -->
+      <!-- Navigation: Permanent 5 Tabs -->
       <nav>
         <ul class="nav-menu">
           <li><a href="index.html" class="nav-link" data-ta="முகப்பு" data-en="Home" data-si="මුල් පිටුව">முகப்பு</a></li>
           <li><a href="about.html" class="nav-link" data-ta="எங்களைப் பற்றி" data-en="About Us" data-si="අප ගැන">எங்களைப் பற்றி</a></li>
           <li><a href="membership.html" class="nav-link" data-ta="உறுப்பினர் சேர்க்கை" data-en="Membership" data-si="සාමාජිකත්වය">உறுப்பினர் சேர்க்கை</a></li>
-          <li><a href="events.html" class="nav-link active" data-ta="நிகழ்வுகள்" data-en="Events & Gallery" data-si="සිදුවීම් සහ ඡායාරූප">நிகழ்வுகள்</a></li>
+          <li><a href="events.html" class="nav-link" data-ta="நிகழ்வுகள்" data-en="Events & Gallery" data-si="සිදුවීම් மற்றும் ඡායාරූප">நிகழ்வுகள்</a></li>
           <li><a href="contact.html" class="nav-link" data-ta="தொடர்புக்கு" data-en="Contact" data-si="අප அමதන්න">தொடர்புக்கு</a></li>
         </ul>
       </nav>
 
-      <!-- Action Items: Audio Bell, Trilingual Switcher, Student Portal -->
+      <!-- Action Items: Audio Bell, Trilingual Switcher, Student Portal, Booking CTA -->
       <div class="nav-actions">
         <!-- Sacred Singing Bowl Audio Bell -->
         <button id="meditationChimeBtn" class="audio-chime-btn" title="புனித யோக மணி நாதம் ஒலிக்க / Ring Meditative Chime" aria-label="Meditative Bell">
@@ -142,10 +152,10 @@
     </div>
   </footer>
 
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js?v=12"></script>
   <script src="assets/js/supabase-config.js"></script>
   <script src="assets/js/cloud-db.js"></script>
   <script src="assets/js/gallery.js"></script>
-  <script src="assets/js/pwa.js"></script>
+  <script src="assets/js/pwa.js?v=12"></script>
 </body>
 </html>
