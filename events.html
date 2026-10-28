@@ -33,26 +33,44 @@
           <span class="logo-subtitle">YOGA STUDIO</span>
         </div>
       </a>
+
+      <!-- Navigation -->
       <nav>
         <ul class="nav-menu">
           <li><a href="index.html" class="nav-link" data-ta="முகப்பு" data-en="Home" data-si="මුල් පිටුව">முகப்பு</a></li>
           <li><a href="about.html" class="nav-link" data-ta="எங்களைப் பற்றி" data-en="About Us" data-si="අප ගැන">எங்களைப் பற்றி</a></li>
-          <li><a href="courses.html" class="nav-link" data-ta="பயிற்சிகள் <span class='badge-soon'>விரைவில்</span>" data-en="Courses <span class='badge-soon'>Soon</span>" data-si="පාඨමාලා <span class='badge-soon'>ළඟදීම</span>">பயிற்சிகள் <span class="badge-soon">விரைவில்</span></a></li>
-          <li><a href="booking.html" class="nav-link" data-ta="முன்பதிவு <span class='badge-soon'>விரைவில்</span>" data-en="Online Booking <span class='badge-soon'>Soon</span>" data-si="වෙන්කරවා ගැනීම <span class='badge-soon'>ළඟදීම</span>">முன்பதிவு <span class="badge-soon">விரைவில்</span></a></li>
-          <li><a href="membership.html" class="nav-link" data-ta="உறுப்பினர் சேர்க்கை <span class='badge-soon'>விரைவில்</span>" data-en="Membership <span class='badge-soon'>Soon</span>" data-si="සාමාජිකත්වය <span class='badge-soon'>ළඟදීම</span>">உறுப்பினர் சேர்க்கை <span class="badge-soon">விரைவில்</span></a></li>
-          <li><a href="events.html" class="nav-link active" data-ta="நிகழ்வுகள் & ஆல்பம்" data-en="Events & Gallery" data-si="සිදුවීම් සහ ඡායාරූප">நிகழ்வுகள் & ஆல்பம்</a></li>
-          <li><a href="contact.html" class="nav-link" data-ta="தொடர்புக்கு" data-en="Contact" data-si="අප அමතන්න">தொடர்புக்கு</a></li>
+          <li><a href="courses.html" class="nav-link" data-ta="பயிற்சிகள்" data-en="Courses" data-si="පාඨමාලා">பயிற்சிகள்</a></li>
+          <li><a href="membership.html" class="nav-link" data-ta="உறுப்பினர் சேர்க்கை" data-en="Membership" data-si="සාමාජිකත්වය">உறுப்பினர் சேர்க்கை</a></li>
+          <li><a href="events.html" class="nav-link active" data-ta="நிகழ்வுகள்" data-en="Events & Gallery" data-si="සිදුවීම් සහ ඡායාරූප">நிகழ்வுகள்</a></li>
+          <li><a href="contact.html" class="nav-link" data-ta="தொடர்புக்கு" data-en="Contact" data-si="අප අමතන්න">தொடர்புக்கு</a></li>
         </ul>
       </nav>
+
+      <!-- Action Items: Audio Bell, Trilingual Switcher, Student Portal -->
       <div class="nav-actions">
+        <!-- Sacred Singing Bowl Audio Bell -->
+        <button id="meditationChimeBtn" class="audio-chime-btn" title="புனித யோக மணி நாதம் ஒலிக்க / Ring Meditative Chime" aria-label="Meditative Bell">
+          🔔
+        </button>
+
+        <!-- Trilingual Switcher (Tamil, English, Sinhala) -->
         <select id="langSelect" class="lang-select-box" aria-label="Select Language">
           <option value="ta">தமிழ்</option>
           <option value="en">English</option>
           <option value="si">සිංහල</option>
         </select>
-        <a href="admin.html" class="btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
-          ⚙️ புதுப்பிக்க (Admin)
+
+        <!-- Student Portal Quick Link -->
+        <a href="student-portal.html" class="btn-student-nav">
+          <span>👤</span> <span data-ta="மாணவர்" data-en="Student" data-si="ශිෂ්‍ය">மாணவர்</span>
         </a>
+
+        <!-- Primary CTA Button -->
+        <a href="booking.html" class="btn-primary nav-booking-cta" data-ta="முன்பதிவு" data-en="Book Slot" data-si="වෙන්කරන්න">
+          முன்பதிவு
+        </a>
+
+        <!-- Mobile Hamburger Toggle -->
         <button class="mobile-nav-toggle" aria-label="Toggle Menu">☰</button>
       </div>
     </div>
