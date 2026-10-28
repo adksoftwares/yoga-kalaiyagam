@@ -3,7 +3,7 @@
  * Only same-origin, explicitly listed public static assets are cached.
  * Admin/student portal pages and third-party/API responses are not pre-cached.
  */
-const CACHE_NAME = 'yoga-studio-pwa-v6';
+const CACHE_NAME = 'yoga-studio-pwa-v7';
 
 const STATIC_ASSETS = [
   './',
@@ -22,7 +22,6 @@ const STATIC_ASSETS = [
   './assets/js/supabase-config.js',
   './assets/js/contact.js',
   './assets/js/cloud-db.js',
-  './assets/js/pranayama.js',
   './assets/js/booking.js',
   './assets/js/gallery.js',
   './assets/js/membership.js',
