@@ -182,6 +182,12 @@ function initMobileMenu() {
       setMenuOpen(false);
     }
   });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1080 && navMenu.classList.contains('active')) {
+      setMenuOpen(false);
+    }
+  });
 }
 
 // Meditative Chime (Web Audio API Synthesizer - 100% offline!)

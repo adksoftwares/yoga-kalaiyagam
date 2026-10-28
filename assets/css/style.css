@@ -189,6 +189,7 @@ button, input, select, textarea {
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 0;
+  flex-wrap: nowrap;
 }
 
 .site-logo {
@@ -1320,24 +1321,24 @@ button, input, select, textarea {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1080px) {
   .nav-menu {
     display: none;
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
-    background: #FFFFFF;
+    background: #FAF8F5;
     flex-direction: column;
-    padding: 1.5rem;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    padding: 1.25rem;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
     border-bottom: 2px solid var(--primary);
   }
   .nav-menu.active {
     display: flex;
   }
   .mobile-nav-toggle {
-    display: block;
+    display: inline-flex;
   }
   .hero-heading {
     font-size: 2.2rem;
