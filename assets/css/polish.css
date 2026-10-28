@@ -527,8 +527,9 @@ img { height: auto; }
   .site-logo .logo-emblem { width: 38px; height: 38px; }
   .site-logo .logo-title { font-size: 1.02rem; }
   .site-logo .logo-subtitle { font-size: 0.62rem; }
-  .btn-student-nav { display: none; }
-  .nav-booking-cta { padding: 0.38rem 0.85rem; font-size: 0.82rem; }
+  .btn-student-nav { display: none !important; }
+  .nav-booking-cta { display: none !important; }
+  .audio-chime-btn { display: none !important; }
   .nav-actions { gap: 0.35rem; }
   .audio-chime-btn { width: 34px; height: 34px; }
   .lang-select-box { max-width: 95px; padding-inline: 0.45rem; }
