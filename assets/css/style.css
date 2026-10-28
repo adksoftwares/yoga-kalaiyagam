@@ -218,11 +218,9 @@ button, input, select, textarea {
   padding: 0.25rem 0;
 }
 
-.nav-link:hover, .nav-link.active {
-  color: var(--secondary);
-}
+.nav-link:hover, .nav-link.active { color: #163227 !important; text-decoration: none !important; }
 
-.nav-link.active::after { display: none !important; }
+.nav-link.active::after, .nav-link::after { display: none !important; content: none !important; }
 
 .nav-actions {
   display: flex;
@@ -1312,7 +1310,7 @@ button, input, select, textarea {
   }
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .nav-menu {
     display: none;
     position: absolute;

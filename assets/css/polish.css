@@ -158,9 +158,9 @@ h1, h2, h3, h4 { text-wrap: balance; }
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap !important;
-  gap: clamp(0.35rem, 0.75vw, 0.85rem);
-  padding: 0.55rem 0;
-  min-height: 60px;
+  gap: clamp(0.25rem, 0.5vw, 0.65rem);
+  padding: 0.45rem 0;
+  min-height: 58px;
 }
 .top-notice-bar {
   background: #163227;
@@ -183,8 +183,8 @@ h1, h2, h3, h4 { text-wrap: balance; }
   min-width: max-content;
 }
 .site-logo .logo-emblem {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: contain;
   flex-shrink: 0;
@@ -197,7 +197,7 @@ h1, h2, h3, h4 { text-wrap: balance; }
   line-height: 1.15;
 }
 .site-logo .logo-title {
-  font-size: 1.14rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #163227;
   letter-spacing: -0.01em;
@@ -232,36 +232,40 @@ h1, h2, h3, h4 { text-wrap: balance; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(0.45rem, 0.9vw, 1.15rem);
+  gap: clamp(0.35rem, 0.65vw, 0.85rem);
   list-style: none;
   margin: 0;
   padding: 0;
   white-space: nowrap;
 }
-.nav-link {
-  font-size: 0.88rem;
+.nav-link,
+.nav-link:hover,
+.nav-link.active,
+.nav-link:focus,
+.nav-link:visited {
+  font-size: 0.86rem;
   font-weight: 600;
-  color: #163227;
-  text-decoration: none;
-  padding: 0.35rem 0.35rem;
+  color: #163227 !important;
+  text-decoration: none !important;
+  padding: 0.35rem 0.25rem;
   position: relative;
-  transition: color 0.16s ease;
+  transition: opacity 0.16s ease;
   white-space: nowrap;
 }
-.nav-link:hover { color: #A35438; }
-.nav-link.active {
-  color: #163227;
-  font-weight: 700;
+.nav-link:hover {
+  opacity: 0.72;
 }
-.nav-link.active::after {
+.nav-link.active::after,
+.nav-link::after {
   display: none !important;
+  content: none !important;
 }
 
 /* Nav Actions - Compact & comfortable */
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.32rem;
   flex-shrink: 0;
 }
 .audio-chime-btn {
@@ -304,15 +308,15 @@ h1, h2, h3, h4 { text-wrap: balance; }
 }
 .btn-student-nav {
   background: #EDF3F0;
-  border: 1.5px solid #C5D8CD;
+  border: 1px solid #C5D8CD;
   color: #163227;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  padding: 0.38rem 0.8rem;
+  padding: 0.32rem 0.65rem;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.25rem;
   text-decoration: none;
   transition: all 0.16s ease;
   flex-shrink: 0;
@@ -325,12 +329,12 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .nav-booking-cta {
   background: #A35438;
   color: #FFFFFF !important;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  padding: 0.4rem 1rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 999px;
   text-decoration: none;
-  box-shadow: 0 3px 10px rgba(163, 84, 56, 0.22);
+  box-shadow: 0 2px 8px rgba(163, 84, 56, 0.2);
   transition: all 0.16s ease;
   flex-shrink: 0;
   white-space: nowrap;
@@ -414,7 +418,7 @@ img { height: auto; }
 
 /* Mobile navigation, forms, and reading widths stay comfortable on smaller screens. */
 /* Responsive navigation: activates drawer cleanly below 1240px to ensure zero clipping */
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .main-header .nav-container {
     flex-wrap: nowrap !important;
     justify-content: space-between;
