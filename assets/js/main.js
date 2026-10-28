@@ -101,7 +101,7 @@ const i18n = {
   }
 };
 
-let currentLang = localStorage.getItem('aiswaryam_lang') || 'ta';
+let currentLang = localStorage.getItem('aiswaryam_lang') || 'en';
 
 function initTrilingualSwitcher() {
   const langSelect = document.getElementById('langSelect');
@@ -134,7 +134,7 @@ function applyLanguage(lang) {
   });
 
   // Update elements with explicit language attributes
-  document.querySelectorAll('[data-ta]').forEach(el => {
+  document.querySelectorAll('[data-ta], [data-en], [data-si]').forEach(el => {
     if (lang === 'ta' && el.getAttribute('data-ta')) {
       el.innerHTML = el.getAttribute('data-ta');
     } else if (lang === 'si' && el.getAttribute('data-si')) {
