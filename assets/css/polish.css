@@ -148,16 +148,17 @@ h1, h2, h3, h4 { text-wrap: balance; }
   width: 100%;
 }
 .main-header .container {
-  width: min(100% - 2.5rem, 1380px);
-  max-width: 1380px;
+  width: min(100% - 2rem, 1440px);
+  max-width: 1440px;
+  padding-inline: 0;
 }
 .nav-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  padding: 0.65rem 0;
-  min-height: 64px;
+  gap: clamp(0.5rem, 1vw, 1.25rem);
+  padding: 0.55rem 0;
+  min-height: 60px;
 }
 .top-notice-bar {
   background: #163227;
@@ -166,22 +167,22 @@ h1, h2, h3, h4 { text-wrap: balance; }
   font-weight: 500;
   line-height: 1.55;
   color: #FAF8F5;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 1rem;
 }
 .top-notice-bar a { color: #E2BE7E; font-weight: 700; text-decoration: underline; margin-left: 0.25rem; }
 
-/* Site Logo - Crisp and un-squishable */
+/* Site Logo - Clean, un-squishable, zero cyan */
 .site-logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   text-decoration: none;
   flex-shrink: 0;
   min-width: max-content;
 }
 .site-logo .logo-emblem {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   object-fit: contain;
   flex-shrink: 0;
@@ -194,23 +195,23 @@ h1, h2, h3, h4 { text-wrap: balance; }
   line-height: 1.15;
 }
 .site-logo .logo-title {
-  font-size: 1.18rem;
+  font-size: 1.14rem;
   font-weight: 800;
   color: #163227;
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
 .site-logo .logo-subtitle {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 700;
   color: #A35438;
-  letter-spacing: 2px;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
-  margin-top: 2px;
+  margin-top: 1px;
   white-space: nowrap;
 }
 .site-logo img:not(.logo-emblem) {
-  height: 46px;
+  height: 44px;
   width: auto;
   max-width: 220px;
   flex-shrink: 0;
@@ -223,24 +224,24 @@ h1, h2, h3, h4 { text-wrap: balance; }
   align-items: center;
   justify-content: center;
   flex: 1;
-  margin-inline: 0.5rem;
+  margin-inline: 0.35rem;
 }
 .nav-menu {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(0.7rem, 1.25vw, 1.35rem);
+  gap: clamp(0.45rem, 0.9vw, 1.15rem);
   list-style: none;
   margin: 0;
   padding: 0;
   white-space: nowrap;
 }
 .nav-link {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: #2D3D35;
   text-decoration: none;
-  padding: 0.35rem 0.25rem;
+  padding: 0.35rem 0.2rem;
   position: relative;
   transition: color 0.16s ease;
 }
@@ -256,25 +257,25 @@ h1, h2, h3, h4 { text-wrap: balance; }
   border-radius: 2px;
 }
 
-/* Nav Actions */
+/* Nav Actions - Compact & comfortable */
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.45rem;
   flex-shrink: 0;
 }
 .audio-chime-btn {
   background: #FAF8F5;
   border: 1.5px solid #E6DFD5;
   color: #163227;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: all 0.16s ease;
   flex-shrink: 0;
   padding: 0;
@@ -288,9 +289,9 @@ h1, h2, h3, h4 { text-wrap: balance; }
   background: #FAF8F5;
   border: 1.5px solid #E6DFD5;
   color: #163227;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  padding: 0.4rem 0.8rem;
+  padding: 0.38rem 0.65rem;
   border-radius: 999px;
   cursor: pointer;
   outline: none;
@@ -305,13 +306,13 @@ h1, h2, h3, h4 { text-wrap: balance; }
   background: #EDF3F0;
   border: 1.5px solid #C5D8CD;
   color: #163227;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  padding: 0.4rem 0.9rem;
+  padding: 0.38rem 0.8rem;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   text-decoration: none;
   transition: all 0.16s ease;
   flex-shrink: 0;
@@ -324,9 +325,9 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .nav-booking-cta {
   background: #A35438;
   color: #FFFFFF !important;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  padding: 0.42rem 1.15rem;
+  padding: 0.4rem 1rem;
   border-radius: 999px;
   text-decoration: none;
   box-shadow: 0 3px 10px rgba(163, 84, 56, 0.22);
@@ -412,8 +413,8 @@ img { height: auto; }
 }
 
 /* Mobile navigation, forms, and reading widths stay comfortable on smaller screens. */
-/* Responsive navigation: activates drawer cleanly at 1140px */
-@media (max-width: 1140px) {
+/* Responsive navigation: activates drawer cleanly below 1240px to ensure zero clipping */
+@media (max-width: 1240px) {
   .main-header .nav-container { flex-wrap: wrap; }
   .main-header nav { order: 3; width: 100%; margin-inline: 0; }
   .nav-menu {
@@ -439,8 +440,8 @@ img { height: auto; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     border-radius: 10px;
     border: 1px solid #E6DFD5;
     background: #FAF8F5;
@@ -463,7 +464,7 @@ img { height: auto; }
   .btn-student-nav { display: none; }
   .nav-booking-cta { padding: 0.38rem 0.85rem; font-size: 0.82rem; }
   .nav-actions { gap: 0.35rem; }
-  .audio-chime-btn { width: 36px; height: 36px; }
+  .audio-chime-btn { width: 34px; height: 34px; }
   .lang-select-box { max-width: 95px; padding-inline: 0.45rem; }
   .btn-primary, .btn-secondary, .btn-whatsapp { padding: 0.72rem 1rem; }
   .hero-section { padding-bottom: 2.75rem; }
